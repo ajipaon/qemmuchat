@@ -7,7 +7,6 @@ interface Props {
 }
 
 export default function Header({ burger }: Props) {
-    // const [opened, { close, open }] = useDisclosure(false);
 
     return (
         <header className={classes.header}>
