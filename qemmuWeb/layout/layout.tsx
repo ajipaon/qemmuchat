@@ -5,8 +5,6 @@ import { theme } from "@/theme.ts";
 interface LayoutProps {
     session?: string | null;
 }
-// const HEADER_HEIGHT = 20;
-
 
 export default function Layout({ session = "null" }: LayoutProps) {
 

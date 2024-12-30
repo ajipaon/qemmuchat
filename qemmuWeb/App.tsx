@@ -5,7 +5,7 @@ import '@mantine/spotlight/styles.css';
 import { BrowserRouter } from 'react-router-dom'
 import QueryClientProvider from "@/query"
 import {DirectionProvider} from "@mantine/core";
-import Layout from "@/template/layout";
+import Layout from "@/layout/layout";
 
 function App() {
 
