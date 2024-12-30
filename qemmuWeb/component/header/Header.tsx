@@ -1,6 +1,4 @@
-"use client";
-
-
+import { Avatar, Menu } from "@mantine/core";
 import classes from "./Header.module.css";
 // import { FaRegWindowClose } from "react-icons/fa";
 import { FaReact } from "react-icons/fa6";
@@ -15,29 +13,25 @@ export default function Header({ burger }: Props) {
         <header className={classes.header}>
             {burger && burger}
             <FaReact size={30} />
-            {/*<Box style={{ flex: 1 }} />*/}
-            {/*<TextInput*/}
-            {/*    placeholder="Search"*/}
-            {/*    variant="filled"*/}
-            {/*    leftSection={<IconSearch size="0.8rem" />}*/}
-            {/*    style={{}}*/}
-            {/*/>*/}
-            {/*<ActionIcon onClick={open} variant="subtle">*/}
-            {/*    <FaRegWindowClose size="1.25rem" />*/}
-            {/*</ActionIcon>*/}
+            <div className={classes.footer}>
+                <Menu withArrow position="top" >
+                    <Menu.Target>
+                        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                            <Avatar
+                                key={"mar"}
+                                name={"name"}
+                                color="initials"
+                                allowedInitialsColors={["blue", "red"]}
+                            />
 
-            {/*<Drawer*/}
-            {/*    opened={opened}*/}
-            {/*    onClose={close}*/}
-            {/*    title="Settings"*/}
-            {/*    position="right"*/}
-            {/*    transitionProps={{ duration: 0 }}*/}
-            {/*>*/}
-            {/*    <Stack gap="lg">*/}
-            {/*        <ThemeSwitcher />*/}
-            {/*        <DirectionSwitcher />*/}
-            {/*    </Stack>*/}
-            {/*</Drawer>*/}
+                        </div>
+                    </Menu.Target>
+
+                    <Menu.Dropdown>
+                        <Menu.Item>Logout</Menu.Item>
+                    </Menu.Dropdown>
+                </Menu>
+            </div>
         </header>
     );
 }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import {
     Box,
@@ -9,6 +9,8 @@ import {
 } from "@mantine/core";
 import classes from "./NavigationLinksGroup.module.css";
 import { IconType } from "react-icons";
+import {activeComponent} from "@/component/dasbobard/store/data.ts";
+import {ActiveComponentType} from "@/types/mainType.ts";
 
 interface LinksGroupProps {
     icon: IconType;
@@ -29,12 +31,21 @@ export default function NavigationLinksGroup({
     const [opened, setOpened] = useState(initiallyOpened || false);
     const dir = "ltr";
     const ChevronIcon = dir === "ltr" ? FaChevronRight : FaChevronLeft;
+    const {setComponentActive} = activeComponent()
+
+    const handleUpdateComponent = (e: React.MouseEvent<HTMLAnchorElement>, link: string) => {
+        e.preventDefault(); // Mencegah reload halaman
+        setComponentActive(link as ActiveComponentType); // Mengubah komponen aktif
+    };
+
 
     const items = (hasLinks ? links : []).map((link) => (
         <a
             href={link.link}
             key={link.label}
             className={`${classes.link} ${window.location.pathname === link.link && classes.activeLink}`}
+            onClick={(e) => handleUpdateComponent(e, link.link)}
+
         >
             {link.label}
         </a>
@@ -47,6 +58,7 @@ export default function NavigationLinksGroup({
                 <a
                     href={link}
                     className={`${classes.control} ${window.location.pathname === link && classes.activeControl}`}
+                    onClick={(e) => handleUpdateComponent(e, "DASHBOARD")}
                 >
                     <Group gap={0} justify="space-between">
                         <Box style={{ display: "flex", alignItems: "center" }}>
@@ -68,7 +80,7 @@ export default function NavigationLinksGroup({
                     }}
                     className={classes.control}
                 >
-                    <Group gap={0} justify="space-between">
+                    <Group gap={0} justify="space-between" p="xs">
                         <Box style={{ display: "flex", alignItems: "center" }}>
                             <ThemeIcon variant="light" size={30}>
                                 <Icon size={20} />

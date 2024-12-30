@@ -1,30 +1,39 @@
 import { Container, Grid, SimpleGrid, Card, Text, Title } from '@mantine/core';
+import {activeComponent} from "@/component/dasbobard/store/data.ts";
+import Admin from "@/component/person/Admin.tsx";
+import User from "@/component/person/User.tsx";
+import MainChat from "@/component/message/Index.tsx";
 
-// Define a constant for the primary column height
 const PRIMARY_COL_HEIGHT = '300px';
+const SECONDARY_COL_HEIGHT = `calc(${PRIMARY_COL_HEIGHT} / 2 - var(--mantine-spacing-md) / )`;
+
+const statistics = [
+    { title: 'Total Users', value: 1200 },
+    { title: 'New Users Today', value: 50 },
+    { title: 'Total Sales', value: '$24,000' },
+    { title: 'Active Subscriptions', value: 300 },
+];
 
 export default function MainDashboard() {
-    // Calculate the height for the secondary columns
-    const SECONDARY_COL_HEIGHT = `calc(${PRIMARY_COL_HEIGHT} / 2 - var(--mantine-spacing-md) / 4)`;
-
-    // Example statistics data
-    const statistics = [
-        { title: 'Total Users', value: 1200 },
-        { title: 'New Users Today', value: 50 },
-        { title: 'Total Sales', value: '$24,000' },
-        { title: 'Active Subscriptions', value: 300 },
-    ];
+    const {componentActive} = activeComponent()
 
     return (
-        <Container my="lg">
+        componentActive == "DASHBOARD" ? (
+        <Container style={{ padding: '0px', width:'100%', margin:0 }}>
             <SimpleGrid cols={2} spacing="md" >
-                {/* Primary column */}
-                <Card shadow="sm" padding="lg" radius="md" style={{ height: PRIMARY_COL_HEIGHT }}>
+                <Card shadow="sm" padding="lg" radius="lg" style={{ height: PRIMARY_COL_HEIGHT }}>
+                    <Title order={2}>{statistics[0].title}</Title>
+                    <Text size="xl">{statistics[0].value}</Text>
+                </Card>
+                <Card shadow="sm" padding="lg" radius="lg" style={{ height: PRIMARY_COL_HEIGHT }}>
+                    <Title order={2}>{statistics[0].title}</Title>
+                    <Text size="xl">{statistics[0].value}</Text>
+                </Card>
+                <Card shadow="sm" padding="lg" radius="lg" style={{ height: PRIMARY_COL_HEIGHT }}>
                     <Title order={2}>{statistics[0].title}</Title>
                     <Text size="xl">{statistics[0].value}</Text>
                 </Card>
 
-                {/* Secondary columns */}
                 <Grid gutter="md">
                     <Grid.Col>
                         <Card shadow="sm" padding="lg" radius="md" style={{ height: SECONDARY_COL_HEIGHT }}>
@@ -47,5 +56,12 @@ export default function MainDashboard() {
                 </Grid>
             </SimpleGrid>
         </Container>
+        ):(
+            <>
+                <Admin activeComponent={componentActive}/>
+                <User activeComponent={componentActive}/>
+                <MainChat activeComponent={componentActive}/>
+            </>
+        )
     );
 }

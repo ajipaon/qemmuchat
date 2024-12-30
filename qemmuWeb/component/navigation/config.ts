@@ -2,7 +2,7 @@ import { FaTachometerAlt, FaCogs, FaUsers, FaSmile, FaMoneyBillAlt } from "react
 import type { NavItem } from "@/types/navtype";
 
 export const navLinks: NavItem[] = [
-    { label: "Dashboard", icon: FaTachometerAlt, link: "/" },
+    { label: "Dashboard", icon: FaTachometerAlt, link: "DASHBOARD" },
     {
         label: "Data",
         icon: FaUsers,
@@ -10,11 +10,11 @@ export const navLinks: NavItem[] = [
         links: [
             {
                 label: "Admin",
-                link: "/admin",
+                link: "ADMIN",
             },
             {
                 label: "Users",
-                link: "/users",
+                link: "USER",
             },
         ],
     },
@@ -25,7 +25,11 @@ export const navLinks: NavItem[] = [
         links: [
             {
                 label: "chat",
-                link: "/chat",
+                link: "CHAT",
+            },
+            {
+                label: "grouop",
+                link: "GROUP",
             },
         ],
     },
@@ -36,7 +40,7 @@ export const navLinks: NavItem[] = [
         links: [
             {
                 label: "Setting",
-                link: "/setting",
+                link: "SETTING",
             },
         ],
     },
