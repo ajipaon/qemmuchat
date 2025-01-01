@@ -23,14 +23,146 @@ const docTemplate = `{
     },
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
-    "paths": {}
+    "paths": {
+        "/auth/register": {
+            "post": {
+                "description": "Register a new user with the given details",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Register a new user",
+                "parameters": [
+                    {
+                        "description": "Register User",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.RegisterUserRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/config": {
+            "post": {
+                "description": "Create new Config",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "config"
+                ],
+                "summary": "Create new Config",
+                "parameters": [
+                    {
+                        "description": "New Config",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.ConfigurationRequest"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        }
+    },
+    "definitions": {
+        "models.ConfigName": {
+            "type": "string",
+            "enum": [
+                "ORGANIZATION_NAME",
+                "MQTT_CONFIG"
+            ],
+            "x-enum-varnames": [
+                "OrganizationName",
+                "MqttConfig"
+            ]
+        },
+        "models.ConfigurationRequest": {
+            "type": "object",
+            "required": [
+                "data",
+                "name"
+            ],
+            "properties": {
+                "data": {
+                    "type": "string",
+                    "minLength": 6
+                },
+                "name": {
+                    "$ref": "#/definitions/models.ConfigName"
+                }
+            }
+        },
+        "models.RegisterUserRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "name",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string",
+                    "minLength": 6
+                }
+            }
+        }
+    }
 }`
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "qemmu.swagger.io",
-	BasePath:         "/",
+	Host:             "",
+	BasePath:         "/api",
 	Schemes:          []string{},
 	Title:            "Swagger QemmuChat API",
 	Description:      "This is a Swagger QemmuChat API",

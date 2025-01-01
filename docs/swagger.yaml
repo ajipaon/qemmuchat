@@ -1,5 +1,38 @@
-basePath: /
-host: qemmu.swagger.io
+basePath: /api
+definitions:
+  models.ConfigName:
+    enum:
+    - ORGANIZATION_NAME
+    - MQTT_CONFIG
+    type: string
+    x-enum-varnames:
+    - OrganizationName
+    - MqttConfig
+  models.ConfigurationRequest:
+    properties:
+      data:
+        minLength: 6
+        type: string
+      name:
+        $ref: '#/definitions/models.ConfigName'
+    required:
+    - data
+    - name
+    type: object
+  models.RegisterUserRequest:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        minLength: 6
+        type: string
+    required:
+    - email
+    - name
+    - password
+    type: object
 info:
   contact:
     email: support@swagger.io
@@ -12,5 +45,59 @@ info:
   termsOfService: http://swagger.io/terms/
   title: Swagger QemmuChat API
   version: "1.0"
-paths: {}
+paths:
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Register a new user with the given details
+      parameters:
+      - description: Register User
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.RegisterUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Register a new user
+      tags:
+      - auth
+  /v1/config:
+    post:
+      consumes:
+      - application/json
+      description: Create new Config
+      parameters:
+      - description: New Config
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.ConfigurationRequest'
+      produces:
+      - application/json
+      responses: {}
+      summary: Create new Config
+      tags:
+      - config
 swagger: "2.0"
