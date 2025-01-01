@@ -1,12 +1,14 @@
 package repository
 
 import (
-	"gorm.io/gorm"
 	"qemmuChat/qemmu/models"
+
+	"gorm.io/gorm"
 )
 
 type ConfigurationRepository interface {
 	Create(config *models.Config) error
+	GetConfig(config models.ConfigName) (*models.Config, error)
 }
 
 type configurationRepository struct {
@@ -19,4 +21,13 @@ func NewConfigurationRepository(db *gorm.DB) ConfigurationRepository {
 
 func (r *configurationRepository) Create(config *models.Config) error {
 	return r.db.Create(config).Error
+}
+
+func (r *configurationRepository) GetConfig(configName models.ConfigName) (*models.Config, error) {
+	var config models.Config
+	err := r.db.Where("name = ?", configName).First(&config).Error
+	if err != nil {
+		return nil, err
+	}
+	return &config, nil
 }

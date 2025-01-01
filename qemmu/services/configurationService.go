@@ -7,6 +7,7 @@ import (
 
 type ConfigurationService interface {
 	CreateConfig(config *models.ConfigurationRequest) error
+	GetConfig(name models.ConfigName) (*models.Config, error)
 }
 
 type configurationService struct {
@@ -31,5 +32,16 @@ func (s *configurationService) CreateConfig(configRequest *models.ConfigurationR
 		config.Data = configRequest.Data
 	}
 	return s.configRepository.Create(config)
+
+}
+
+func (s *configurationService) GetConfig(name models.ConfigName) (*models.Config, error) {
+
+	existingConfig, err := s.configRepository.GetConfig(name)
+	if err != nil {
+		return nil, err
+	}
+
+	return existingConfig, nil
 
 }

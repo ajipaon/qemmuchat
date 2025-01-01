@@ -2,9 +2,10 @@ package services
 
 import (
 	"errors"
-	"golang.org/x/crypto/bcrypt"
 	"qemmuChat/qemmu/models"
 	"qemmuChat/qemmu/repository"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 type UserService interface {

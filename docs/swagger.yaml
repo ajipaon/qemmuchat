@@ -19,6 +19,17 @@ definitions:
     - data
     - name
     type: object
+  models.LoginUserRequest:
+    properties:
+      email:
+        type: string
+      password:
+        minLength: 6
+        type: string
+    required:
+    - email
+    - password
+    type: object
   models.RegisterUserRequest:
     properties:
       email:
@@ -46,6 +57,24 @@ info:
   title: Swagger QemmuChat API
   version: "1.0"
 paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Login user
+      parameters:
+      - description: Register User
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.LoginUserRequest'
+      produces:
+      - application/json
+      responses: {}
+      summary: Login user
+      tags:
+      - auth
   /auth/register:
     post:
       consumes:
@@ -60,29 +89,25 @@ paths:
           $ref: '#/definitions/models.RegisterUserRequest'
       produces:
       - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            additionalProperties:
-              type: string
-            type: object
+      responses: {}
       summary: Register a new user
       tags:
       - auth
   /v1/config:
+    get:
+      description: Retrieve configuration based on the provided name parameter.
+      parameters:
+      - description: name
+        in: query
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses: {}
+      summary: Get Config
+      tags:
+      - config
     post:
       consumes:
       - application/json

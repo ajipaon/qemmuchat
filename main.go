@@ -2,14 +2,15 @@ package main
 
 import (
 	"fmt"
-	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
-	"github.com/swaggo/echo-swagger"
+	"qemmuChat/qemmu/config"
 	"qemmuChat/qemmu/lib"
-	"qemmuChat/qemmu/models"
 	"qemmuChat/qemmu/module"
 	"qemmuChat/qemmu/routes"
 	v1 "qemmuChat/qemmu/routes/v1"
+
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
+	echoSwagger "github.com/swaggo/echo-swagger"
 
 	"net/http"
 	_ "qemmuChat/docs"
@@ -30,7 +31,7 @@ import (
 // @BasePath /api
 func main() {
 
-	DB := models.Init()
+	DB := config.Init()
 
 	e := echo.New()
 
@@ -39,12 +40,17 @@ func main() {
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
 	api := e.Group("/api")
 	api.Use(middleware.Logger())
-
 	e.Validator = lib.NewValidator()
+
+	api.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		ExposeHeaders: []string{"Authorization"},
+	}))
+
 	e.GET("/ws", module.UseNet)
 
 	//auth
 	routes.AuthRoutes(api.Group("/auth"), DB)
+
 	//v1
 	v1.UserRoutes(api.Group("/v1/user"))
 	v1.ConfigRoutes(api.Group("/v1/config"), DB)

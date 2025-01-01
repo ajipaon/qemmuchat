@@ -18,7 +18,7 @@ const (
 
 type Config struct {
 	gorm.Model
-	Name ConfigName `json:"name"`
+	Name ConfigName `json:"name" gorm:"unique"`
 	Type Type       `json:"type" gorm:"string"`
 	Data string     `json:"data"`
 }

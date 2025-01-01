@@ -1,8 +1,9 @@
 package repository
 
 import (
-	"gorm.io/gorm"
 	"qemmuChat/qemmu/models"
+
+	"gorm.io/gorm"
 )
 
 type UserRepository interface {
@@ -51,7 +52,7 @@ func (r *userRepository) GetByEmail(email string) (*models.Users, error) {
 	var user models.Users
 	err := r.db.Where("email = ?", email).First(&user).Error
 	if err != nil {
-		return nil, err
+		return nil, nil
 	}
 	return &user, nil
 }

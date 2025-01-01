@@ -1,9 +1,10 @@
 package models
 
 import (
+	"time"
+
 	"github.com/google/uuid"
 	"gorm.io/gorm"
-	"time"
 )
 
 type Role string
@@ -40,4 +41,20 @@ type RegisterUserRequest struct {
 	Name     string `validate:"required"`
 	Email    string `validate:"required,email"`
 	Password string `validate:"required,min=6"`
+}
+
+type LoginUserRequest struct {
+	Email    string `validate:"required,email"`
+	Password string `validate:"required,min=6"`
+}
+
+type LoginUserResponse struct {
+	Name       string    `json:"name"`
+	Email      string    `json:"email"`
+	CreatedAt  time.Time `json:"created_at"`
+	UpdatedAt  time.Time `json:"updated_at"`
+	Image      string    `json:"image"`
+	FirstLogin bool      `json:"firstlogin"`
+	Status     string    `json:"status"`
+	Role       string    `json:"role"`
 }

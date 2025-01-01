@@ -1,10 +1,12 @@
 package controllers
 
 import (
-	"github.com/labstack/echo/v4"
+	"fmt"
 	"net/http"
 	"qemmuChat/qemmu/models"
 	"qemmuChat/qemmu/services"
+
+	"github.com/labstack/echo/v4"
 )
 
 type ConfigurationController struct {
@@ -36,4 +38,41 @@ func (h *ConfigurationController) NewConfig(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, map[string]string{"message": err.Error()})
 	}
 	return c.JSON(http.StatusOK, "Success crate config")
+}
+
+// GetConfig godoc
+// @Summary Get Config
+// @Description Retrieve configuration based on the provided name parameter.
+// @Tags config
+// @Produce json
+// @Param name query string true "name"
+// @Router /v1/config [get]
+func (h *ConfigurationController) GetConfig(c echo.Context) error {
+	name := c.QueryParam("name")
+
+	if name == "" {
+		return c.String(http.StatusBadRequest, "Parameter 'name' tidak ditemukan")
+	}
+
+	var configName models.ConfigName
+	switch name {
+	case string(models.OrganizationName):
+		configName = models.OrganizationName
+	case string(models.MqttConfig):
+		configName = models.MqttConfig
+	default:
+		return c.JSON(http.StatusBadRequest, map[string]string{
+			"message": fmt.Sprintf("Parameter '%s' does not exist", name),
+		})
+	}
+
+	config, err := h.configService.GetConfig(configName)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{
+			"message": err.Error(),
+		})
+	}
+
+	// Jika berhasil, kembalikan data konfigurasi
+	return c.JSON(http.StatusOK, config)
 }
