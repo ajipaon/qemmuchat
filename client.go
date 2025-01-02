@@ -13,10 +13,8 @@ import (
 )
 
 var (
-	//go:embed dist/*
 	dist embed.FS
 
-	//go:embed dist/index.html
 	indexHTML embed.FS
 
 	distDirFS     = echo.MustSubFS(dist, "dist")
@@ -37,10 +35,7 @@ func registerHandlers(e *echo.Echo) {
 			path := c.Path()
 			return len(path) >= 4 && path[:4] == "/api" || len(path) >= 8 && path[:8] == "/swagger"
 		},
-		// Root directory from where the static content is served.
-		Root: "/",
-		// Enable HTML5 mode by forwarding all not-found requests to root so that
-		// SPA (single-page application) can handle the routing.
+		Root:       "/",
 		HTML5:      true,
 		Browse:     false,
 		IgnoreBase: true,

@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"errors"
 	"qemmuChat/qemmu/models"
 
 	"gorm.io/gorm"
@@ -27,6 +28,9 @@ func (r *configurationRepository) GetConfig(configName models.ConfigName) (*mode
 	var config models.Config
 	err := r.db.Where("name = ?", configName).First(&config).Error
 	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, nil
+		}
 		return nil, err
 	}
 	return &config, nil

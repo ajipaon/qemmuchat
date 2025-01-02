@@ -3,10 +3,10 @@ package controllers
 import (
 	"fmt"
 	"net/http"
-	"qemmuChat/qemmu/config"
 	"qemmuChat/qemmu/models"
 	"qemmuChat/qemmu/module"
 	"qemmuChat/qemmu/services"
+	"strings"
 
 	"github.com/labstack/echo/v4"
 	"golang.org/x/crypto/bcrypt"
@@ -74,9 +74,35 @@ func (h *AuthController) Login(c echo.Context) error {
 	}
 	userResponse := module.ConvertUserResponse(user)
 
-	token, err := config.GenerateJwt(user)
+	token, err := module.GenerateJwt(user)
 
 	c.Response().Header().Set("Authorization", fmt.Sprintf("Bearer %s", token))
 
 	return c.JSON(http.StatusOK, map[string]interface{}{"message": "Login successful", "data": userResponse})
+}
+
+func (h *AuthController) UpdateToken(c echo.Context) error {
+
+	token := c.Request().Header.Get("Authorization")
+
+	if token == "" {
+		return c.JSON(http.StatusBadRequest, map[string]string{"error": "Authorization header is required"})
+	}
+
+	parts := strings.Split(token, " ")
+	if len(parts) != 2 || parts[0] != "Bearer" {
+		return c.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid Authorization header format"})
+	}
+	oldToken := parts[1]
+
+	newToken, err := module.UpdateJwt(oldToken)
+
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized, map[string]string{"error": "Invalid token"})
+	}
+
+	c.Response().Header().Set("Authorization", fmt.Sprintf("Bearer %s", newToken))
+
+	return nil
+
 }

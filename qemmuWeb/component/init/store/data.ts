@@ -1,21 +1,21 @@
-import { create } from 'zustand';
+import { create } from "zustand";
 
 export enum sectionStatus {
-    NEW_ORGANIZATION = "NEW_ORGANIZATION",
-    REGISTER = "REGISTER",
-    LOGIN = "LOGIN",
+  NEW_ORGANIZATION = "ORGANIZATION_NAME",
+  REGISTER = "REGISTER",
+  LOGIN = "LOGIN",
 }
 
 type SectionState = {
-    section: sectionStatus;
-    setSection: (section: sectionStatus) => void;
-    data: any;
-    setData: (data: any) => void;
+  section: sectionStatus;
+  setSection: (section: sectionStatus) => void;
+  data: string[];
+  setData: (data: string[]) => void;
 };
 
 export const newSection = create<SectionState>((set) => ({
-    section: sectionStatus.REGISTER,
-    setSection: (section: sectionStatus) => set({ section }),
-    data: null,
-    setData: (data: any) => set({ data }),
+  section: sectionStatus.NEW_ORGANIZATION,
+  setSection: (section: sectionStatus) => set({ section }),
+  data: [],
+  setData: (data: string[]) => set({ data }),
 }));

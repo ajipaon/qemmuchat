@@ -1,7 +1,6 @@
 
 import {
     Anchor,
-    Center,
     Container,
     Group,
     Paper,
@@ -9,10 +8,12 @@ import {
     Title,
 } from '@mantine/core';
 import classes from './NewOrganization.module.css';
-import {newSection, sectionStatus} from "@/component/init/store/data.ts";
+import { newSection, sectionStatus } from "@/component/init/store/data.ts";
 
 export default function NewOrganizaton() {
-    const {section} =  newSection();
+
+
+    const { section } = newSection();
 
     if (section !== sectionStatus.NEW_ORGANIZATION) {
         return null;

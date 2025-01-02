@@ -39,6 +39,10 @@ func main() {
 
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
 	api := e.Group("/api")
+
+	//auth
+	routes.AuthRoutes(e.Group("/auth"), DB)
+
 	api.Use(middleware.Logger())
 	e.Validator = lib.NewValidator()
 
@@ -47,9 +51,6 @@ func main() {
 	}))
 
 	e.GET("/ws", module.UseNet)
-
-	//auth
-	routes.AuthRoutes(api.Group("/auth"), DB)
 
 	//v1
 	v1.UserRoutes(api.Group("/v1/user"))
