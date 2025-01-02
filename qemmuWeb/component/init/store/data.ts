@@ -1,21 +1,16 @@
-import { create } from "zustand";
-
 export enum sectionStatus {
   NEW_ORGANIZATION = "ORGANIZATION_NAME",
   REGISTER = "REGISTER",
   LOGIN = "LOGIN",
 }
 
-type SectionState = {
-  section: sectionStatus;
-  setSection: (section: sectionStatus) => void;
-  data: string[];
-  setData: (data: string[]) => void;
+export type dataConfig = {
+  data: string | null;
+  name: sectionStatus;
 };
 
-export const newSection = create<SectionState>((set) => ({
-  section: sectionStatus.NEW_ORGANIZATION,
-  setSection: (section: sectionStatus) => set({ section }),
-  data: [],
-  setData: (data: string[]) => set({ data }),
-}));
+export type registerUser = {
+  email: string;
+  name: string;
+  password: string;
+};

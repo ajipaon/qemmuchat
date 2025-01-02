@@ -33,7 +33,7 @@ func registerHandlers(e *echo.Echo) {
 	e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
 		Skipper: func(c echo.Context) bool {
 			path := c.Path()
-			return len(path) >= 4 && path[:4] == "/api" || len(path) >= 8 && path[:8] == "/swagger"
+			return len(path) >= 4 && path[:4] == "/api" || len(path) >= 8 && path[:8] == "/swagger" || len(path) >= 5 && path[:5] == "/auth"
 		},
 		Root:       "/",
 		HTML5:      true,
@@ -57,7 +57,7 @@ func setupDevProxy(e *echo.Echo) {
 		Balancer: balancer,
 		Skipper: func(c echo.Context) bool {
 			path := c.Path()
-			return len(path) >= 4 && path[:4] == "/api" || len(path) >= 8 && path[:8] == "/swagger"
+			return len(path) >= 4 && path[:4] == "/api" || len(path) >= 8 && path[:8] == "/swagger" || len(path) >= 5 && path[:5] == "/auth"
 		},
 	}))
 }
