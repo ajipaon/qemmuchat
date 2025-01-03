@@ -5,7 +5,12 @@ import {
   useQueryClient,
   UseQueryResult,
 } from "@tanstack/react-query";
-import { dataConfig, registerUser, sectionStatus } from "./store/data";
+import {
+  dataConfig,
+  loginUser,
+  registerUser,
+  sectionStatus,
+} from "./store/data";
 
 export const useGetConfig = (
   search: sectionStatus
@@ -51,6 +56,19 @@ export const useRegister = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["get_config"] });
+    },
+  });
+};
+
+export const useLogin = () => {
+  return useMutation<void, Error, loginUser>({
+    mutationKey: ["login"],
+    mutationFn: async (loginUser) => {
+      if (!loginUser) return;
+      return await apiClient(`/auth/login`, {
+        method: "POST",
+        body: JSON.stringify(loginUser),
+      });
     },
   });
 };

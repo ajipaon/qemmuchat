@@ -24,7 +24,7 @@ func NewConfigurationController(configService services.ConfigurationService) *Co
 // @Accept json
 // @Produce json
 // @Param user body models.ConfigurationRequest true "New Config"
-// @Router /v1/config [post]
+// @Router /api/v1/config [post]
 func (h *ConfigurationController) NewConfig(c echo.Context) error {
 	var req models.ConfigurationRequest
 	if err := c.Bind(&req); err != nil {
@@ -46,7 +46,7 @@ func (h *ConfigurationController) NewConfig(c echo.Context) error {
 // @Tags config
 // @Produce json
 // @Param name query string true "name"
-// @Router /v1/config [get]
+// @Router /api/v1/config [get]
 func (h *ConfigurationController) GetConfig(c echo.Context) error {
 	name := c.QueryParam("name")
 
@@ -73,6 +73,5 @@ func (h *ConfigurationController) GetConfig(c echo.Context) error {
 		})
 	}
 
-	// Jika berhasil, kembalikan data konfigurasi
 	return c.JSON(http.StatusOK, config)
 }

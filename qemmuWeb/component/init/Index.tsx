@@ -19,7 +19,7 @@ export default function Index() {
     }, [data, isLoading]);
 
     if (isLoading) {
-        return <p>Loading...</p>;
+        return
     }
 
     switch (currentSection) {

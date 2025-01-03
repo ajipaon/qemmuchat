@@ -27,6 +27,12 @@ export const apiClient = async <T>(
 
   try {
     const contentType = response.headers.get("Content-Type") || "";
+    const header = response.headers.get("authorization") || "";
+
+    if (url == "/auth/login" || url == "/auth/update") {
+      localStorage.setItem("token", header.split(" ")[1]);
+    }
+
     if (contentType.includes("application/json")) {
       return (await response.json()) as T;
     }

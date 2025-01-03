@@ -24,6 +24,53 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/api/v1/config": {
+            "get": {
+                "description": "Retrieve configuration based on the provided name parameter.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "config"
+                ],
+                "summary": "Get Config",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "name",
+                        "name": "name",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {}
+            },
+            "post": {
+                "description": "Create new Config",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "config"
+                ],
+                "summary": "Create new Config",
+                "parameters": [
+                    {
+                        "description": "New Config",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.ConfigurationRequest"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/auth/login": {
             "post": {
                 "description": "Login user",
@@ -72,53 +119,6 @@ const docTemplate = `{
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/models.RegisterUserRequest"
-                        }
-                    }
-                ],
-                "responses": {}
-            }
-        },
-        "/v1/config": {
-            "get": {
-                "description": "Retrieve configuration based on the provided name parameter.",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "config"
-                ],
-                "summary": "Get Config",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "name",
-                        "name": "name",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {}
-            },
-            "post": {
-                "description": "Create new Config",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "config"
-                ],
-                "summary": "Create new Config",
-                "parameters": [
-                    {
-                        "description": "New Config",
-                        "name": "user",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.ConfigurationRequest"
                         }
                     }
                 ],
@@ -197,7 +197,7 @@ const docTemplate = `{
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
 	Host:             "",
-	BasePath:         "/api",
+	BasePath:         "/",
 	Schemes:          []string{},
 	Title:            "Swagger QemmuChat API",
 	Description:      "This is a Swagger QemmuChat API",

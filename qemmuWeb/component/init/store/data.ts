@@ -14,3 +14,8 @@ export type registerUser = {
   name: string;
   password: string;
 };
+
+export type loginUser = {
+  email: string;
+  password: string;
+};

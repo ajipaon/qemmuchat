@@ -6,30 +6,27 @@ import {
 import RouterComponent from '@/routes';
 import Dashboard from '@/component/dasbobard';
 import { theme } from "@/theme";
+import { useLocalStorage } from '@mantine/hooks';
 
-interface LayoutProps {
-    session?: string | null;
-}
 
-export default function Layout({ session = null }: LayoutProps) {
+export default function Layout() {
 
-    // const [sessionToken] = useLocalStorage<string | null>({
-    //     key: "token",
-    //     defaultValue: null,
-    //   });
+    const [sessionToken] = useLocalStorage<string>({
+        key: "token",
+    });
 
     return (
         <>
             <MantineProvider
                 theme={theme}
-                defaultColorScheme="auto"
+                defaultColorScheme="dark"
                 colorSchemeManager={localStorageColorSchemeManager({ key: 'mantine-ui-color-scheme' })}
             >
                 <ColorSchemeScript
                     defaultColorScheme="auto"
                     localStorageKey="mantine-ui-color-scheme"
                 />
-                {!session ? <RouterComponent /> : <Dashboard />}
+                {!sessionToken ? <RouterComponent /> : <Dashboard />}
             </MantineProvider>
         </>
     );

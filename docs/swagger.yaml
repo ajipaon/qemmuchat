@@ -1,4 +1,4 @@
-basePath: /api
+basePath: /
 definitions:
   models.ConfigName:
     enum:
@@ -57,6 +57,38 @@ info:
   title: Swagger QemmuChat API
   version: "1.0"
 paths:
+  /api/v1/config:
+    get:
+      description: Retrieve configuration based on the provided name parameter.
+      parameters:
+      - description: name
+        in: query
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses: {}
+      summary: Get Config
+      tags:
+      - config
+    post:
+      consumes:
+      - application/json
+      description: Create new Config
+      parameters:
+      - description: New Config
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.ConfigurationRequest'
+      produces:
+      - application/json
+      responses: {}
+      summary: Create new Config
+      tags:
+      - config
   /auth/login:
     post:
       consumes:
@@ -93,36 +125,4 @@ paths:
       summary: Register a new user
       tags:
       - auth
-  /v1/config:
-    get:
-      description: Retrieve configuration based on the provided name parameter.
-      parameters:
-      - description: name
-        in: query
-        name: name
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses: {}
-      summary: Get Config
-      tags:
-      - config
-    post:
-      consumes:
-      - application/json
-      description: Create new Config
-      parameters:
-      - description: New Config
-        in: body
-        name: user
-        required: true
-        schema:
-          $ref: '#/definitions/models.ConfigurationRequest'
-      produces:
-      - application/json
-      responses: {}
-      summary: Create new Config
-      tags:
-      - config
 swagger: "2.0"

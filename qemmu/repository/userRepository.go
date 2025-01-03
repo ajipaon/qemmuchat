@@ -52,16 +52,16 @@ func (r *userRepository) GetByEmail(email string) (*models.Users, error) {
 	var user models.Users
 	err := r.db.Where("email = ?", email).First(&user).Error
 	if err != nil {
-		return nil, nil
+		return nil, err
 	}
 	return &user, nil
 }
 
 func (r *userRepository) Count() (int64, error) {
 	var count int64
-	result := r.db.Model(&models.Users{}).Count(&count)
-	if result.Error != nil {
-		return count, result.Error
+	err := r.db.Model(&models.Users{}).Count(&count).Error
+	if err != nil {
+		return count, err
 	}
 	return count, nil
 }
