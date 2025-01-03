@@ -13,11 +13,15 @@ import (
 )
 
 type AuthController struct {
-	userService services.UserService
+	userService   services.UserService
+	configService services.ConfigurationService
 }
 
-func NewAuthController(userService services.UserService) *AuthController {
-	return &AuthController{userService}
+func NewAuthController(userService services.UserService, configService services.ConfigurationService) *AuthController {
+	return &AuthController{
+		userService:   userService,
+		configService: configService,
+	}
 }
 
 // Register godoc
@@ -100,9 +104,31 @@ func (h *AuthController) UpdateToken(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusUnauthorized, map[string]string{"error": "Invalid token"})
 	}
-
-	c.Response().Header().Set("Authorization", fmt.Sprintf("Bearer %s", newToken))
+	c.Response().Header().Set(echo.HeaderAuthorization, fmt.Sprintf("Bearer %s", newToken))
 
 	return nil
 
+}
+
+// NewConfig godoc
+// @Summary Create new Config
+// @Description Create new Config
+// @Tags config
+// @Accept json
+// @Produce json
+// @Param user body models.ConfigurationRequest true "New Config"
+// @Router /auth/config [post]
+func (h *AuthController) NewAuthConfig(c echo.Context) error {
+	var req models.ConfigurationRequest
+	if err := c.Bind(&req); err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": "Invalid request"})
+	}
+	if err := c.Validate(&req); err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": err.Error()})
+	}
+
+	if err := h.configService.CreateConfig(&req); err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": err.Error()})
+	}
+	return c.JSON(http.StatusOK, "Success crate config")
 }

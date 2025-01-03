@@ -10,7 +10,7 @@ import (
 
 type UserService interface {
 	GetAllUsers() ([]models.Users, error)
-	GetUserByID(id uint) (*models.Users, error)
+	GetUserByID(id string) (*models.Users, error)
 	CreateUser(user *models.RegisterUserRequest) error
 	UpdateUser(user *models.Users) error
 	DeleteUser(id uint) error
@@ -29,7 +29,7 @@ func (s *userService) GetAllUsers() ([]models.Users, error) {
 	return s.userRepo.GetAll()
 }
 
-func (s *userService) GetUserByID(id uint) (*models.Users, error) {
+func (s *userService) GetUserByID(id string) (*models.Users, error) {
 	return s.userRepo.GetByID(id)
 }
 
@@ -53,7 +53,7 @@ func (s *userService) CreateUser(userRegister *models.RegisterUserRequest) error
 	count, err := s.userRepo.Count()
 
 	if count == 0 {
-		user.Role = "ROLE_ADMIN"
+		user.Role = models.SuperAdmin
 	}
 
 	return s.userRepo.Create(user)

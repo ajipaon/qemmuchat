@@ -1,16 +1,25 @@
 package v1
 
 import (
-	"github.com/labstack/echo/v4"
 	"net/http"
+	"qemmuChat/qemmu/controllers"
+	"qemmuChat/qemmu/repository"
+	"qemmuChat/qemmu/services"
+
+	"github.com/labstack/echo/v4"
+	"gorm.io/gorm"
 )
 
-func UserRoutes(g *echo.Group) {
-	g.GET("", getUser)
-	g.POST("", createUser)
-	g.GET("/:id", getUserByID)
-	g.PUT("/:id", updateUser)
-	g.DELETE("/:id", deleteUser)
+func UserRoutes(g *echo.Group, db *gorm.DB) {
+	userRepo := repository.NewUserRepository(db)
+	userService := services.NewUserService(userRepo)
+	userController := controllers.NewUserController(userService)
+
+	g.GET("/all", userController.GetAllUser)
+	// g.POST("", createUser)
+	g.GET("/:id", userController.GetUserByID)
+	// g.PUT("/:id", updateUser)
+	// g.DELETE("/:id", deleteUser)
 }
 
 func getUser(c echo.Context) error {

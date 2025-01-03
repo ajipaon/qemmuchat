@@ -25,6 +25,7 @@ func NewConfigurationController(configService services.ConfigurationService) *Co
 // @Produce json
 // @Param user body models.ConfigurationRequest true "New Config"
 // @Router /api/v1/config [post]
+// @Security BearerAuth
 func (h *ConfigurationController) NewConfig(c echo.Context) error {
 	var req models.ConfigurationRequest
 	if err := c.Bind(&req); err != nil {
@@ -47,6 +48,7 @@ func (h *ConfigurationController) NewConfig(c echo.Context) error {
 // @Produce json
 // @Param name query string true "name"
 // @Router /api/v1/config [get]
+// @Security BearerAuth
 func (h *ConfigurationController) GetConfig(c echo.Context) error {
 	name := c.QueryParam("name")
 

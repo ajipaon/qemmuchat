@@ -6,19 +6,42 @@ import (
 	"qemmuChat/qemmu/models"
 	"time"
 
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt/v5"
+	"github.com/google/uuid"
+	"github.com/labstack/echo/v4"
 )
+
+type JwtCustomClaims struct {
+	Name       string            `json:"name"`
+	Role       models.Role       `json:"role"`
+	Id         uuid.UUID         `json:"id"`
+	Status     models.UserStatus `json:"status"`
+	FirstLogin bool              `json:"firstlogin"`
+	jwt.RegisteredClaims
+}
+
+type ClaimData struct {
+	Name       string
+	Role       string
+	Id         string
+	Status     string
+	FirstLogin bool
+}
 
 func GenerateJwt(user *models.Users) (string, error) {
 
-	token := jwt.New(jwt.SigningMethodHS256)
-	claims := token.Claims.(jwt.MapClaims)
-	claims["name"] = user.Name
-	claims["role"] = user.Role
-	claims["id"] = user.ID
-	claims["status"] = user.Status
-	claims["firstlogin"] = user.FirstLogin
-	claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
+	claims := &JwtCustomClaims{
+		Name:       user.Name,
+		Role:       user.Role,
+		Id:         user.ID,
+		Status:     user.Status,
+		FirstLogin: user.FirstLogin,
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 72)),
+		},
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 	t, err := token.SignedString([]byte(os.Getenv("SECRET")))
 	if err != nil {
@@ -56,4 +79,18 @@ func UpdateJwt(oldToken string) (string, error) {
 	}
 
 	return signedToken, nil
+}
+
+func ReturnClaim(c echo.Context) ClaimData {
+
+	user := c.Get("user").(*jwt.Token)
+	claims := user.Claims.(*JwtCustomClaims)
+
+	return ClaimData{
+		Name:       claims.Name,
+		Role:       string(claims.Role),
+		Id:         claims.Id.String(),
+		Status:     string(claims.Status),
+		FirstLogin: claims.FirstLogin,
+	}
 }

@@ -31,7 +31,7 @@ export const useAddConfig = () => {
     mutationKey: ["add_config"],
     mutationFn: async (dataConfig) => {
       if (!dataConfig.data) return;
-      await apiClient(`/api/v1/config`, {
+      await apiClient(`/auth/config`, {
         method: "POST",
         body: JSON.stringify(dataConfig),
       });

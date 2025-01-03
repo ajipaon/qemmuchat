@@ -12,9 +12,14 @@ import (
 func AuthRoutes(g *echo.Group, db *gorm.DB) {
 	userRepo := repository.NewUserRepository(db)
 	userService := services.NewUserService(userRepo)
-	authController := controllers.NewAuthController(userService)
 
-	g.POST("/register", authController.Register)
-	g.POST("/login", authController.Login)
+	configRepo := repository.NewConfigurationRepository(db)
+	configService := services.NewConfigurationService(configRepo)
+
+	authConfigController := controllers.NewAuthController(userService, configService)
+
+	g.POST("/register", authConfigController.Register)
+	g.POST("/login", authConfigController.Login)
+	g.POST("/config", authConfigController.NewAuthConfig)
 
 }

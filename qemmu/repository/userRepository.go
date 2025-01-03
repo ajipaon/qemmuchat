@@ -8,7 +8,7 @@ import (
 
 type UserRepository interface {
 	GetAll() ([]models.Users, error)
-	GetByID(id uint) (*models.Users, error)
+	GetByID(id string) (*models.Users, error)
 	Create(user *models.Users) error
 	Update(user *models.Users) error
 	Delete(id uint) error
@@ -30,7 +30,7 @@ func (r *userRepository) GetAll() ([]models.Users, error) {
 	return users, err
 }
 
-func (r *userRepository) GetByID(id uint) (*models.Users, error) {
+func (r *userRepository) GetByID(id string) (*models.Users, error) {
 	var user models.Users
 	err := r.db.First(&user, id).Error
 	return &user, err
