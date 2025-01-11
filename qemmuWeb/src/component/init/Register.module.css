@@ -1,0 +1,12 @@
+.title {
+    font-family: Greycliff CF,
+    var(--mantine-font-family), serif;
+    font-weight: 900;
+}
+.parent-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f8f9fa; /* Warna latar opsional */
+}

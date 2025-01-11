@@ -1,0 +1,20 @@
+.header {
+    padding-left: var(--mantine-spacing-lg);
+    padding-right: var(--mantine-spacing-lg);
+    color: lightdark(var(--mantine-color-white), var(--mantine-color-dark));
+    gap: var(--mantine-spacing-md);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.footer {
+    padding: 1;
+
+}
+
+.nativeselect {
+  width: 30%;
+  padding: var(--mantine-spacing-xs);
+}
