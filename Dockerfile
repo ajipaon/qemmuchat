@@ -5,6 +5,10 @@ COPY ./qemmuWeb/package.json ./qemmuWeb/bun.lockb .
 RUN bun install --frozen-lockfile
 
 COPY ./qemmuWeb .
+
+# Debug: cecking list copy file qemmuWeb
+RUN ls -la
+
 RUN bun run build
 
 
