@@ -20,6 +20,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"],
+  "include": ["qemmuWeb"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
