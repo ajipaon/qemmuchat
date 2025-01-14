@@ -24,6 +24,64 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/api/v1/activity/heartbeat": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "update user Activiy",
+                "tags": [
+                    "activity"
+                ],
+                "summary": "update user Activiy",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Platform of the activity (e.g., web, app)",
+                        "name": "platform",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Page name or section the user is interacting with",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "page Id like chatId or chat group",
+                        "name": "id",
+                        "in": "query"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/api/v1/activity/test": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "update user Activiy",
+                "tags": [
+                    "activity"
+                ],
+                "summary": "update user Activiy",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Platform of the activity (e.g., web, app)",
+                        "name": "platform",
+                        "in": "query"
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/api/v1/config": {
             "get": {
                 "security": [

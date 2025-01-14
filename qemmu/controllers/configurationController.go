@@ -13,10 +13,6 @@ type ConfigurationController struct {
 	configService services.ConfigurationService
 }
 
-func NewConfigurationController(configService services.ConfigurationService) *ConfigurationController {
-	return &ConfigurationController{configService}
-}
-
 // NewConfig godoc
 // @Summary Create new Config
 // @Description Create new Config

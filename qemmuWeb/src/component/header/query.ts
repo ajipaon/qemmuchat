@@ -6,6 +6,7 @@ import {
 } from "@tanstack/react-query";
 import { apiClient } from "../../config/clientApiConfig";
 import { newOrganization } from "./type";
+import { activityData } from "../../config/globalStore/activityData";
 
 export const useGetUserDetail = (): UseQueryResult<
   ResponseType | undefined,
@@ -43,6 +44,18 @@ export const useChangeOrganization = () => {
       if (!organizationId) return;
       return await apiClient(
         `/api/v1/user/change/organization/${organizationId}`
+      );
+    },
+  });
+};
+
+export const useActivityHeartBeat = () => {
+  return useMutation<void, Error, activityData>({
+    mutationKey: ["heart_beat"],
+    mutationFn: async (activityData) => {
+      if (!activityData) return;
+      return await apiClient(
+        `/api/v1/activity/heartbeat?platform=${activityData.platform}&page${activityData.pageActivity}&id=${activityData.pageActivityId}`
       );
     },
   });

@@ -6,7 +6,7 @@ type OrganizationProps = {
   setData: (data: any[]) => void;
 };
 
-export const useOrganizationsData = create<OrganizationProps>((set) => ({
+export const useOrganizationsStore = create<OrganizationProps>((set) => ({
   data: [],
   setData: (data: any[]) => set(() => ({ data })),
 }));

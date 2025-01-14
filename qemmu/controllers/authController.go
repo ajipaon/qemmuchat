@@ -17,13 +17,6 @@ type AuthController struct {
 	configService services.ConfigurationService
 }
 
-func NewAuthController(userService services.UserService, configService services.ConfigurationService) *AuthController {
-	return &AuthController{
-		userService:   userService,
-		configService: configService,
-	}
-}
-
 // Register godoc
 // @Summary Register a new user
 // @Description Register a new user with the given details

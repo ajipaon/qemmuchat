@@ -5,20 +5,11 @@ import (
 	"qemmuChat/qemmu/repository"
 )
 
-type ConfigurationService interface {
-	CreateConfig(config *models.ConfigurationRequest) error
-	GetConfig(name models.ConfigName) (*models.Config, error)
-}
-
-type configurationService struct {
+type ConfigurationService struct {
 	configRepository repository.ConfigurationRepository
 }
 
-func NewConfigurationService(configRepository repository.ConfigurationRepository) ConfigurationService {
-	return &configurationService{configRepository}
-}
-
-func (s *configurationService) CreateConfig(configRequest *models.ConfigurationRequest) error {
+func (s *ConfigurationService) CreateConfig(configRequest *models.ConfigurationRequest) error {
 
 	config := &models.Config{
 		Name: configRequest.Name,
@@ -35,7 +26,7 @@ func (s *configurationService) CreateConfig(configRequest *models.ConfigurationR
 
 }
 
-func (s *configurationService) GetConfig(name models.ConfigName) (*models.Config, error) {
+func (s *ConfigurationService) GetConfig(name models.ConfigName) (*models.Config, error) {
 
 	existingConfig, err := s.configRepository.GetConfigByname(name)
 	if err != nil {

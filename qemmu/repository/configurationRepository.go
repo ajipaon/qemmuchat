@@ -2,31 +2,23 @@ package repository
 
 import (
 	"errors"
+	"qemmuChat/qemmu/config"
 	"qemmuChat/qemmu/models"
 
 	"gorm.io/gorm"
 )
 
-type ConfigurationRepository interface {
-	Create(config *models.Config) error
-	GetConfigByname(config models.ConfigName) (*models.Config, error)
+type ConfigurationRepository struct {
+	db config.Config
 }
 
-type configurationRepository struct {
-	db *gorm.DB
+func (r *ConfigurationRepository) Create(config *models.Config) error {
+	return r.db.GetDb().Create(config).Error
 }
 
-func NewConfigurationRepository(db *gorm.DB) ConfigurationRepository {
-	return &configurationRepository{db}
-}
-
-func (r *configurationRepository) Create(config *models.Config) error {
-	return r.db.Create(config).Error
-}
-
-func (r *configurationRepository) GetConfigByname(configName models.ConfigName) (*models.Config, error) {
+func (r *ConfigurationRepository) GetConfigByname(configName models.ConfigName) (*models.Config, error) {
 	var config models.Config
-	err := r.db.Where("name = ?", configName).First(&config).Error
+	err := r.db.GetDb().Where("name = ?", configName).First(&config).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, nil

@@ -35,17 +35,15 @@ func (b *Broker) Unsubscribe(id string) {
 	}
 }
 
-func (b *Broker) Publish(message string) {
+func (b *Broker) Publish(id, message string) {
 	b.mu.RLock()
 	defer b.mu.RUnlock()
 
-	for id, ch := range b.subscribers {
-		go func(subID string, subscriberCh chan string) {
-			select {
-			case subscriberCh <- message:
-			default:
-				fmt.Printf("Subscriber %s is not ready to receive messages\n", subID)
-			}
-		}(id, ch)
+	if ch, ok := b.subscribers[id]; ok {
+		select {
+		case ch <- message:
+		default:
+			fmt.Printf("Subscriber %s is not ready to receive messages\n", id)
+		}
 	}
 }
