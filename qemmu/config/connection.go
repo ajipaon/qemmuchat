@@ -10,38 +10,44 @@ import (
 	"gorm.io/gorm"
 )
 
-type Config struct{}
+type Config struct {
+	DB *gorm.DB
+}
 
-func (Config Config) GetDb() *gorm.DB {
+func (c *Config) GetDb() *gorm.DB {
 
-	dsn := fmt.Sprintf(
-		"host=%s user=%s password=%s port=%s sslmode=disable TimeZone=%s",
-		os.Getenv("POSTGRES_HOST"),
-		os.Getenv("POSTGRES_USER"),
-		os.Getenv("POSTGRES_PASS"),
-		os.Getenv("POSTGRES_PORT"),
-		os.Getenv("POSTGRES_TIME"),
-	)
+	if c.DB == nil {
+		dsn := fmt.Sprintf(
+			"host=%s user=%s password=%s port=%s sslmode=disable TimeZone=%s",
+			os.Getenv("POSTGRES_HOST"),
+			os.Getenv("POSTGRES_USER"),
+			os.Getenv("POSTGRES_PASS"),
+			os.Getenv("POSTGRES_PORT"),
+			os.Getenv("POSTGRES_TIME"),
+		)
 
-	DB, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
-	if err != nil {
-		log.Fatalf("failed to connect to database: %v", err)
+		db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+		if err != nil {
+			log.Fatalf("failed to connect to database: %v", err)
+		}
+		log.Println("Database connected successfully!")
+		if err := db.AutoMigrate(&models.User{}); err != nil {
+			log.Fatalf("failed to migrate database: %v", err)
+		}
+		if err := db.AutoMigrate(&models.Config{}); err != nil {
+			log.Fatalf("failed to migrate database: %v", err)
+		}
+		if err := db.AutoMigrate(&models.Organization{}); err != nil {
+			log.Fatalf("failed to migrate database: %v", err)
+		}
+		if err := db.AutoMigrate(&models.Activity{}); err != nil {
+			log.Fatalf("failed to migrate database: %v", err)
+		}
+		if err := db.AutoMigrate(&models.UserOrganization{}); err != nil {
+			log.Fatalf("failed to migrate database: %v", err)
+		}
+		c.DB = db
+		fmt.Print("bikin koneksi")
 	}
-	log.Println("Database connected successfully!")
-	if err := DB.AutoMigrate(&models.User{}); err != nil {
-		log.Fatalf("failed to migrate database: %v", err)
-	}
-	if err := DB.AutoMigrate(&models.Config{}); err != nil {
-		log.Fatalf("failed to migrate database: %v", err)
-	}
-	if err := DB.AutoMigrate(&models.Organization{}); err != nil {
-		log.Fatalf("failed to migrate database: %v", err)
-	}
-	if err := DB.AutoMigrate(&models.Activity{}); err != nil {
-		log.Fatalf("failed to migrate database: %v", err)
-	}
-	if err := DB.AutoMigrate(&models.UserOrganization{}); err != nil {
-		log.Fatalf("failed to migrate database: %v", err)
-	}
-	return DB
+	return c.DB
 }
