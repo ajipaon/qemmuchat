@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"qemmuChat/qemmu/config"
 	"qemmuChat/qemmu/module/webpush"
 	"qemmuChat/qemmu/routes"
 
@@ -40,13 +39,9 @@ func main() {
 
 	if err == nil {
 		vapidKey, _ := webpush.InitVapidKeys(dblite)
-		fmt.Println(vapidKey)
 		os.Setenv("VAPID_PUBLIC_KEY", vapidKey.PublicKey)
 		os.Setenv("VAPID_PRIVATE_KEY", vapidKey.PrivateKey)
 	}
-
-	config.Config.GetDb(config.Config{})
-
 	e := routes.Routing(dblite)
 
 	err = e.Start(fmt.Sprintf(":%d", 8080))

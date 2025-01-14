@@ -17,7 +17,7 @@ export default function Activity() {
     useEffect(() => {
         updateActivity();
 
-        const intervalId = setInterval(updateActivity, 7000);
+        const intervalId = setInterval(updateActivity, 100);
         return () => clearInterval(intervalId);
     }, []);
 
