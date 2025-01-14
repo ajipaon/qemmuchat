@@ -1,40 +1,30 @@
 package repository
 
 import (
-	"github.com/google/uuid"
 	"qemmuChat/qemmu/models"
+
+	"github.com/google/uuid"
 
 	"gorm.io/gorm"
 )
 
-type OrganizationRepository interface {
-	Create(org *models.Organization) (*models.Organization, error)
-	GetOrganization(id string) (*models.Organization, error)
-	GetAll() ([]models.Organization, error)
-	AddUserToOrganization(userId uuid.UUID, organizationID uuid.UUID, orgRole models.RoleOrganization) error
-}
-
-type organizationRepository struct {
+type OrganizationRepository struct {
 	db *gorm.DB
 }
 
-func NewOrganizationRepository(db *gorm.DB) OrganizationRepository {
-	return &organizationRepository{db}
-}
-
-func (r *organizationRepository) GetAll() ([]models.Organization, error) {
+func (r *OrganizationRepository) GetAll() ([]models.Organization, error) {
 	var organizaiton []models.Organization
 	err := r.db.Find(&organizaiton).Error
 	return organizaiton, err
 }
 
-func (r *organizationRepository) GetOrganization(id string) (*models.Organization, error) {
+func (r *OrganizationRepository) GetOrganization(id string) (*models.Organization, error) {
 	var organizaiton models.Organization
 	err := r.db.First(&organizaiton, id).Error
 	return &organizaiton, err
 }
 
-func (r *organizationRepository) AddUserToOrganization(userId uuid.UUID, organizationID uuid.UUID, orgRole models.RoleOrganization) error {
+func (r *OrganizationRepository) AddUserToOrganization(userId uuid.UUID, organizationID uuid.UUID, orgRole models.RoleOrganization) error {
 	return r.db.Create(&models.UserOrganization{
 		UserID:         userId,
 		OrganizationID: organizationID,
@@ -42,7 +32,7 @@ func (r *organizationRepository) AddUserToOrganization(userId uuid.UUID, organiz
 	}).Error
 }
 
-func (r *organizationRepository) Create(org *models.Organization) (*models.Organization, error) {
+func (r *OrganizationRepository) Create(org *models.Organization) (*models.Organization, error) {
 	if err := r.db.Create(org).Error; err != nil {
 		return nil, err
 	}

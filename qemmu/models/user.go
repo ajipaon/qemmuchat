@@ -38,7 +38,7 @@ type User struct {
 	DeletedAt        gorm.DeletedAt  `gorm:"index"`
 	Organizations    []*Organization `gorm:"many2many:user_organizations"`
 	LastOrganization string          `json:"last_organization" gorm:"default:null"`
-	Activity         Activity        `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	Activity         Activity        `gorm:"foreignKey:UserID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE" json:"activity"`
 }
 
 type RegisterUserRequest struct {

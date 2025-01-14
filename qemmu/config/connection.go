@@ -4,15 +4,15 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"qemmuChat/qemmu/models"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
-var DB *gorm.DB
-var dbName = "public"
+type Config struct{}
 
-func InitDB() *gorm.DB {
+func (Config Config) GetDb() *gorm.DB {
 
 	dsn := fmt.Sprintf(
 		"host=%s user=%s password=%s port=%s sslmode=disable TimeZone=%s",
@@ -23,11 +23,25 @@ func InitDB() *gorm.DB {
 		os.Getenv("POSTGRES_TIME"),
 	)
 
-	var err error
-	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	DB, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatalf("failed to connect to database: %v", err)
 	}
 	log.Println("Database connected successfully!")
+	if err := DB.AutoMigrate(&models.User{}); err != nil {
+		log.Fatalf("failed to migrate database: %v", err)
+	}
+	if err := DB.AutoMigrate(&models.Config{}); err != nil {
+		log.Fatalf("failed to migrate database: %v", err)
+	}
+	if err := DB.AutoMigrate(&models.Organization{}); err != nil {
+		log.Fatalf("failed to migrate database: %v", err)
+	}
+	if err := DB.AutoMigrate(&models.Activity{}); err != nil {
+		log.Fatalf("failed to migrate database: %v", err)
+	}
+	if err := DB.AutoMigrate(&models.UserOrganization{}); err != nil {
+		log.Fatalf("failed to migrate database: %v", err)
+	}
 	return DB
 }

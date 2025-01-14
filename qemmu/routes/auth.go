@@ -2,25 +2,19 @@ package routes
 
 import (
 	"qemmuChat/qemmu/controllers"
-	"qemmuChat/qemmu/repository"
-	"qemmuChat/qemmu/services"
 
 	"github.com/labstack/echo/v4"
-	"gorm.io/gorm"
 )
 
-func AuthRoutes(g *echo.Group, db *gorm.DB) {
-	userRepo := repository.NewUserRepository(db)
-	userService := services.NewUserService(userRepo)
+type RoutingAuth struct {
+	AuthController controllers.AuthController
+}
 
-	configRepo := repository.NewConfigurationRepository(db)
-	configService := services.NewConfigurationService(configRepo)
+func RegisterAuthRoute(g *echo.Group, s RoutingAuth) {
 
-	authConfigController := controllers.NewAuthController(userService, configService)
-
-	g.POST("/register", authConfigController.Register)
-	g.POST("/login", authConfigController.Login)
-	g.POST("/config", authConfigController.NewAuthConfig)
-	g.GET("/config", authConfigController.GetConfig)
+	g.POST("/register", s.AuthController.Register)
+	g.POST("/login", s.AuthController.Login)
+	g.POST("/config", s.AuthController.NewAuthConfig)
+	g.GET("/config", s.AuthController.GetConfig)
 
 }

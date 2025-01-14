@@ -12,7 +12,7 @@ vite.config.d.ts
 tsconfig.tsbuildinfo
 
 node_modules
-dist
+dist/*
 dist-ssr
 *.local
 

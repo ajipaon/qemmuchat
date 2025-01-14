@@ -1,3 +1,3 @@
 #!/bin/sh
 
-bun run dev & air && fg
+cd qemmuWeb && bun run dev & air && fg

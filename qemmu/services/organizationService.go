@@ -1,25 +1,17 @@
 package services
 
 import (
-	"github.com/google/uuid"
 	"qemmuChat/qemmu/models"
 	"qemmuChat/qemmu/repository"
+
+	"github.com/google/uuid"
 )
 
-type OrganizationService interface {
-	CreateOrganization(organization models.CreateNewOrganization) (*models.Organization, error)
-	AddUserToOrganization(userId uuid.UUID, organizationID uuid.UUID, orgRole models.RoleOrganization) (*models.Organization, error)
-}
-
-type organizationService struct {
+type OrganizationService struct {
 	organizationRepo repository.OrganizationRepository
 }
 
-func NewOrganizationService(userRepo repository.OrganizationRepository) OrganizationService {
-	return &organizationService{userRepo}
-}
-
-func (s *organizationService) CreateOrganization(organization models.CreateNewOrganization) (*models.Organization, error) {
+func (s *OrganizationService) CreateOrganization(organization models.CreateNewOrganization) (*models.Organization, error) {
 
 	newOrg := &models.Organization{
 		Name: string(organization.Name),
@@ -31,7 +23,7 @@ func (s *organizationService) CreateOrganization(organization models.CreateNewOr
 	}
 	return resultNewOrg, nil
 }
-func (s *organizationService) AddUserToOrganization(userId uuid.UUID, organizationID uuid.UUID, orgRole models.RoleOrganization) (*models.Organization, error) {
+func (s *OrganizationService) AddUserToOrganization(userId uuid.UUID, organizationID uuid.UUID, orgRole models.RoleOrganization) (*models.Organization, error) {
 
 	err := s.organizationRepo.AddUserToOrganization(userId, organizationID, orgRole)
 

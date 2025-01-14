@@ -1,20 +1,17 @@
 package controllers
 
 import (
-	"github.com/google/uuid"
-	"github.com/labstack/echo/v4"
 	"net/http"
 	"qemmuChat/qemmu/models"
 	"qemmuChat/qemmu/module"
 	"qemmuChat/qemmu/services"
+
+	"github.com/google/uuid"
+	"github.com/labstack/echo/v4"
 )
 
 type OrganizationController struct {
 	organizationService services.OrganizationService
-}
-
-func NewOrganizationController(organizationService services.OrganizationService) *OrganizationController {
-	return &OrganizationController{organizationService}
 }
 
 // Postorganization godoc
@@ -48,8 +45,6 @@ func (h *OrganizationController) CreateOrganization(c echo.Context) error {
 
 	userUuid := uuid.MustParse(user.Id)
 	_, err = h.organizationService.AddUserToOrganization(userUuid, newOrganizaton.ID, models.AdminOrgRole)
-	broker := models.NewBroker()
-	broker.Publish("dssffdfs")
 	if err != nil {
 		return err
 	}

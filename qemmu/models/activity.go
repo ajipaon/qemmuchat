@@ -1,17 +1,35 @@
 package models
 
 import (
+	"time"
+
 	"github.com/google/uuid"
 	"gorm.io/gorm"
-	"time"
+)
+
+type ActivityPlatformName string
+
+const (
+	WebPlatform ActivityPlatformName = "WEB"
+	AppPlatform ActivityPlatformName = "APP"
 )
 
 type Activity struct {
 	gorm.Model
-	UserID              uuid.UUID `json:"user_id"`
+	UserID              uuid.UUID `gorm:"type:uuid;not null" json:"user_id"`
 	LatCurrentActivity  time.Time `json:"last_current_activity"`
 	LastActivityNetwork time.Time `json:"last_activity_network"`
 	LastActivityApp     time.Time `json:"last_activity_app"`
+	LastActivityWeb     time.Time `json:"last_activity_web"`
+	LastActivityId      string    `json:"last_activity_id"`
+	LastActivityPage    string    `json:"last_activity_page" gorm:"default:DASHBOARD"`
+}
+
+type ActivityUpdateRequst struct {
+	UserID              uuid.UUID
+	LastActivityPage    string
+	LatActivityPlatform ActivityPlatformName
+	LastActivityId      string
 }
 
 type ActivityResponse struct {
@@ -19,8 +37,10 @@ type ActivityResponse struct {
 	CreatedAt           time.Time   `json:"CreatedAt"`
 	UpdatedAt           time.Time   `json:"UpdatedAt"`
 	DeletedAt           interface{} `json:"DeletedAt"`
-	UserId              uuid.UUID   `json:"user_id"`
 	LastCurrentActivity time.Time   `json:"last_current_activity"`
 	LastActivityNetwork time.Time   `json:"last_activity_network"`
 	LastActivityApp     time.Time   `json:"last_activity_app"`
+	LastActivityWeb     time.Time   `json:"last_activity_web"`
+	LastActivityId      string      `json:"last_activity_id"`
+	LastActivityPage    string      `json:"last_activity_page"`
 }

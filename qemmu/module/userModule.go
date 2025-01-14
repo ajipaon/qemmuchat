@@ -40,10 +40,11 @@ func ConvertUsersResponse(users []models.User) []models.UserResponse {
 				CreatedAt:           user.Activity.CreatedAt,
 				UpdatedAt:           user.Activity.UpdatedAt,
 				DeletedAt:           user.Activity.DeletedAt,
-				UserId:              user.Activity.UserID,
 				LastCurrentActivity: user.Activity.LatCurrentActivity,
 				LastActivityNetwork: user.Activity.LastActivityNetwork,
 				LastActivityApp:     user.Activity.LastActivityApp,
+				LastActivityWeb:     user.Activity.LastActivityWeb,
+				LastActivityId:      user.Activity.LastActivityId,
 			},
 		})
 	}

@@ -2,22 +2,16 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"qemmuChat/qemmu/config"
-	"qemmuChat/qemmu/lib"
-	"qemmuChat/qemmu/module"
+	"qemmuChat/qemmu/module/webpush"
 	"qemmuChat/qemmu/routes"
-	v1 "qemmuChat/qemmu/routes/v1"
-	"qemmuChat/qemmuWeb"
 
-	"net/http"
 	_ "qemmuChat/docs"
 
-	"github.com/golang-jwt/jwt/v5"
-	echojwt "github.com/labstack/echo-jwt/v4"
-	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
-	echoSwagger "github.com/swaggo/echo-swagger"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
 )
 
 // @title Swagger QemmuChat API
@@ -37,45 +31,25 @@ import (
 // @name Authorization
 func main() {
 
-	DB := config.Init()
-
-	e := echo.New()
-
-	qemmuWeb.RegisterHandlers(e)
-
-	e.GET("/swagger/*", echoSwagger.WrapHandler)
-	api := e.Group("/api")
-
-	routes.AuthRoutes(e.Group("/auth"), DB)
-
-	api.Use(middleware.Logger())
-	e.Use(middleware.Recover())
-	e.Validator = lib.NewValidator()
-
-	api.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		ExposeHeaders: []string{"Authorization"},
-	}))
-
-	e.GET("/ws", module.UseNet)
-
-	config := echojwt.Config{
-		NewClaimsFunc: func(c echo.Context) jwt.Claims {
-			return new(module.JwtCustomClaims)
-		},
-		SigningKey: []byte(os.Getenv("SECRET")),
+	dblite, err := gorm.Open(sqlite.Open("vapidkeys.db"), &gorm.Config{})
+	if err != nil {
+		log.Fatalf("Failed to initialize database: %v", err)
 	}
-	api.Use(echojwt.WithConfig(config))
-	//v1
-	v1.UserRoutes(api.Group("/v1/user"), DB)
-	v1.ConfigRoutes(api.Group("/v1/config"), DB)
-	v1.OrganizationRoutes(api.Group("/v1/organization"), DB)
-	v1.NotificationRoute(api.Group("/v1/notification"))
 
-	api.GET("/message", func(c echo.Context) error {
-		return c.JSON(http.StatusOK, map[string]string{"message": "Hello, QEMMU"})
-	})
+	err = webpush.AutoMigrate(dblite)
 
-	err := e.Start(fmt.Sprintf(":%d", 8080))
+	if err == nil {
+		vapidKey, _ := webpush.InitVapidKeys(dblite)
+		fmt.Println(vapidKey)
+		os.Setenv("VAPID_PUBLIC_KEY", vapidKey.PublicKey)
+		os.Setenv("VAPID_PRIVATE_KEY", vapidKey.PrivateKey)
+	}
+
+	config.Config.GetDb(config.Config{})
+
+	e := routes.Routing(dblite)
+
+	err = e.Start(fmt.Sprintf(":%d", 8080))
 	if err != nil {
 		return
 	}

@@ -51,9 +51,10 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASS=secretPassword
       - POSTGRES_PORT=5432
-      - POSTGRES_DB=qemmu_chat
       - POSTGRES_TIME=Asia/Jakarta
       - SECRET=authSecret
+    volumes:
+      - ./data:/build/data
     ports:
       - "8080:8080"
     depends_on:
@@ -68,7 +69,6 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=secretPassword
-      - POSTGRES_DB=qemmu_chat
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:

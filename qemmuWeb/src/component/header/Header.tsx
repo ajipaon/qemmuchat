@@ -1,14 +1,16 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import React from "react";
 import { Avatar, Button, Menu, Select } from "@mantine/core";
 import classes from "./Header.module.css";
 import { useChangeOrganization, useGetUserDetail } from "./query";
 import { useEffect, useState } from "react";
 import { useLocalStorage } from "@mantine/hooks";
-import { useOrganizationsData } from "../../config/globalStore/organizatonsData";
+import { useOrganizationsStore } from "../../config/globalStore/organizatonsData";
 import { newOrganizationModal } from "./type";
 import { deCodeJwt } from "../../config/jwtClient";
 import { notifications } from "@mantine/notifications";
 import ModalNewOrganization from "./ModalNewOrganization";
+import Activity from "./Activity";
+import NotificationEvent from "./NotivicationEvent";
 interface Props {
     burger?: React.ReactNode;
 }
@@ -20,7 +22,7 @@ export default function Header({ burger }: Props) {
     const [dataOrganization, setDataOrganization] = useState([])
     const [searchValue, setSearchValue] = useState('');
     const { data }: { data: any } = useGetUserDetail()
-    const { setData } = useOrganizationsData()
+    const { setData } = useOrganizationsStore()
     const [value] = useLocalStorage<string>({
         key: "token",
 
@@ -105,6 +107,8 @@ export default function Header({ burger }: Props) {
                 </div>
             </header>
             <ModalNewOrganization />
+            {/* <Activity /> */}
+            <NotificationEvent />
         </>
     );
 }

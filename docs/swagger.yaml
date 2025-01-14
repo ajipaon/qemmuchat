@@ -65,6 +65,42 @@ info:
   title: Swagger QemmuChat API
   version: "1.0"
 paths:
+  /api/v1/activity/heartbeat:
+    get:
+      description: update user Activiy
+      parameters:
+      - description: Platform of the activity (e.g., web, app)
+        in: query
+        name: platform
+        type: string
+      - description: Page name or section the user is interacting with
+        in: query
+        name: page
+        type: string
+      - description: page Id like chatId or chat group
+        in: query
+        name: id
+        type: string
+      responses: {}
+      security:
+      - BearerAuth: []
+      summary: update user Activiy
+      tags:
+      - activity
+  /api/v1/activity/test:
+    get:
+      description: update user Activiy
+      parameters:
+      - description: Platform of the activity (e.g., web, app)
+        in: query
+        name: platform
+        type: string
+      responses: {}
+      security:
+      - BearerAuth: []
+      summary: update user Activiy
+      tags:
+      - activity
   /api/v1/config:
     get:
       description: Retrieve configuration based on the provided name parameter.
