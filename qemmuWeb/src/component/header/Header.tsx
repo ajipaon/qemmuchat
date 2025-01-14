@@ -107,7 +107,7 @@ export default function Header({ burger }: Props) {
                 </div>
             </header>
             <ModalNewOrganization />
-            {/* <Activity /> */}
+            <Activity />
             <NotificationEvent />
         </>
     );

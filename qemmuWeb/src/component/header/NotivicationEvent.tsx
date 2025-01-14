@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import CustomEventSource from '../../config/customEvent';
 import { useLocalStorage } from '@mantine/hooks';
 import { deCodeJwt } from '../../config/jwtClient';
 
 export default function NotificationEvent() {
-  const [events, setEvents] = useState<string[]>([]);
+  // const [events, setEvents] = useState<string[]>([]);
   const [value] = useLocalStorage<string>({
     key: "token",
 
@@ -19,7 +19,7 @@ export default function NotificationEvent() {
 
       eventSource.connect(
         (data) => {
-          setEvents((prevEvents) => [...prevEvents, data]);
+          // setEvents((prevEvents) => [...prevEvents, data]);
           console.log(data)
         },
         (error) => {
