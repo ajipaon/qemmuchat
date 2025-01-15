@@ -2,6 +2,7 @@ package webpush
 
 import (
 	"fmt"
+	"qemmuChat/qemmu/models"
 
 	"github.com/SherClockHolmes/webpush-go"
 	"gorm.io/gorm"
@@ -14,7 +15,7 @@ type VapidKeys struct {
 }
 
 func AutoMigrate(db *gorm.DB) error {
-	return db.AutoMigrate(&VapidKeys{})
+	return db.AutoMigrate(&VapidKeys{}, &models.SubscriptionNotification{})
 }
 
 func getVapidKeys(db *gorm.DB) (*VapidKeys, error) {

@@ -1,5 +1,5 @@
 import React from "react";
-import { Avatar, Button, Menu, Select } from "@mantine/core";
+import { Avatar, Button, Menu, Select, Text } from "@mantine/core";
 import classes from "./Header.module.css";
 import { useChangeOrganization, useGetUserDetail } from "./query";
 import { useEffect, useState } from "react";
@@ -9,8 +9,9 @@ import { newOrganizationModal } from "./type";
 import { deCodeJwt } from "../../config/jwtClient";
 import { notifications } from "@mantine/notifications";
 import ModalNewOrganization from "./ModalNewOrganization";
-import Activity from "./Activity";
 import NotificationEvent from "./NotivicationEvent";
+import { modals } from '@mantine/modals';
+import unsubscribePush from "./unsbNotification";
 interface Props {
     burger?: React.ReactNode;
 }
@@ -21,14 +22,20 @@ export default function Header({ burger }: Props) {
     const [lastOrganization, setLastOrganization] = useState<any>(null)
     const [dataOrganization, setDataOrganization] = useState([])
     const [searchValue, setSearchValue] = useState('');
+    const [user, seetUser] = useState<any>(null)
     const { data }: { data: any } = useGetUserDetail()
     const { setData } = useOrganizationsStore()
     const [value] = useLocalStorage<string>({
         key: "token",
+        defaultValue: ""
 
     });
     const { onOpen } = newOrganizationModal()
     const mutateChengeOrganization = useChangeOrganization()
+    const [, setDataUser] = useLocalStorage({
+        key: 'user',
+        defaultValue: "",
+    })
 
     useEffect(() => {
         if (data?.user_organizations) {
@@ -39,6 +46,8 @@ export default function Header({ burger }: Props) {
             }));
             setData(data?.user_organizations)
             const dataToken = deCodeJwt(value);
+            setDataUser(dataToken);
+            seetUser(dataToken)
             if (dataToken?.last_organization) {
                 const findData = dataOrganizarion.find(
                     (org: any) => org.value == dataToken.last_organization
@@ -65,6 +74,25 @@ export default function Header({ burger }: Props) {
         }
     }
 
+    const handleClickLogOut = async () => {
+        localStorage.removeItem("token")
+        localStorage.removeItem("user")
+        await unsubscribePush()
+        window.location.reload();
+    }
+
+    const confirmLogOut = () => modals.openConfirmModal({
+        title: 'Please confirm your action',
+        children: (
+            <Text size="sm">
+                Are you Sure?
+            </Text>
+        ),
+        labels: { confirm: 'Confirm', cancel: 'Cancel' },
+        onCancel: () => console.log('Cancel'),
+        onConfirm: () => handleClickLogOut(),
+    });
+
     return (
         <>
             <header className={classes.header}>
@@ -84,7 +112,10 @@ export default function Header({ burger }: Props) {
 
                         maxDropdownHeight={200}
                     />
-                    <Button variant="filled" onClick={onOpen}>Create Org</Button>
+                    {user?.role === "ROLE_SUPER_ADMIN" && (
+                        <Button variant="filled" onClick={onOpen}>Create Org</Button>
+                    )}
+
                 </div>
                 <div className={classes.footer}>
                     <Menu withArrow position="top" >
@@ -101,13 +132,12 @@ export default function Header({ burger }: Props) {
                         </Menu.Target>
 
                         <Menu.Dropdown>
-                            <Menu.Item>Logout</Menu.Item>
+                            <Menu.Item onClick={confirmLogOut} type="button">Logout</Menu.Item>
                         </Menu.Dropdown>
                     </Menu>
                 </div>
             </header>
             <ModalNewOrganization />
-            <Activity />
             <NotificationEvent />
         </>
     );

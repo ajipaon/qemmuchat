@@ -8,11 +8,12 @@ import {
 import { NavItem } from "../../types/navtype";
 
 export const navLinks: NavItem[] = [
-  { label: "Dashboard", icon: FaTachometerAlt, link: "DASHBOARD" },
+  { label: "Dashboard", icon: FaTachometerAlt, link: "DASHBOARD", role: [] },
   {
     label: "Data",
     icon: FaUsers,
     initiallyOpened: false,
+    role: ["ROLE_SUPER_ADMIN", "ROLE_ADMIN"],
     links: [
       {
         label: "Organization",
@@ -32,6 +33,7 @@ export const navLinks: NavItem[] = [
     label: "Chat",
     icon: FaMoneyBillAlt,
     initiallyOpened: false,
+    role: ["ROLE_SUPER_ADMIN", "ROLE_ADMIN", "ROLE_USER"],
     links: [
       {
         label: "chat",
@@ -47,6 +49,7 @@ export const navLinks: NavItem[] = [
     label: "Setting",
     icon: FaCogs,
     initiallyOpened: false,
+    role: ["ROLE_SUPER_ADMIN"],
     links: [
       {
         label: "Setting",
@@ -58,6 +61,7 @@ export const navLinks: NavItem[] = [
     label: "Sample",
     icon: FaSmile,
     initiallyOpened: false,
+    role: ["ROLE_SUPER_ADMIN", "ROLE_ADMIN", "ROLE_USER"],
     links: [
       {
         label: "Landing",

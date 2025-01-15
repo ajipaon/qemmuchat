@@ -1,31 +1,30 @@
 package repository
 
 import (
+	"qemmuChat/qemmu/config"
 	"qemmuChat/qemmu/models"
 
 	"github.com/google/uuid"
-
-	"gorm.io/gorm"
 )
 
 type OrganizationRepository struct {
-	db *gorm.DB
+	db config.Config
 }
 
 func (r *OrganizationRepository) GetAll() ([]models.Organization, error) {
 	var organizaiton []models.Organization
-	err := r.db.Find(&organizaiton).Error
+	err := r.db.GetDb().Find(&organizaiton).Error
 	return organizaiton, err
 }
 
 func (r *OrganizationRepository) GetOrganization(id string) (*models.Organization, error) {
 	var organizaiton models.Organization
-	err := r.db.First(&organizaiton, id).Error
+	err := r.db.GetDb().First(&organizaiton, id).Error
 	return &organizaiton, err
 }
 
 func (r *OrganizationRepository) AddUserToOrganization(userId uuid.UUID, organizationID uuid.UUID, orgRole models.RoleOrganization) error {
-	return r.db.Create(&models.UserOrganization{
+	return r.db.GetDb().Create(&models.UserOrganization{
 		UserID:         userId,
 		OrganizationID: organizationID,
 		RoleOrg:        orgRole,
@@ -33,7 +32,7 @@ func (r *OrganizationRepository) AddUserToOrganization(userId uuid.UUID, organiz
 }
 
 func (r *OrganizationRepository) Create(org *models.Organization) (*models.Organization, error) {
-	if err := r.db.Create(org).Error; err != nil {
+	if err := r.db.GetDb().Create(org).Error; err != nil {
 		return nil, err
 	}
 	return org, nil
