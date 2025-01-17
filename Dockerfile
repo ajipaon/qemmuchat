@@ -25,7 +25,7 @@ COPY . .
 
 COPY --from=build-frontend /build/dist ./qemmuWeb/dist
 
-RUN CGO_ENABLED=0 ENV=prod go build -buildvcs=false -o ./bin/go .
+RUN CGO_ENABLED=1 GOOS=linux GOARCH=amd64 ENV=prod go build -buildvcs=false -o ./bin/go .
 
 FROM alpine:3.14
 
