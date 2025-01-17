@@ -9,7 +9,7 @@ import { newOrganizationModal } from "./type";
 import { deCodeJwt } from "../../config/jwtClient";
 import { notifications } from "@mantine/notifications";
 import ModalNewOrganization from "./ModalNewOrganization";
-import NotificationEvent from "./NotivicationEvent";
+// import NotificationEvent from "./NotivicationEvent";
 import { modals } from '@mantine/modals';
 import unsubscribePush from "./unsbNotification";
 interface Props {
