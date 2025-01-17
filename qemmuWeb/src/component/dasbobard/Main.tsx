@@ -4,6 +4,7 @@ import Organization from '../organization/Organization';
 import Admin from '../person/Admin';
 import User from '../person/User';
 import MainChat from '../message/Index';
+import { useLocalStorage } from '@mantine/hooks';
 
 const PRIMARY_COL_HEIGHT = '300px';
 const SECONDARY_COL_HEIGHT = `calc(${PRIMARY_COL_HEIGHT} / 2 - var(--mantine-spacing-md) / )`;
@@ -17,8 +18,12 @@ const statistics = [
 
 export default function MainDashboard() {
     const { componentActive } = activeComponent()
+    const [value] = useLocalStorage<string>({
+        key: "user",
 
-    if (componentActive === "DASHBOARD") {
+    }) as any
+
+    if (componentActive === "DASHBOARD" && value?.role != 'ROLE_USER') {
         return (
             <Container style={{ padding: '0px', width: '100%', margin: 0 }}>
                 <SimpleGrid cols={2} spacing="md">

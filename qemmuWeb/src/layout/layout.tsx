@@ -18,6 +18,7 @@ import { Notifications } from '@mantine/notifications';
 import { theme } from '../theme';
 import RouterComponent from '../routes';
 import Dashboard from '../component/dasbobard';
+import { ModalsProvider } from '@mantine/modals';
 
 export default function Layout() {
 
@@ -34,11 +35,13 @@ export default function Layout() {
                 colorSchemeManager={localStorageColorSchemeManager({ key: 'mantine-ui-color-scheme' })}
             >
                 <Notifications position="top-right" zIndex={1000} />
-                <ColorSchemeScript
-                    defaultColorScheme="auto"
-                    localStorageKey="mantine-ui-color-scheme"
-                />
-                {!value ? <RouterComponent /> : <Dashboard />}
+                <ModalsProvider>
+                    <ColorSchemeScript
+                        defaultColorScheme="auto"
+                        localStorageKey="mantine-ui-color-scheme"
+                    />
+                    {!value ? <RouterComponent /> : <Dashboard />}
+                </ModalsProvider>
             </MantineProvider>
         </>
     );

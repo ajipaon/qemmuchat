@@ -80,6 +80,7 @@ export default function Admin({ activeComponent }: AdminProps) {
             </Table.Tr>
         );
     });
+
     return activeComponent == "ADMIN" && (
         <ScrollArea>
             <Table miw={800} verticalSpacing="sm">

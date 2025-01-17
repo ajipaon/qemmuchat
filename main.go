@@ -30,7 +30,7 @@ import (
 // @name Authorization
 func main() {
 
-	dblite, err := gorm.Open(sqlite.Open("vapidkeys.db"), &gorm.Config{})
+	dblite, err := gorm.Open(sqlite.Open("webpush.db"), &gorm.Config{})
 	if err != nil {
 		log.Fatalf("Failed to initialize database: %v", err)
 	}
@@ -42,8 +42,8 @@ func main() {
 		os.Setenv("VAPID_PUBLIC_KEY", vapidKey.PublicKey)
 		os.Setenv("VAPID_PRIVATE_KEY", vapidKey.PrivateKey)
 	}
+	webpush.GetInstanceWithDB(dblite).RegisterListeners()
 	e := routes.Routing(dblite)
-
 	err = e.Start(fmt.Sprintf(":%d", 8080))
 	if err != nil {
 		return

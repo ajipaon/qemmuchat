@@ -27,9 +27,9 @@ func Routing(dblite *gorm.DB) *echo.Echo {
 	controllersAuth := RoutingAuth{
 		AuthController: controllers.AuthController{},
 	}
-	// router register url unauthorize
+	// router register url unauthenticated
 	RegisterAuthRoute(e.Group("/auth"), controllersAuth)
-	NotificationRoute(e.Group("/v1/notification"), dblite)
+	NotificationRoute(e.Group("/notification"), dblite)
 
 	api.Use(middleware.Logger())
 	e.Use(middleware.Recover())

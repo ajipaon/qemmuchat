@@ -58,7 +58,6 @@ export default function Organization({ activeComponent }: OrganizationProps) {
                 },
             ]}
             rowExpansion={{
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 content: ({ record }: { record: any }) => (
                     <Stack className={classes.details} p="xs" gap={6}>
                         <Group gap={6}>
