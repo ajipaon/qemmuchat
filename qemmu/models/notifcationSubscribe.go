@@ -15,6 +15,12 @@ type SubscriptionKeys struct {
 
 type SubscriptionPayload struct {
 	Endpoint       string           `json:"endpoint"`
-	ExpirationTime *string          `json:"expirationTime"` // Optional, bisa null
+	ExpirationTime *string          `json:"expirationTime"` // Optional
 	Keys           SubscriptionKeys `json:"keys"`
+}
+
+type NotificationWebPush struct {
+	Title string `json:"title"`
+	Body  string `json:"body"`
+	Icon  string `json:"icon"`
 }

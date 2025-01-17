@@ -10,30 +10,8 @@ self.addEventListener('push', async (event) => {
     };
 
     event.waitUntil(
-        (async () => {
-            const allClients = await self.clients.matchAll({
-                includeUncontrolled: true,
-                type: 'window',
-            });
-
-            let isPageOpen = false;
-
-            allClients.forEach((client) => {
-                if (client.url.includes(data.url)) {
-                    isPageOpen = true;
-                    client.focus();
-                }
-            });
-
-            if (!isPageOpen) {
-                self.registration.showNotification(data.title || 'Notification', options);
-            }
-        })()
+        self.registration.showNotification(data.title || 'Notification', options)
     );
-
-    // event.waitUntil(
-    //     self.registration.showNotification(data.title || 'Notification', options)
-    // );
 });
 
 self.addEventListener('notificationclick', (event) => {

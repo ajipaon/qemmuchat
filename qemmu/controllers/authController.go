@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"qemmuChat/qemmu/models"
 	"qemmuChat/qemmu/module"
+	"qemmuChat/qemmu/module/webpush"
 	"qemmuChat/qemmu/services"
 	"strings"
 
@@ -38,7 +39,16 @@ func (h *AuthController) Register(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, map[string]string{"message": err.Error()})
 	}
 
-	return c.JSON(http.StatusOK, "Register success")
+	user, err := h.userService.GetSUperAdmin()
+
+	if err == nil {
+		webPushBus := webpush.GetInstanceWithDB(nil)
+		message := fmt.Sprintf("New user register with email: %s\n", req.Email)
+		userId := user.ID.String()
+		webPushBus.WebPushNotificationPublisher(userId, "New user Register", message)
+	}
+
+	return c.JSON(http.StatusOK, map[string]string{"message": "Register success"})
 }
 
 // Login godoc

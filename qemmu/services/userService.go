@@ -2,7 +2,6 @@ package services
 
 import (
 	"errors"
-	"fmt"
 	"qemmuChat/qemmu/models"
 	"qemmuChat/qemmu/repository"
 
@@ -76,11 +75,21 @@ func (s *UserService) ChangeOrganization(userId string, organizationId string) (
 	if err != nil {
 		return nil, errors.New(err.Error())
 	}
-	fmt.Println(user)
 	user.LastOrganization = organizationId
 	err = s.userRepo.Update(user)
 	if err != nil {
 		return nil, err
+	}
+	return user, nil
+
+}
+
+func (s *UserService) GetSUperAdmin() (*models.User, error) {
+
+	user, err := s.userRepo.GetByRole("ROLE_SUPER_ADMIN")
+
+	if err != nil {
+		return nil, errors.New(err.Error())
 	}
 	return user, nil
 

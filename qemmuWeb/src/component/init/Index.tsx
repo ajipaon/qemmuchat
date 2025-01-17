@@ -26,9 +26,9 @@ export default function Index() {
         case sectionStatus.NEW_APP:
             return <NewOrganization section={currentSection} />;
         case sectionStatus.LOGIN:
-            return <Login sectionCurrent={currentSection} setCurrentSection={setCurrentSection} />;
+            return <Login setCurrentSection={setCurrentSection} />;
         case sectionStatus.REGISTER:
-            return <Register sectionCurrent={currentSection} setCurrentSection={setCurrentSection} />;
+            return <Register setCurrentSection={setCurrentSection} />;
         default:
             return <p>Unknown section</p>;
     }

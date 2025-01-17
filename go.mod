@@ -16,6 +16,7 @@ require (
 )
 
 require (
+	github.com/asaskevich/EventBus v0.0.0-20200907212545-49d423059eef // indirect
 	github.com/golang-jwt/jwt/v5 v5.2.1 // indirect
 	github.com/mattn/go-sqlite3 v1.14.22 // indirect
 )

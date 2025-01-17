@@ -101,7 +101,7 @@ export default function Header({ burger }: Props) {
                     <Select
                         className={classes.nativeselect}
                         data={dataOrganization}
-                        placeholder="Pick value"
+                        placeholder="Select Team"
                         searchable
                         value={lastOrganization?.value}
                         onChange={handleChangeValue}
@@ -122,8 +122,7 @@ export default function Header({ burger }: Props) {
                         <Menu.Target>
                             <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
                                 <Avatar
-                                    key={"mar"}
-                                    name={"name"}
+                                    name={user?.name || "z"}
                                     color="initials"
                                     allowedInitialsColors={["blue", "red"]}
                                 />
@@ -138,7 +137,7 @@ export default function Header({ burger }: Props) {
                 </div>
             </header>
             <ModalNewOrganization />
-            <NotificationEvent />
+            {/* <NotificationEvent /> */}
         </>
     );
 }

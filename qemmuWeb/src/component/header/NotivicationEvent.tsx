@@ -10,28 +10,28 @@ export default function NotificationEvent() {
 
   });
 
-  useEffect(() => {
-    if (value) {
-      const user = deCodeJwt(value)
-      const eventSource = new CustomEventSource(`/api/v1/notification/${user?.id}`, {
-        Authorization: `Bearer ${value}`,
-      });
+  // useEffect(() => {
+  //   if (value) {
+  //     const user = deCodeJwt(value)
+  //     const eventSource = new CustomEventSource(`/api/v1/notification/${user?.id}`, {
+  //       Authorization: `Bearer ${value}`,
+  //     });
 
-      eventSource.connect(
-        (data) => {
-          // setEvents((prevEvents) => [...prevEvents, data]);
-          console.log(data)
-        },
-        (error) => {
-          console.error('Error connecting to the SSE server:', error);
-        }
-      );
+  //     eventSource.connect(
+  //       (data) => {
+  //         // setEvents((prevEvents) => [...prevEvents, data]);
+  //         console.log(data)
+  //       },
+  //       (error) => {
+  //         console.error('Error connecting to the SSE server:', error);
+  //       }
+  //     );
 
-      return () => {
-        eventSource.close();
-      };
-    }
-  }, [value]);
+  //     return () => {
+  //       eventSource.close();
+  //     };
+  //   }
+  // }, [value]);
 
   return <></>
 };

@@ -89,3 +89,12 @@ func (r *UserRepository) GetUserWithOrganizations(userId string) (*models.User, 
 	}
 	return &user, nil
 }
+
+func (r *UserRepository) GetByRole(role string) (*models.User, error) {
+	var user models.User
+	err := r.db.GetDb().Where("role = ?", role).First(&user).Error
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
