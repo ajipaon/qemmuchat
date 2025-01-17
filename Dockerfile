@@ -27,7 +27,7 @@ COPY --from=build-frontend /build/dist ./qemmuWeb/dist
 
 RUN CGO_ENABLED=1 GOOS=linux GOARCH=amd64 ENV=prod go build -buildvcs=false -o ./bin/go .
 
-FROM alpine:3.14
+FROM debian:bullseye-slim
 
 COPY --from=build /build/bin/go /usr/bin/go
 
