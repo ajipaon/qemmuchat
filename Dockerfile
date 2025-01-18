@@ -27,6 +27,8 @@ COPY --from=build-frontend /build/dist ./qemmuWeb/dist
 
 RUN CGO_ENABLED=1 ENV=prod go build -buildvcs=false -o ./bin/go .
 
+RUN touch webpush.db
+
 FROM alpine:3.14
 
 

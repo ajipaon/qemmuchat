@@ -1,4 +1,4 @@
-name: Build and Push Docker Image
+name: Build and Push Docker Image staging
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - staging
 
 jobs:
-  build-and-push:
+  build-and-push-staging:
     runs-on: ubuntu-latest
 
     steps:
@@ -25,7 +25,7 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build and Push Docker Image
+      - name: Build and Push Docker Image staging
         uses: docker/build-push-action@v3
         with:
           context: .
