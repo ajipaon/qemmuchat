@@ -1,0 +1,327 @@
+basePath: /
+definitions:
+  models.ConfigName:
+    enum:
+    - APP_NAME
+    - MQTT_CONFIG
+    type: string
+    x-enum-varnames:
+    - AppName
+    - MqttConfig
+  models.ConfigurationRequest:
+    properties:
+      data:
+        minLength: 6
+        type: string
+      name:
+        $ref: '#/definitions/models.ConfigName'
+    required:
+    - data
+    - name
+    type: object
+  models.CreateNewOrganization:
+    properties:
+      name:
+        minLength: 6
+        type: string
+    required:
+    - name
+    type: object
+  models.LoginUserRequest:
+    properties:
+      email:
+        type: string
+      password:
+        minLength: 6
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  models.RegisterUserRequest:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        minLength: 6
+        type: string
+    required:
+    - email
+    - name
+    - password
+    type: object
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is a Swagger QemmuChat API
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Swagger QemmuChat API
+  version: "1.0"
+paths:
+  /api/v1/activity/heartbeat:
+    get:
+      description: update user Activiy
+      parameters:
+      - description: Platform of the activity (e.g., web, app)
+        in: query
+        name: platform
+        type: string
+      - description: Page name or section the user is interacting with
+        in: query
+        name: page
+        type: string
+      - description: page Id like chatId or chat group
+        in: query
+        name: id
+        type: string
+      responses: {}
+      security:
+      - BearerAuth: []
+      summary: update user Activiy
+      tags:
+      - activity
+  /api/v1/activity/test:
+    get:
+      description: update user Activiy
+      parameters:
+      - description: Platform of the activity (e.g., web, app)
+        in: query
+        name: platform
+        type: string
+      responses: {}
+      security:
+      - BearerAuth: []
+      summary: update user Activiy
+      tags:
+      - activity
+  /api/v1/config:
+    get:
+      description: Retrieve configuration based on the provided name parameter.
+      parameters:
+      - description: name
+        in: query
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - BearerAuth: []
+      summary: Get Config
+      tags:
+      - config
+    post:
+      consumes:
+      - application/json
+      description: Create new Config
+      parameters:
+      - description: New Config
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.ConfigurationRequest'
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - BearerAuth: []
+      summary: Create new Config
+      tags:
+      - config
+  /api/v1/organization:
+    post:
+      consumes:
+      - application/json
+      description: Crete organization
+      parameters:
+      - description: Create organization
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateNewOrganization'
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - BearerAuth: []
+      summary: Create organization
+      tags:
+      - user
+  /api/v1/user:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a user
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - BearerAuth: []
+      summary: Get user
+      tags:
+      - user
+  /api/v1/user/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a user by their UUID
+      parameters:
+      - description: User ID (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - BearerAuth: []
+      summary: Get user by ID
+      tags:
+      - user
+  /api/v1/user/admin/all:
+    get:
+      consumes:
+      - application/json
+      description: GetAllUser
+      parameters:
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - description: page
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: search
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - BearerAuth: []
+      summary: GetAllUser
+      tags:
+      - user
+  /api/v1/user/all:
+    get:
+      consumes:
+      - application/json
+      description: GetUser
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - BearerAuth: []
+      summary: GetUser
+      tags:
+      - user
+  /api/v1/user/change/organization/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a user
+      parameters:
+      - description: Organization ID (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - BearerAuth: []
+      summary: ChangeOrganizaiton
+      tags:
+      - user
+  /auth/config:
+    get:
+      description: Retrieve configuration based on the provided name parameter.
+      parameters:
+      - description: name
+        in: query
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - BearerAuth: []
+      summary: Get Config
+      tags:
+      - config
+    post:
+      consumes:
+      - application/json
+      description: Create new Config
+      parameters:
+      - description: New Config
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.ConfigurationRequest'
+      produces:
+      - application/json
+      responses: {}
+      summary: Create new Config
+      tags:
+      - config
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Login user
+      parameters:
+      - description: Register User
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.LoginUserRequest'
+      produces:
+      - application/json
+      responses: {}
+      summary: Login user
+      tags:
+      - auth
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Register a new user with the given details
+      parameters:
+      - description: Register User
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.RegisterUserRequest'
+      produces:
+      - application/json
+      responses: {}
+      summary: Register a new user
+      tags:
+      - auth
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
