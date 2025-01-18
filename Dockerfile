@@ -28,7 +28,7 @@ COPY --from=build-frontend /build/dist ./qemmuWeb/dist
 RUN CGO_ENABLED=1 GOOS=linux GOARCH=amd64 ENV=prod go build -buildvcs=false -o ./bin/go .
 
 FROM debian:bullseye-slim
-
+RUN TOUCH webpush.db
 COPY --from=build /build/bin/go /usr/bin/go
 
 EXPOSE 8080
