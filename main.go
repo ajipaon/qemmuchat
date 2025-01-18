@@ -32,7 +32,7 @@ import (
 func main() {
 
 	godotenv.Load()
-	dbFile := os.Getenv("DB_LITE")
+	dbFile := os.Getenv("DB_PATH")
 
 	dblite, err := gorm.Open(sqlite.Open(dbFile), &gorm.Config{})
 	if err != nil {
