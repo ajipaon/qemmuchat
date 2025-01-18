@@ -6,36 +6,40 @@ RUN bun install --frozen-lockfile
 
 COPY ./qemmuWeb .
 
+# Debug: cecking list copy file qemmuWeb
 RUN ls -la
 
 RUN bun run build
 
+
 FROM --platform=$BUILDPLATFORM golang:1.23.4 AS build
+
 WORKDIR /build
 
 COPY go.mod go.sum ./
+
 RUN go mod download
 
 COPY . .
 
 COPY --from=build-frontend /build/dist ./qemmuWeb/dist
 
-RUN CGO_ENABLED=1 ENV=prod go build -buildvcs=false -o main .
+RUN CGO_ENABLED=1 ENV=prod go build -buildvcs=false -o ./bin/go .
 
 RUN touch webpush.db
 
 FROM alpine:3.14
 
+
+
 RUN apk add --no-cache \
+    # Important: required for go-sqlite3
     gcc \
+    # Required for Alpine
     musl-dev
 
-WORKDIR /app
-COPY --from=build /build/main .
-COPY --from=build /build/webpush.db .
+COPY --from=build /build/bin/go /usr/bin/go
 
-# Expose the application port
 EXPOSE 8080
 
-# Command to start the application
-CMD ["./main"]
+CMD ["/usr/bin/go"]
