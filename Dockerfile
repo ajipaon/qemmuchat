@@ -43,4 +43,4 @@ COPY --from=build /build/bin/go .
 
 EXPOSE 8080
 
-CMD ["/usr/bin/go"]
+CMD ["."]
