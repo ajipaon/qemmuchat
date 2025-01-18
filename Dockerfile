@@ -25,9 +25,11 @@ COPY . .
 
 COPY --from=build-frontend /build/dist ./qemmuWeb/dist
 
+RUN CGO_ENABLED=1 ENV=prod go build -buildvcs=false -o ./bin/go .
+
 FROM alpine:3.14
 
-RUN CGO_ENABLED=1 ENV=prod go build -buildvcs=false -o ./bin/go .
+
 
 RUN apk add --no-cache \
     # Important: required for go-sqlite3
