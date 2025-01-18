@@ -30,7 +30,7 @@ COPY . .
 COPY --from=build-frontend /app/dist ./qemmuWeb/dist
 
 # Set environment untuk build backend
-ENV CGO_ENABLED=0
+ENV CGO_ENABLED=1
 ENV ENV=prod
 ENV DB_PATH=/app/data/webpushdb.db
 
@@ -38,17 +38,15 @@ ENV DB_PATH=/app/data/webpushdb.db
 RUN go build -o ./bin/go .
 
 # Stage 3: Runtime
-FROM alpine:3.14
+FROM debian:bullseye-slim
 WORKDIR /app
-
-RUN apk add --no-cache gcc musl-dev libc6-compat \
-    && wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub \
-    && wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.34-r0/glibc-2.34-r0.apk \
-    && apk add glibc-2.34-r0.apk \
-    && rm -f glibc-2.34-r0.apk
 
 # Install dependencies runtime
 # RUN apk add --no-cache gcc musl-dev libc6-compat
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates libc6 libgcc-s1 libstdc++6 \
+    && rm -rf /var/lib/apt/lists/*
 
 # Copy aplikasi backend dari tahap build
 COPY --from=build-backend /app/bin/go /usr/bin/go
