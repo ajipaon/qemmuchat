@@ -24,13 +24,13 @@ COPY . .
 
 COPY --from=build-frontend /build/dist ./qemmuWeb/dist
 
-RUN CGO_ENABLED=1 ENV=prod go build -buildvcs=false -o ./bin/go .
+VOLUME data
 
-RUN touch webpush.db
+# RUN CGO_ENABLED=1 ENV=prod ENV=/data/webpushdb.db go build -buildvcs=false -o ./bin/go .
+RUN CGO_ENABLED=1 ENV=prod ENV=/data/webpushdb.db go build -buildvcs=false -o .
+
 
 FROM alpine:3.14
-
-
 
 RUN apk add --no-cache \
     # Important: required for go-sqlite3
@@ -38,7 +38,7 @@ RUN apk add --no-cache \
     # Required for Alpine
     musl-dev
 
-COPY --from=build /build/bin/go /usr/bin/go
+COPY --from=build /build/bin/go .
 
 EXPOSE 8080
 

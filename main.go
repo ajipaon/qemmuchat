@@ -9,6 +9,7 @@ import (
 
 	_ "qemmuChat/docs"
 
+	"github.com/joho/godotenv"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
@@ -30,10 +31,8 @@ import (
 // @name Authorization
 func main() {
 
-	dbFile := "./webpush.db"
-	if _, err := os.Stat(dbFile); os.IsNotExist(err) {
-		fmt.Println("File database.db tidak ditemukan, akan dibuat secara otomatis.")
-	}
+	godotenv.Load()
+	dbFile := os.Getenv("DB_LITE")
 
 	dblite, err := gorm.Open(sqlite.Open(dbFile), &gorm.Config{})
 	if err != nil {

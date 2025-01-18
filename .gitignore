@@ -10,7 +10,7 @@ tmp
 node_modules
 dist-ssr
 *.local
-.webpush.db
+webpush.db
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -22,3 +22,4 @@ dist-ssr
 *.sln
 *.sw?
 .env
+/bin/*
