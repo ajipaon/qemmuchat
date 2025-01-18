@@ -16,8 +16,7 @@ FROM --platform=$BUILDPLATFORM golang:1.23.4 AS build
 
 WORKDIR /build
 
-COPY go.mod .
-COPY go.sum .
+COPY go.mod go.sum ./
 
 RUN go mod download
 
@@ -25,7 +24,7 @@ COPY . .
 
 COPY --from=build-frontend /build/dist ./qemmuWeb/dist
 
-RUN CGO_ENABLED=1 ENV=prod go build -buildvcs=false -o ./bin/go .
+RUN CGO_ENABLED=1 ENV=prod go build -buildvcs=false -o .
 
 RUN touch webpush.db
 
@@ -39,7 +38,7 @@ RUN apk add --no-cache \
     # Required for Alpine
     musl-dev
 
-COPY --from=build /build/bin/go /usr/bin/go
+# COPY --from=build /build/bin/go /usr/bin/go
 
 EXPOSE 8080
 

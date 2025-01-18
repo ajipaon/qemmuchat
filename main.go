@@ -30,7 +30,12 @@ import (
 // @name Authorization
 func main() {
 
-	dblite, err := gorm.Open(sqlite.Open("webpush.db"), &gorm.Config{})
+	dbFile := "./webpush.db"
+	if _, err := os.Stat(dbFile); os.IsNotExist(err) {
+		fmt.Println("File database.db tidak ditemukan, akan dibuat secara otomatis.")
+	}
+
+	dblite, err := gorm.Open(sqlite.Open(dbFile), &gorm.Config{})
 	if err != nil {
 		log.Fatalf("Failed to initialize database: %v", err)
 	}
