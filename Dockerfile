@@ -1,52 +1,55 @@
 # Stage 1: Frontend build
-FROM --platform=$BUILDPLATFORM oven/bun:canary-alpine AS build-frontend
+FROM oven/bun:canary-alpine AS build-frontend
 WORKDIR /app
 
-COPY ./qemmuWeb/package.json ./qemmuWeb/bun.lockb .
+# Copy dependencies untuk qemmuWeb
+COPY ./qemmuWeb/package.json ./qemmuWeb/bun.lockb ./
 RUN bun install --frozen-lockfile
 
+# Copy seluruh source code frontend
 COPY ./qemmuWeb .
 
-# Debug: checking list of copied files in qemmuWeb
+# Debug: cek file yang disalin
 RUN ls -la
 
+# Build aplikasi frontend
 RUN bun run build
 
 # Stage 2: Backend build
-FROM --platform=$BUILDPLATFORM golang:1.23.4 AS build
-
+FROM golang:1.23.4 AS build-backend
 WORKDIR /app
 
+# Copy dependencies backend
 COPY go.mod go.sum ./
 RUN go mod download
 
+# Copy seluruh source code backend
 COPY . .
 
+# Copy hasil build frontend
 COPY --from=build-frontend /app/dist ./qemmuWeb/dist
 
-# Ensure SQLite library is available
-# RUN apk add --no-cache sqlite-dev
-
-VOLUME /data
-
-# Set environment variables and build the Go application with SQLite support
+# Set environment untuk build backend
 ENV CGO_ENABLED=1
 ENV ENV=prod
-ENV DB_PATH=/data/webpushdb.db
+ENV DB_PATH=/app/data/webpushdb.db
 
+# Build aplikasi backend
 RUN go build -o ./bin/go .
 
-# Stage 3: Final image
+# Stage 3: Runtime
 FROM alpine:3.14
+WORKDIR /app
 
-# Install necessary libraries
-RUN apk add --no-cache gc musl-dev
+# Install dependencies runtime
+RUN apk add --no-cache gcc musl-dev libc6-compat
 
-COPY --from=build /app/bin/go /usr/bin/go
+# Copy aplikasi backend dari tahap build
+COPY --from=build-backend /app/bin/go /usr/bin/go
 
-# Create a volume for the SQLite database
-VOLUME /data
-
+# Deklarasi volume dan port
+VOLUME /app/data
 EXPOSE 8080
 
+# Jalankan aplikasi
 CMD ["/usr/bin/go"]
