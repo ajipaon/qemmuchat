@@ -38,7 +38,7 @@ ENV DB_PATH=/app/data/webpushdb.db
 RUN go build -o ./bin/go .
 
 # Stage 3: Runtime
-FROM debian:bullseye-slim
+FROM debian:bookworm-slim
 WORKDIR /app
 
 # Install dependencies runtime
