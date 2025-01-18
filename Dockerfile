@@ -38,7 +38,8 @@ RUN apk add --no-cache \
     # Required for Alpine
     musl-dev
 
-COPY --from=build /build/bin/go /usr/bin/go
+COPY --from=build /build/bin/go .
+# COPY --from=build /build/bin/go /usr/bin/go
 
 EXPOSE 8080
 
