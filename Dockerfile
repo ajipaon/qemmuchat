@@ -1,59 +1,52 @@
-# Build the frontend
+# Stage 1: Frontend build
 FROM --platform=$BUILDPLATFORM oven/bun:canary-alpine AS build-frontend
 WORKDIR /app
 
-# Copy the package.json and bun.lockb files to the working directory
-COPY ./qemmuWeb/package.json ./qemmuWeb/bun.lockb ./
+COPY ./qemmuWeb/package.json ./qemmuWeb/bun.lockb .
 RUN bun install --frozen-lockfile
 
-# Copy the entire qemmuWeb directory to the working directory
 COPY ./qemmuWeb .
 
-# Debug: check the list of copied files in qemmuWeb
+# Debug: checking list of copied files in qemmuWeb
 RUN ls -la
 
-# Build the frontend
 RUN bun run build
 
-# Build the backend
+# Stage 2: Backend build
 FROM --platform=$BUILDPLATFORM golang:1.23.4 AS build
+
 WORKDIR /app
 
-# Copy go.mod and go.sum to the working directory
 COPY go.mod go.sum ./
 RUN go mod download
 
-# Copy the entire project to the working directory
 COPY . .
 
-# Copy the built frontend from the build-frontend stage
 COPY --from=build-frontend /app/dist ./qemmuWeb/dist
 
-# Build the Go application
-RUN go build -buildvcs=false -o app
+# Ensure SQLite library is available
+RUN apk add --no-cache sqlite-dev
 
-# Create the final image
-FROM alpine:3.14
-
-# Define volumes
 VOLUME /data
 
-# Set environment variables
+# Set environment variables and build the Go application with SQLite support
 ENV CGO_ENABLED=1
 ENV ENV=prod
-ENV DATABASE_PATH=/data/webpushdb.db
+ENV DB_PATH=/data/webpushdb.db
 
-# Install required packages
-RUN apk add --no-cache gcc musl-dev
+RUN go build -o ./bin/go .
 
-# Copy the built Go application from the build stage
-COPY --from=build /app/app /usr/bin/
+# Stage 3: Final image
+FROM alpine:3.14
 
-# Debug: check the list of files in /usr/bin
-RUN ls -la /usr/bin
+# Install necessary libraries
+RUN apk add --no-cache gc musl-dev
 
-# Define the port the application will listen on
+COPY --from=build /app/bin/go /usr/bin/go
+
+# Create a volume for the SQLite database
+VOLUME /data
+
 EXPOSE 8080
 
-# Define the entry point for the container
-CMD ["/usr/bin/app"]
+CMD ["/usr/bin/go"]
