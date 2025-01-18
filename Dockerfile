@@ -25,7 +25,7 @@ COPY . .
 COPY --from=build-frontend /app/dist ./qemmuWeb/dist
 
 # Ensure SQLite library is available
-RUN apk add --no-cache sqlite-dev
+# RUN apk add --no-cache sqlite-dev
 
 VOLUME /data
 
