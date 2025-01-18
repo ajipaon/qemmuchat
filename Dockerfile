@@ -27,7 +27,7 @@ COPY --from=build-frontend /build/dist ./qemmuWeb/dist
 VOLUME data
 
 RUN CGO_ENABLED=1 ENV=prod ENV=/data/webpushdb.db go build -buildvcs=false -o ./bin/go .
-RUN CGO_ENABLED=1 ENV=prod ENV=/data/webpushdb.db go build -buildvcs=false -o .
+# RUN CGO_ENABLED=1 ENV=prod ENV=/data/webpushdb.db go build -buildvcs=false -o .
 
 
 FROM alpine:3.14
