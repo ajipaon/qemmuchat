@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"fmt"
 	"qemmuChat/qemmu/config"
 	"qemmuChat/qemmu/models"
 
@@ -25,10 +24,11 @@ func (r *UserRepository) GetAll(page, limit int, search string) ([]models.User, 
 		offset = 0
 	}
 
-	query := r.db.GetDb().Model(&models.User{}).Select("name", "image", "first_login", "role", "status", "created_at", "updated_at", "Email")
+	query := r.db.GetDb().Preload("Activity").Model(&models.User{}).Select("id", "name", "image", "first_login", "role", "status", "created_at", "updated_at", "Email")
+
+	query = query.Where("role NOT LIKE ?", "ROLE_SUPER_ADMIN")
 
 	if search != "" {
-		search = fmt.Sprintf("%%%s%%", search)
 		query = query.Where("name LIKE ? OR email LIKE ?", search, search)
 	}
 

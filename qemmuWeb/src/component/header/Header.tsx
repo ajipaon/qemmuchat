@@ -1,9 +1,9 @@
 import React from "react";
-import { Avatar, Button, Menu, Select, Text } from "@mantine/core";
+import { ActionIcon, Avatar, Button, Menu, Select, Text } from "@mantine/core";
 import classes from "./Header.module.css";
 import { useChangeOrganization, useGetUserDetail } from "./query";
 import { useEffect, useState } from "react";
-import { useLocalStorage } from "@mantine/hooks";
+import { useDisclosure, useLocalStorage } from "@mantine/hooks";
 import { useOrganizationsStore } from "../../config/globalStore/organizatonsData";
 import { newOrganizationModal } from "./type";
 import { deCodeJwt } from "../../config/jwtClient";
@@ -12,6 +12,9 @@ import ModalNewOrganization from "./ModalNewOrganization";
 // import NotificationEvent from "./NotivicationEvent";
 import { modals } from '@mantine/modals';
 import unsubscribePush from "./unsbNotification";
+import { MantineLogo } from '@mantinex/mantine-logo';
+import { IoMdNotificationsOutline } from "react-icons/io";
+import ModalNotification from "./ModalNotification";
 interface Props {
     burger?: React.ReactNode;
 }
@@ -36,6 +39,7 @@ export default function Header({ burger }: Props) {
         key: 'user',
         defaultValue: "",
     })
+    const [opened, { open, close }] = useDisclosure(false);
 
     useEffect(() => {
         if (data?.user_organizations) {
@@ -97,6 +101,7 @@ export default function Header({ burger }: Props) {
         <>
             <header className={classes.header}>
                 {burger && burger}
+                <MantineLogo size={30} />
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
                     <Select
                         className={classes.nativeselect}
@@ -113,10 +118,13 @@ export default function Header({ burger }: Props) {
                         maxDropdownHeight={200}
                     />
                     {user?.role === "ROLE_SUPER_ADMIN" && (
-                        <Button variant="filled" onClick={onOpen}>Create Org</Button>
+                        <Button variant="filled" onClick={onOpen}>Create Team</Button>
                     )}
 
                 </div>
+                <ActionIcon variant="transparent" aria-label="notification" onClick={open}>
+                    <IoMdNotificationsOutline size={30} color="teal" title="notification" type="button" />
+                </ActionIcon>
                 <div className={classes.footer}>
                     <Menu withArrow position="top" >
                         <Menu.Target>
@@ -137,6 +145,7 @@ export default function Header({ burger }: Props) {
                 </div>
             </header>
             <ModalNewOrganization />
+            <ModalNotification opened={opened} close={close} />
             {/* <NotificationEvent /> */}
         </>
     );

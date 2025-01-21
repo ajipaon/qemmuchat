@@ -47,7 +47,6 @@ func (c *Config) GetDb() *gorm.DB {
 			log.Fatalf("failed to migrate database: %v", err)
 		}
 		c.DB = db
-		fmt.Print("bikin koneksi")
 	}
 	return c.DB
 }

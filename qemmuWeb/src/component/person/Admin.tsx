@@ -1,106 +1,134 @@
+import { DataTable } from 'mantine-datatable';
+import { useGetAllUserSperAdmin } from './query';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
 import { useState } from 'react';
-import cx from 'clsx';
-import { Avatar, Checkbox, Group, ScrollArea, Table, Text } from '@mantine/core';
-import classes from './Admin.module.css';
-import { ActiveComponentType } from '../../types/mainType';
+import { ActionIcon, Badge, Box, Group, Input } from '@mantine/core';
+import { MdOutlineRemoveRedEye, MdEdit, MdDeleteForever } from "react-icons/md";
 
-const data = [
-    {
-        id: '1',
-        avatar:
-            'https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-1.png',
-        name: 'Robert Wolfkisser',
-        job: 'Engineer',
-        email: 'rob_wolf@gmail.com',
-    },
-    {
-        id: '2',
-        avatar:
-            'https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-7.png',
-        name: 'Jill Jailbreaker',
-        job: 'Engineer',
-        email: 'jj@breaker.com',
-    },
-    {
-        id: '3',
-        avatar:
-            'https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-2.png',
-        name: 'Henry Silkeater',
-        job: 'Designer',
-        email: 'henry@silkeater.io',
-    },
-    {
-        id: '4',
-        avatar:
-            'https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-3.png',
-        name: 'Bill Horsefighter',
-        job: 'Designer',
-        email: 'bhorsefighter@gmail.com',
-    },
-    {
-        id: '5',
-        avatar:
-            'https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-10.png',
-        name: 'Jeremy Footviewer',
-        job: 'Manager',
-        email: 'jeremy@foot.dev',
-    },
-];
+dayjs.extend(relativeTime);
 
-interface AdminProps {
-    activeComponent: ActiveComponentType;
-};
+export default function Admin() {
 
-export default function Admin({ activeComponent }: AdminProps) {
-    const [selection, setSelection] = useState(['1']);
-    const toggleRow = (id: string) =>
-        setSelection((current) =>
-            current.includes(id) ? current.filter((item) => item !== id) : [...current, id]
-        );
-    const toggleAll = () =>
-        setSelection((current) => (current.length === data.length ? [] : data.map((item) => item.id)));
+    const [page, setPage] = useState(1);
+    const { data, isLoading, hasNextPage, fetchNextPage, refetch } = useGetAllUserSperAdmin() as any
 
-    const rows = data.map((item) => {
-        const selected = selection.includes(item.id);
-        return (
-            <Table.Tr key={item.id} className={cx({ [classes.rowSelected]: selected })}>
-                <Table.Td>
-                    <Checkbox checked={selection.includes(item.id)} onChange={() => toggleRow(item.id)} />
-                </Table.Td>
-                <Table.Td>
-                    <Group gap="sm">
-                        <Avatar size={26} src={item.avatar} radius={26} />
-                        <Text size="sm" fw={500}>
-                            {item.name}
-                        </Text>
-                    </Group>
-                </Table.Td>
-                <Table.Td>{item.email}</Table.Td>
-                <Table.Td>{item.job}</Table.Td>
-            </Table.Tr>
-        );
-    });
+    const handleChengePage = (p: any) => {
 
-    return activeComponent == "ADMIN" && (
-        <ScrollArea>
-            <Table miw={800} verticalSpacing="sm">
-                <Table.Thead>
-                    <Table.Tr>
-                        <Table.Th w={40}>
-                            <Checkbox
-                                onChange={toggleAll}
-                                checked={selection.length === data.length}
-                                indeterminate={selection.length > 0 && selection.length !== data.length}
-                            />
-                        </Table.Th>
-                        <Table.Th>User</Table.Th>
-                        <Table.Th>Email</Table.Th>
-                        <Table.Th>Job</Table.Th>
-                    </Table.Tr>
-                </Table.Thead>
-                <Table.Tbody>{rows}</Table.Tbody>
-            </Table>
-        </ScrollArea>
+        if (p > page) {
+            if (hasNextPage) {
+                fetchNextPage()
+                setPage(p)
+            } else {
+                if (data.pages[p - 1]) {
+                    setPage(p)
+                }
+
+            }
+        } else {
+            setPage(p)
+        }
+    }
+
+    if (isLoading) {
+        return <></>
+    }
+
+    return (
+        <>
+            <Input placeholder="Input component" />
+            <Input placeholder="Input component" />
+            <Input placeholder="Input component" />
+            <DataTable
+                height={500}
+                withTableBorder
+                withColumnBorders
+                striped
+                records={data?.pages[page - 1]?.data || []}
+                rowColor={({ status }) => {
+                    if (status != 'ACTIVE') return 'violet';
+                }}
+                totalRecords={data.pages[0].pages.total || 0}
+                recordsPerPage={data.pages[0].pages.limit || 5}
+                page={page}
+                onPageChange={(p) => handleChengePage(p)}
+                groups={[
+                    {
+                        id: 'Data',
+                        style: { fontStyle: 'italic' },
+                        columns: [
+                            { accessor: 'name' }, // <Avatar size={26} src={item.avatar} radius={26} />
+                            { accessor: 'email' },
+                            {
+                                accessor: 'role', visibleMediaQuery: (theme) => `(min-width: ${theme.breakpoints.md})`,
+                                render: (data) => (
+                                    < Badge color={data.role == "ROLE_USER" ? "orange" : "cyan"} variant="filled" >
+                                        {data.role == "ROLE_USER" ? "USER" : "ADMIN"}
+                                    </Badge>
+
+                                ),
+                            },
+                            {
+                                accessor: 'actions',
+                                title: <Box mr={6}>Action</Box>,
+                                textAlign: 'right',
+                                render: (company) => (
+                                    <Group gap={4} justify="right" wrap="nowrap">
+                                        <ActionIcon
+                                            size="sm"
+                                            variant="subtle"
+                                            color="green"
+                                            onClick={() => console.log({ company, action: 'view' })}
+                                        >
+                                            <MdOutlineRemoveRedEye />
+                                        </ActionIcon>
+                                        <ActionIcon
+                                            size="sm"
+                                            variant="subtle"
+                                            color="blue"
+                                            onClick={() => console.log({ company, action: 'edit' })}
+                                        >
+                                            <MdEdit />
+                                        </ActionIcon>
+                                        <ActionIcon
+                                            size="sm"
+                                            variant="subtle"
+                                            color="red"
+                                            onClick={() => console.log({ company, action: 'delete' })}
+                                        >
+                                            <MdDeleteForever />
+                                        </ActionIcon>
+                                    </Group>
+                                ),
+                            },
+                        ],
+                    },
+
+                    {
+                        id: 'activity-info',
+                        title: 'Last activity',
+                        textAlign: 'center',
+                        style: (theme) => ({ color: theme.colors.blue[6] }),
+                        columns: [
+                            { accessor: 'created_at', title: 'register', render: ({ created_at }: any) => dayjs(created_at).fromNow() },
+                            {
+                                accessor: 'activity.last_activity_app', title: 'APP', render: ({ activity }: any) =>
+                                    dayjs(activity.last_activity_app).fromNow()
+                            },
+                            {
+                                accessor: 'activity.last_activity_web', title: 'WEB', render: ({ activity }: any) =>
+                                    dayjs(activity.last_activity_web).fromNow()
+                            },
+                            {
+                                accessor: 'activity.last_activity_network', title: 'Last Online', render: ({ activity }: any) =>
+                                    dayjs(activity.last_activity_network).fromNow()
+                            },
+                        ]
+                    },
+
+                ]}
+            />
+        </>
     );
 
 }

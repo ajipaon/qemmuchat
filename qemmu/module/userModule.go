@@ -25,6 +25,7 @@ func ConvertUsersResponse(users []models.User) []models.UserResponse {
 
 	for _, user := range users {
 		responses = append(responses, models.UserResponse{
+			Id:               user.ID.String(),
 			Name:             user.Name,
 			Image:            user.Image,
 			FirstLogin:       user.FirstLogin,

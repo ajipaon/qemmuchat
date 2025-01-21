@@ -43,7 +43,6 @@ export default function Index() {
 
     return (
         <AppShell
-            layout="alt"
             header={{ height: 60 }}
             footer={{ height: 60 }}
             navbar={{ width: 300, breakpoint: 'sm', collapsed: { mobile: !opened } }}
@@ -63,7 +62,7 @@ export default function Index() {
                     }
                 />
             </AppShell.Header>
-            <AppShell.Navbar mt="80px" pl="md" pr="md" pb="xl">
+            <AppShell.Navbar>
                 <Navigation data={filteredNavLinks} hidden={!opened} />
             </AppShell.Navbar>
             <AppShell.Main >

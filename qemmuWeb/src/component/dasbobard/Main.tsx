@@ -59,7 +59,7 @@ export default function MainDashboard() {
     }
 
     if (componentActive === "ADMIN") {
-        return <Admin activeComponent={componentActive} />;
+        return <Admin />;
     }
 
     if (componentActive === "USER") {

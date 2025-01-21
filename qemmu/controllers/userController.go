@@ -136,7 +136,7 @@ func (h *UserController) GetAllUserAdmin(c echo.Context) error {
 	totalPages := (total + limit - 1) / limit
 	userResponse := module.ConvertUsersResponse(users)
 	return c.JSON(http.StatusOK, map[string]interface{}{
-		"message": "Organization Change",
+		"message": "success",
 		"data":    userResponse,
 		"pages": map[string]interface{}{
 			"total":      total,
