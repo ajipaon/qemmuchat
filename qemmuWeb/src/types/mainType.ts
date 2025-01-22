@@ -1,6 +1,5 @@
 export type ActiveComponentType =
   | "DASHBOARD"
-  | "ADMIN"
   | "USER"
   | "SETTING"
   | "CHAT"

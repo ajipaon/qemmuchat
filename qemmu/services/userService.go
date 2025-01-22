@@ -14,9 +14,9 @@ type UserService struct {
 	userRepo repository.UserRepository
 }
 
-func (s *UserService) GetAllUsers(page, limit int, search string) ([]models.User, int, error) {
+func (s *UserService) GetAllUsers(page, limit int, name, role, email string) ([]models.User, int, error) {
 
-	return s.userRepo.GetAll(page, limit, search)
+	return s.userRepo.GetAll(page, limit, name, role, email)
 }
 
 func (s *UserService) GetUserByID(id string) (*models.User, error) {

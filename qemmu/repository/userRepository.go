@@ -11,7 +11,7 @@ type UserRepository struct {
 	db config.Config
 }
 
-func (r *UserRepository) GetAll(page, limit int, search string) ([]models.User, int, error) {
+func (r *UserRepository) GetAll(page, limit int, name, role, email string) ([]models.User, int, error) {
 	var users []models.User
 	var total int64
 
@@ -28,8 +28,16 @@ func (r *UserRepository) GetAll(page, limit int, search string) ([]models.User, 
 
 	query = query.Where("role NOT LIKE ?", "ROLE_SUPER_ADMIN")
 
-	if search != "" {
-		query = query.Where("name LIKE ? OR email LIKE ?", search, search)
+	if name != "" {
+		query = query.Where("name LIKE ?", "%"+name+"%")
+	}
+
+	if email != "" {
+		query = query.Where("email LIKE ?", "%"+email+"%")
+	}
+
+	if role != "" {
+		query = query.Where("role LIKE ?", role)
 	}
 
 	err := query.Count(&total).Error

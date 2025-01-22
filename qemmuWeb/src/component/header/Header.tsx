@@ -16,11 +16,12 @@ import { MantineLogo } from '@mantinex/mantine-logo';
 import { IoMdNotificationsOutline } from "react-icons/io";
 import ModalNotification from "./ModalNotification";
 interface Props {
-    burger?: React.ReactNode;
+    mobileBurger?: React.ReactNode;
+    desktopBurger?: React.ReactNode;
 }
 
 
-export default function Header({ burger }: Props) {
+export default function Header({ mobileBurger, desktopBurger }: Props) {
 
     const [lastOrganization, setLastOrganization] = useState<any>(null)
     const [dataOrganization, setDataOrganization] = useState([])
@@ -100,7 +101,8 @@ export default function Header({ burger }: Props) {
     return (
         <>
             <header className={classes.header}>
-                {burger && burger}
+                {mobileBurger && mobileBurger}
+                {desktopBurger && desktopBurger}
                 <MantineLogo size={30} />
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
                     <Select

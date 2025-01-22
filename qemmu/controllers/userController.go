@@ -118,9 +118,11 @@ func (h *UserController) GetAllUserAdmin(c echo.Context) error {
 	if userAuth.Role != string(models.RoleSuperAdmin) {
 		return c.JSON(http.StatusBadRequest, map[string]string{"message": "user not allowed"})
 	}
-	search := c.QueryParam("search")
 	pageParam := c.QueryParam("page")
 	limitParam := c.QueryParam("limit")
+	name := c.QueryParam("name")
+	role := c.QueryParam("role")
+	email := c.QueryParam("email")
 
 	page, err := strconv.Atoi(pageParam)
 	if err != nil || page < 1 {
@@ -132,7 +134,7 @@ func (h *UserController) GetAllUserAdmin(c echo.Context) error {
 		limit = 10
 	}
 
-	users, total, err := h.userService.GetAllUsers(page, limit, search)
+	users, total, err := h.userService.GetAllUsers(page, limit, name, role, email)
 	totalPages := (total + limit - 1) / limit
 	userResponse := module.ConvertUsersResponse(users)
 	return c.JSON(http.StatusOK, map[string]interface{}{

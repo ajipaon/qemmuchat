@@ -10,7 +10,8 @@ import { deCodeJwt } from '../../config/jwtClient';
 import { useEffect, useState } from 'react';
 
 export default function Index() {
-    const [opened, { toggle }] = useDisclosure();
+    const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
+    const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
     const { componentActive } = activeComponent()
     const [user, setUser] = useState<any>(null)
     const [value] = useLocalStorage<string>({
@@ -45,17 +46,30 @@ export default function Index() {
         <AppShell
             header={{ height: 60 }}
             footer={{ height: 60 }}
-            navbar={{ width: 300, breakpoint: 'sm', collapsed: { mobile: !opened } }}
+            navbar={{
+                width: 300,
+                breakpoint: 'sm',
+                collapsed: { mobile: !mobileOpened, desktop: !desktopOpened },
+            }}
             aside={{ width: componentActive == "CHAT" ? 400 : 110, breakpoint: 'md', collapsed: { desktop: false, mobile: true } }}
             padding="md"
         >
             <AppShell.Header>
                 <Header
-                    burger={
+                    mobileBurger={
                         <Burger
-                            opened={opened}
-                            onClick={toggle}
+                            opened={mobileOpened}
+                            onClick={toggleMobile}
                             hiddenFrom="sm"
+                            size="md"
+                            mr="xl"
+                        />
+                    }
+                    desktopBurger={
+                        <Burger
+                            opened={desktopOpened}
+                            onClick={toggleDesktop}
+                            visibleFrom="sm"
                             size="md"
                             mr="xl"
                         />
@@ -63,7 +77,7 @@ export default function Index() {
                 />
             </AppShell.Header>
             <AppShell.Navbar>
-                <Navigation data={filteredNavLinks} hidden={!opened} />
+                <Navigation data={filteredNavLinks} hidden={!mobileOpened || !desktopOpened} />
             </AppShell.Navbar>
             <AppShell.Main >
                 <MainDashboard />

@@ -13,15 +13,11 @@ export const navLinks: NavItem[] = [
     label: "Data",
     icon: FaUsers,
     initiallyOpened: false,
-    role: ["ROLE_SUPER_ADMIN", "ROLE_ADMIN"],
+    role: ["ROLE_SUPER_ADMIN"],
     links: [
       {
         label: "Organization",
         link: "ORGANIZATION",
-      },
-      {
-        label: "Admin",
-        link: "ADMIN",
       },
       {
         label: "Users",

@@ -1,10 +1,9 @@
 import { Container, Grid, SimpleGrid, Card, Text, Title } from '@mantine/core';
 import { activeComponent } from './store/data';
 import Organization from '../organization/Organization';
-import Admin from '../person/Admin';
-import User from '../person/User';
 import MainChat from '../message/Index';
 import { useLocalStorage } from '@mantine/hooks';
+import User from '../person/User';
 
 const PRIMARY_COL_HEIGHT = '300px';
 const SECONDARY_COL_HEIGHT = `calc(${PRIMARY_COL_HEIGHT} / 2 - var(--mantine-spacing-md) / )`;
@@ -58,12 +57,8 @@ export default function MainDashboard() {
         return <Organization activeComponent={componentActive} />;
     }
 
-    if (componentActive === "ADMIN") {
-        return <Admin />;
-    }
-
     if (componentActive === "USER") {
-        return <User activeComponent={componentActive} />
+        return <User />
     }
 
     if (componentActive === "CHAT") {
