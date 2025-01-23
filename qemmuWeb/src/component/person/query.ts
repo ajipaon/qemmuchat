@@ -48,3 +48,20 @@ export const useUpdatePatchUser = () => {
     },
   });
 };
+
+export const useAddUserOrganization = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation<void, Error, any>({
+    mutationKey: ["add_user_organizaton"],
+    mutationFn: async (data) => {
+      const url = `/api/v1/organization/user/add/${data}`;
+      return await apiClient(url, {
+        method: "GET",
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["get_user_superAdmin"] });
+    },
+  });
+};

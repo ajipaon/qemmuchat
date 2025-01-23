@@ -45,6 +45,7 @@ func configRoutes(g *echo.Group, c controllers.ConfigurationController) {
 
 func organizationRoutes(g *echo.Group, c controllers.OrganizationController) {
 	g.POST("", c.CreateOrganization)
+	g.GET("/user/add/:id", c.AddOrganizationUserAdmin)
 }
 
 func userRoutes(g *echo.Group, c controllers.UserController) {

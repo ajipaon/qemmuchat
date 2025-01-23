@@ -52,22 +52,18 @@ definitions:
     - name
     - password
     type: object
-  models.Role:
-    enum:
-    - ROLE_SUPER_ADMIN
-    - ROLE_ADMIN
-    - ROLE_USER
-    type: string
-    x-enum-varnames:
-    - RoleSuperAdmin
-    - RoleAdmin
-    - RoleUser
-  models.UpdateUserRoleRequest:
+  models.UpdateUserRequest:
     properties:
+      firstlogin:
+        type: boolean
+      image:
+        type: string
+      name:
+        type: string
       role:
-        $ref: '#/definitions/models.Role'
-    required:
-    - role
+        type: string
+      status:
+        type: string
     type: object
 info:
   contact:
@@ -174,6 +170,25 @@ paths:
       summary: Create organization
       tags:
       - user
+  /api/v1/organization/user/add/{id}:
+    get:
+      consumes:
+      - application/json
+      description: AddOrganization
+      parameters:
+      - description: usercombination
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - BearerAuth: []
+      summary: AddOrganization
+      tags:
+      - user
   /api/v1/user:
     get:
       consumes:
@@ -222,7 +237,7 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/models.UpdateUserRoleRequest'
+          $ref: '#/definitions/models.UpdateUserRequest'
       produces:
       - application/json
       responses: {}

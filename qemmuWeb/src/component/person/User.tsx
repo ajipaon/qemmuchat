@@ -5,6 +5,7 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import { useState } from 'react';
 import { Badge, Box, Button, Flex, Group, TextInput, Select, Text } from '@mantine/core';
 import { modals } from '@mantine/modals';
+import ModalAddOrganization from './ModalAddOrganization';
 dayjs.extend(relativeTime);
 
 export default function User() {
@@ -14,6 +15,8 @@ export default function User() {
     const [page, setPage] = useState(1);
     const { data, isLoading, hasNextPage, fetchNextPage } = useGetAllUserSperAdmin(readySearch) as any
     const mutateUpatepatch = useUpdatePatchUser()
+    const [openModalOrg, setOpenModalOrg] = useState<boolean>()
+    const [selectedId, setSelectedId] = useState<string | null>(null)
 
     const handleChengePage = (p: any) => {
 
@@ -73,6 +76,31 @@ export default function User() {
         },
     });
 
+    const openModalStatus = (status: string, userId: string) => modals.openConfirmModal({
+        title: 'Please confirm your action',
+        children: (
+            <Text size="sm">
+                {`Are you sUre want to change this user to ${status == "ACTIVE" ? "ENABLE" : "DISABLE"}`}
+            </Text>
+        ),
+        labels: { confirm: 'Confirm', cancel: 'Cancel' },
+        onCancel: () => console.log('Cancel'),
+        onConfirm: () => {
+            const data = {
+                userId,
+                section: "ROLE",
+                data: {
+                    name: "",
+                    image: "",
+                    status: status,
+                    role: "",
+
+                }
+            }
+            mutateUpatepatch.mutate(data)
+        },
+    });
+
     return (
         <>
             <Flex justify="end" align="ceter" gap="md" mb="10px">
@@ -95,7 +123,7 @@ export default function User() {
                 striped
                 records={data?.pages[page - 1]?.data || []}
                 rowColor={({ status }) => {
-                    if (status != 'ACTIVE') return 'violet';
+                    if (status != 'ACTIVE') return 'red';
                 }}
                 totalRecords={data?.pages[0].pages.total || 0}
                 recordsPerPage={data?.pages[0].pages.limit || 5}
@@ -123,8 +151,11 @@ export default function User() {
                                 textAlign: 'center',
                                 render: (user) => (
                                     <Group gap={2} justify="right" wrap="nowrap">
-                                        <Button variant="filled" size="xs" onClick={() => console.log(user)}>Promote team</Button>
-                                        <Button variant="filled" ml="5" color="orange" size="xs" onClick={() => console.table(user.status)}>{user.status == "ACTIVE" ? "disable user" : "enable user"}</Button>
+                                        <Button variant="filled" size="xs" onClick={() => {
+                                            setSelectedId(user?.id);
+                                            setOpenModalOrg(true);
+                                        }}>Promote team</Button>
+                                        <Button variant="filled" ml="5" color="orange" size="xs" onClick={() => openModalStatus(user.status == "ACTIVE" ? "INACTIVE" : "ACTIVE", user.id)}>{user.status == "ACTIVE" ? "disable user" : "enable user"}</Button>
                                     </Group>
                                 ),
                             },
@@ -156,6 +187,7 @@ export default function User() {
 
                 ]}
             />
+            <ModalAddOrganization openModalOrg={openModalOrg} setOpenModalOrg={setOpenModalOrg} userId={selectedId} />
         </>
     );
 

@@ -171,6 +171,36 @@ const docTemplate = `{
                 "responses": {}
             }
         },
+        "/api/v1/organization/user/add/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "AddOrganization",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "AddOrganization",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "usercombination",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/api/v1/user": {
             "get": {
                 "security": [
@@ -281,7 +311,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.UpdateUserRoleRequest"
+                            "$ref": "#/definitions/models.UpdateUserRequest"
                         }
                     }
                 ],
@@ -552,27 +582,23 @@ const docTemplate = `{
                 }
             }
         },
-        "models.Role": {
-            "type": "string",
-            "enum": [
-                "ROLE_SUPER_ADMIN",
-                "ROLE_ADMIN",
-                "ROLE_USER"
-            ],
-            "x-enum-varnames": [
-                "RoleSuperAdmin",
-                "RoleAdmin",
-                "RoleUser"
-            ]
-        },
-        "models.UpdateUserRoleRequest": {
+        "models.UpdateUserRequest": {
             "type": "object",
-            "required": [
-                "role"
-            ],
             "properties": {
+                "firstlogin": {
+                    "type": "boolean"
+                },
+                "image": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
                 "role": {
-                    "$ref": "#/definitions/models.Role"
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
                 }
             }
         }

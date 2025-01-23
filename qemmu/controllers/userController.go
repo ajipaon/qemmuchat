@@ -157,7 +157,7 @@ func (h *UserController) GetAllUserAdmin(c echo.Context) error {
 // @Accept json
 // @Produce json
 // @Param id path string true "userId (UUID)"
-// @Param user body models.UpdateUserRoleRequest true "New Config"
+// @Param user body models.UpdateUserRequest true "New Config"
 // @Router /api/v1/user/admin/{id} [patch]
 // @Security BearerAuth
 func (h *UserController) UpdateUserAdmin(c echo.Context) error {
