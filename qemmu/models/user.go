@@ -66,3 +66,11 @@ type UserResponse struct {
 	Organizations    []*Organization  `json:"user_organizations"`
 	Activity         ActivityResponse `json:"activity"`
 }
+
+type UpdateUserRequest struct {
+	Name       string `json:"name"`
+	Image      string `json:"image"`
+	FirstLogin *bool  `json:"firstlogin"`
+	Status     string `json:"status"`
+	Role       string `json:"role"`
+}

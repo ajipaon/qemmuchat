@@ -28,7 +28,7 @@ func RegisterRoutes(api *echo.Group, s RoutingControllers) {
 	organizationGroup := v1Group.Group("/organization")
 	organizationRoutes(organizationGroup, s.OrganizationController)
 
-	// v1.UserRoutes(api.Group("/v1/user"), DB)
+	// user route
 	userGroup := v1Group.Group("/user")
 	userRoutes(userGroup, s.UserController)
 }
@@ -53,4 +53,5 @@ func userRoutes(g *echo.Group, c controllers.UserController) {
 	g.GET("", c.GetUser)
 	g.GET("/change/organization/:id", c.ChangeOrganization)
 	g.GET("/admin/all", c.GetAllUserAdmin)
+	g.PATCH("/admin/:id", c.UpdateUserAdmin)
 }

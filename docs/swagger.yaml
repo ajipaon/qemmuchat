@@ -52,6 +52,23 @@ definitions:
     - name
     - password
     type: object
+  models.Role:
+    enum:
+    - ROLE_SUPER_ADMIN
+    - ROLE_ADMIN
+    - ROLE_USER
+    type: string
+    x-enum-varnames:
+    - RoleSuperAdmin
+    - RoleAdmin
+    - RoleUser
+  models.UpdateUserRoleRequest:
+    properties:
+      role:
+        $ref: '#/definitions/models.Role'
+    required:
+    - role
+    type: object
 info:
   contact:
     email: support@swagger.io
@@ -189,6 +206,31 @@ paths:
       summary: Get user by ID
       tags:
       - user
+  /api/v1/user/admin/{id}:
+    patch:
+      consumes:
+      - application/json
+      description: Updatepatch
+      parameters:
+      - description: userId (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: New Config
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateUserRoleRequest'
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - BearerAuth: []
+      summary: Updatepatch
+      tags:
+      - user
   /api/v1/user/admin/all:
     get:
       consumes:
@@ -205,7 +247,17 @@ paths:
         name: page
         required: true
         type: integer
-      - description: search
+      - description: name
+        in: query
+        name: limit
+        required: true
+        type: string
+      - description: role
+        in: query
+        name: page
+        required: true
+        type: string
+      - description: email
         in: query
         name: search
         type: string

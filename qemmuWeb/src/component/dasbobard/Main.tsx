@@ -1,9 +1,12 @@
+import React, { Suspense } from 'react';
 import { Container, Grid, SimpleGrid, Card, Text, Title } from '@mantine/core';
 import { activeComponent } from './store/data';
-import Organization from '../organization/Organization';
-import MainChat from '../message/Index';
 import { useLocalStorage } from '@mantine/hooks';
-import User from '../person/User';
+
+const Organization = React.lazy(() => import('../organization/Organization'));
+const User = React.lazy(() => import('../person/User'));
+const MainChat = React.lazy(() => import('../message/Index'));
+
 
 const PRIMARY_COL_HEIGHT = '300px';
 const SECONDARY_COL_HEIGHT = `calc(${PRIMARY_COL_HEIGHT} / 2 - var(--mantine-spacing-md) / )`;
@@ -54,15 +57,28 @@ export default function MainDashboard() {
     }
 
     if (componentActive === "ORGANIZATION") {
-        return <Organization activeComponent={componentActive} />;
+        return (
+            <Suspense fallback={<></>}>
+                <Organization />
+            </Suspense>
+        )
     }
 
     if (componentActive === "USER") {
-        return <User />
+        return (
+            <Suspense fallback={<></>}>
+                <User />
+            </Suspense>
+        )
     }
 
     if (componentActive === "CHAT") {
-        return <MainChat activeComponent={componentActive} />
+        return (
+            <Suspense fallback={<></>}>
+                <MainChat />
+            </Suspense>
+        )
+
     }
 
 }

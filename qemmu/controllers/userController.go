@@ -25,8 +25,6 @@ type UserController struct {
 // @Security BearerAuth
 func (h *UserController) GetAllUser(c echo.Context) error {
 	user := module.ReturnClaim(c)
-	// page := c.Param("page")
-	// size := c.Param("size")
 
 	return c.JSON(http.StatusOK, user)
 
@@ -109,7 +107,9 @@ func (h *UserController) ChangeOrganization(c echo.Context) error {
 // @Produce json
 // @Param limit query integer true "limit"
 // @Param page query integer true "page"
-// @Param search query string false "search"
+// @Param limit query string true "name"
+// @Param page query string true "role"
+// @Param search query string false "email"
 // @Router /api/v1/user/admin/all [get]
 // @Security BearerAuth
 func (h *UserController) GetAllUserAdmin(c echo.Context) error {
@@ -147,5 +147,33 @@ func (h *UserController) GetAllUserAdmin(c echo.Context) error {
 			"totalPages": totalPages,
 		},
 	})
+
+}
+
+// Updatepatch godoc
+// @Summary Updatepatch
+// @Description Updatepatch
+// @Tags user
+// @Accept json
+// @Produce json
+// @Param id path string true "userId (UUID)"
+// @Param user body models.UpdateUserRoleRequest true "New Config"
+// @Router /api/v1/user/admin/{id} [patch]
+// @Security BearerAuth
+func (h *UserController) UpdateUserAdmin(c echo.Context) error {
+	userAuth := module.ReturnClaim(c)
+	id := c.Param("id")
+	if userAuth.Role != string(models.RoleSuperAdmin) {
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": "user not allowed"})
+	}
+
+	var req models.UpdateUserRequest
+	if err := c.Bind(&req); err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": "Invalid request"})
+	}
+
+	h.userService.UpdateUser(id, req)
+
+	return c.JSON(http.StatusOK, map[string]string{"message": "success"})
 
 }

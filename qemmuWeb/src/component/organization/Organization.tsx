@@ -4,16 +4,12 @@ import { ActionIcon, Box, Group, Stack } from '@mantine/core';
 import { DataTable } from 'mantine-datatable';
 import { FaRegEdit, FaTrashAlt } from 'react-icons/fa';
 import { useOrganizationsStore } from "../../config/globalStore/organizatonsData";
-import { ActiveComponentType } from "../../types/mainType";
 
-interface OrganizationProps {
-    activeComponent: ActiveComponentType;
-}
 
-export default function Organization({ activeComponent }: OrganizationProps) {
+export default function Organization() {
     const { data: records } = useOrganizationsStore();
 
-    return activeComponent == "ORGANIZATION" && (
+    return (
         <DataTable
             striped
             withTableBorder

@@ -49,7 +49,22 @@ func (s *UserService) CreateUser(userRegister *models.RegisterUserRequest) error
 	return s.userRepo.Create(user)
 }
 
-func (s *UserService) UpdateUser(user *models.User) error {
+func (s *UserService) UpdateUser(userId string, userUpadate models.UpdateUserRequest) error {
+	user, err := s.userRepo.GetByID(uuid.MustParse(userId))
+
+	if err != nil {
+		return err
+	}
+	if userUpadate.Role != "" {
+		user.Role = models.Role(userUpadate.Role)
+	}
+	if userUpadate.Status != "" {
+		user.Status = models.UserStatus(userUpadate.Status)
+	}
+	if userUpadate.FirstLogin != nil {
+		user.FirstLogin = *userUpadate.FirstLogin
+	}
+
 	return s.userRepo.Update(user)
 }
 

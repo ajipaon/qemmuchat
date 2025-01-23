@@ -1,5 +1,10 @@
-import { useInfiniteQuery } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { apiClient } from "../../config/clientApiConfig";
+import { PatchUserParams } from "./type";
 
 export const useGetAllUserSperAdmin = (search: any) => {
   return useInfiniteQuery<ResponseType, Error>({
@@ -20,6 +25,26 @@ export const useGetAllUserSperAdmin = (search: any) => {
         }&role=${search?.role}&page=${(pageParam as number).toString()}&limit=5`
       );
       return response;
+    },
+  });
+};
+
+export const useUpdatePatchUser = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation<void, Error, PatchUserParams>({
+    mutationKey: ["update_patch_login"],
+    mutationFn: async ({ userId, section, data }) => {
+      const url = `/api/v1/user/admin/${userId}?section=${encodeURIComponent(
+        section
+      )}`;
+      return await apiClient(url, {
+        method: "PATCH",
+        body: JSON.stringify(data),
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["get_user_superAdmin"] });
     },
   });
 };

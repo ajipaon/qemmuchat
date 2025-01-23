@@ -220,9 +220,62 @@
                     },
                     {
                         "type": "string",
-                        "description": "search",
+                        "description": "name",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "role",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "email",
                         "name": "search",
                         "in": "query"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/api/v1/user/admin/{id}": {
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Updatepatch",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Updatepatch",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "userId (UUID)",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "New Config",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.UpdateUserRoleRequest"
+                        }
                     }
                 ],
                 "responses": {}
@@ -489,6 +542,30 @@
                 "password": {
                     "type": "string",
                     "minLength": 6
+                }
+            }
+        },
+        "models.Role": {
+            "type": "string",
+            "enum": [
+                "ROLE_SUPER_ADMIN",
+                "ROLE_ADMIN",
+                "ROLE_USER"
+            ],
+            "x-enum-varnames": [
+                "RoleSuperAdmin",
+                "RoleAdmin",
+                "RoleUser"
+            ]
+        },
+        "models.UpdateUserRoleRequest": {
+            "type": "object",
+            "required": [
+                "role"
+            ],
+            "properties": {
+                "role": {
+                    "$ref": "#/definitions/models.Role"
                 }
             }
         }

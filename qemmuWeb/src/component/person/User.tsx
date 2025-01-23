@@ -1,9 +1,10 @@
 import { DataTable } from 'mantine-datatable';
-import { useGetAllUserSperAdmin } from './query';
+import { useGetAllUserSperAdmin, useUpdatePatchUser } from './query';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { useState } from 'react';
-import { Badge, Box, Button, Flex, Group, TextInput, Select } from '@mantine/core';
+import { Badge, Box, Button, Flex, Group, TextInput, Select, Text } from '@mantine/core';
+import { modals } from '@mantine/modals';
 dayjs.extend(relativeTime);
 
 export default function User() {
@@ -12,6 +13,7 @@ export default function User() {
     const [readySearch, setReadySearch] = useState({ name: "", email: "", role: "" })
     const [page, setPage] = useState(1);
     const { data, isLoading, hasNextPage, fetchNextPage } = useGetAllUserSperAdmin(readySearch) as any
+    const mutateUpatepatch = useUpdatePatchUser()
 
     const handleChengePage = (p: any) => {
 
@@ -46,6 +48,31 @@ export default function User() {
         return <></>
     }
 
+    const openModalRole = (role: string, userId: string) => modals.openConfirmModal({
+        title: 'Please confirm your action',
+        children: (
+            <Text size="sm">
+                {`Are you sore want to change this user to ${role == "ROLE_USER" ? "USER" : "ADMIN"}`}
+            </Text>
+        ),
+        labels: { confirm: 'Confirm', cancel: 'Cancel' },
+        onCancel: () => console.log('Cancel'),
+        onConfirm: () => {
+            const data = {
+                userId,
+                section: "ROLE",
+                data: {
+                    name: "",
+                    image: "",
+                    status: "",
+                    role: role,
+
+                }
+            }
+            mutateUpatepatch.mutate(data)
+        },
+    });
+
     return (
         <>
             <Flex justify="end" align="ceter" gap="md" mb="10px">
@@ -79,12 +106,12 @@ export default function User() {
                         id: 'Data',
                         style: { fontStyle: 'italic' },
                         columns: [
-                            { accessor: 'name' }, // <Avatar size={26} src={item.avatar} radius={26} />
-                            { accessor: 'email' },
+                            { accessor: 'name', textAlign: 'center' },
+                            { accessor: 'email', textAlign: 'center' },
                             {
-                                accessor: 'role', visibleMediaQuery: (theme) => `(min-width: ${theme.breakpoints.md})`,
+                                accessor: 'role', textAlign: 'center', visibleMediaQuery: (theme) => `(min-width: ${theme.breakpoints.md})`,
                                 render: (data) => (
-                                    < Badge component="button" onClick={() => console.log("dsfsf")} color={data.role == "ROLE_USER" ? "orange" : "cyan"} variant="filled" >
+                                    < Badge component="button" onClick={() => openModalRole(data.role != "ROLE_USER" ? "ROLE_USER" : "ROLE_ADMIN", data.id)} color={data.role == "ROLE_USER" ? "orange" : "cyan"} variant="filled" >
                                         {data.role == "ROLE_USER" ? "USER" : "ADMIN"}
                                     </Badge>
 
@@ -92,12 +119,12 @@ export default function User() {
                             },
                             {
                                 accessor: 'actions',
-                                title: <Box mr={6}>Action</Box>,
-                                textAlign: 'right',
+                                title: <Box>Action</Box>,
+                                textAlign: 'center',
                                 render: (user) => (
-                                    <Group gap={4} justify="right" wrap="nowrap">
-                                        <Button variant="filled" size="xs" onClick={() => console.table(user.role)}>{user.role == "ROLE_USER" ? "Promote" : "Demote"}</Button>
-                                        <Button variant="filled" color="orange" size="xs" onClick={() => console.table(user.status)}>{user.status == "ACTIVE" ? "disable" : "enable"}</Button>
+                                    <Group gap={2} justify="right" wrap="nowrap">
+                                        <Button variant="filled" size="xs" onClick={() => console.log(user)}>Promote team</Button>
+                                        <Button variant="filled" ml="5" color="orange" size="xs" onClick={() => console.table(user.status)}>{user.status == "ACTIVE" ? "disable user" : "enable user"}</Button>
                                     </Group>
                                 ),
                             },
