@@ -2,7 +2,7 @@
 FROM oven/bun:canary-alpine AS build-frontend
 WORKDIR /app
 
-COPY ./qemmuWeb/package.json ./qemmuWeb/bun.lockb .
+COPY ./qemmuWeb/package.json ./qemmuWeb/bun.lockb ./
 RUN bun install --frozen-lockfile
 
 COPY ./qemmuWeb .
