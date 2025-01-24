@@ -168,22 +168,32 @@ export default function User() {
                         textAlign: 'center',
                         style: (theme) => ({ color: theme.colors.blue[6] }),
                         columns: [
-                            { accessor: 'created_at', title: 'register', render: ({ created_at }: any) => dayjs(created_at).fromNow() },
+                            {
+                                accessor: 'created_at',
+                                title: 'Register',
+                                render: ({ created_at }: any) => created_at ? dayjs(created_at).fromNow() : '-'
+                            },
                             // for now last_activity_app disable
                             // {
-                            //     accessor: 'activity.last_activity_app', title: 'APP', render: ({ activity }: any) =>
-                            //         dayjs(activity.last_activity_app).fromNow()
+                            //     accessor: 'activity.last_activity_app',
+                            //     title: 'APP',
+                            //     render: ({ activity }: any) =>
+                            //         activity?.last_activity_app ? dayjs(activity.last_activity_app).fromNow() : '-'
                             // },
                             {
-                                accessor: 'activity.last_activity_web', title: 'WEB', render: ({ activity }: any) =>
-                                    dayjs(activity.last_activity_web).fromNow()
+                                accessor: 'activity.last_activity_web',
+                                title: 'WEB',
+                                render: ({ activity }: any) =>
+                                    activity?.last_activity_web ? dayjs(activity.last_activity_web).fromNow() : '-'
                             },
                             {
-                                accessor: 'activity.last_activity_network', title: 'Last Online', render: ({ activity }: any) =>
-                                    dayjs(activity.last_activity_network).fromNow()
+                                accessor: 'activity.last_activity_network',
+                                title: 'Last Online',
+                                render: ({ activity }: any) =>
+                                    activity?.last_activity_network ? dayjs(activity.last_activity_network).fromNow() : '-'
                             },
                         ]
-                    },
+                    }
 
                 ]}
             />

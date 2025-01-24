@@ -169,7 +169,7 @@ paths:
       - BearerAuth: []
       summary: Create organization
       tags:
-      - user
+      - organization
   /api/v1/organization/user/add/{id}:
     get:
       consumes:
@@ -188,7 +188,7 @@ paths:
       - BearerAuth: []
       summary: AddOrganization
       tags:
-      - user
+      - organization
   /api/v1/user:
     get:
       consumes:
@@ -282,6 +282,35 @@ paths:
       security:
       - BearerAuth: []
       summary: GetAllUser
+      tags:
+      - user
+  /api/v1/user/admin/organization/all/{id}:
+    get:
+      consumes:
+      - application/json
+      description: GetAllUserByOrganization
+      parameters:
+      - description: Organzationid
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - description: page
+        in: query
+        name: page
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - BearerAuth: []
+      summary: GetAllUserByOrganization
       tags:
       - user
   /api/v1/user/all:

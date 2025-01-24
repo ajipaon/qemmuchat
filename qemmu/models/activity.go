@@ -16,7 +16,7 @@ const (
 
 type Activity struct {
 	gorm.Model
-	UserID              uuid.UUID `gorm:"type:uuid;not null" json:"user_id"`
+	UserID              uuid.UUID `json:"user_id" gorm:"unique"`
 	LatCurrentActivity  time.Time `json:"last_current_activity"`
 	LastActivityNetwork time.Time `json:"last_activity_network"`
 	LastActivityApp     time.Time `json:"last_activity_app"`

@@ -154,7 +154,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "user"
+                    "organization"
                 ],
                 "summary": "Create organization",
                 "parameters": [
@@ -186,7 +186,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "user"
+                    "organization"
                 ],
                 "summary": "AddOrganization",
                 "parameters": [
@@ -274,6 +274,50 @@ const docTemplate = `{
                         "description": "email",
                         "name": "search",
                         "in": "query"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/api/v1/user/admin/organization/all/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "GetAllUserByOrganization",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "GetAllUserByOrganization",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Organzationid",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "limit",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "page",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {}

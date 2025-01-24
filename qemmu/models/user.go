@@ -38,7 +38,7 @@ type User struct {
 	DeletedAt        gorm.DeletedAt  `gorm:"index"`
 	Organizations    []*Organization `gorm:"many2many:user_organizations"`
 	LastOrganization string          `json:"last_organization" gorm:"default:null"`
-	Activity         Activity        `gorm:"foreignKey:UserID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE" json:"activity"`
+	Activity         *Activity       `gorm:"foreignKey:UserID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE" json:"activity,omitempty"`
 }
 
 type RegisterUserRequest struct {
@@ -53,18 +53,18 @@ type LoginUserRequest struct {
 }
 
 type UserResponse struct {
-	Id               string           `json:"id"`
-	Name             string           `json:"name"`
-	Email            string           `json:"email"`
-	CreatedAt        time.Time        `json:"created_at"`
-	UpdatedAt        time.Time        `json:"updated_at"`
-	Image            string           `json:"image"`
-	FirstLogin       bool             `json:"firstlogin"`
-	Status           string           `json:"status"`
-	Role             string           `json:"role"`
-	LastOrganization string           `json:"last_organization"`
-	Organizations    []*Organization  `json:"user_organizations"`
-	Activity         ActivityResponse `json:"activity"`
+	Id               string            `json:"id"`
+	Name             string            `json:"name"`
+	Email            string            `json:"email"`
+	CreatedAt        time.Time         `json:"created_at"`
+	UpdatedAt        time.Time         `json:"updated_at"`
+	Image            string            `json:"image"`
+	FirstLogin       bool              `json:"firstlogin"`
+	Status           string            `json:"status"`
+	Role             string            `json:"role"`
+	LastOrganization string            `json:"last_organization"`
+	Organizations    []*Organization   `json:"user_organizations"`
+	Activity         *ActivityResponse `json:"activity,omitempty"`
 }
 
 type UpdateUserRequest struct {

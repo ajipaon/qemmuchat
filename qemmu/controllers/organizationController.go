@@ -18,7 +18,7 @@ type OrganizationController struct {
 // Postorganization godoc
 // @Summary Create organization
 // @Description Crete organization
-// @Tags user
+// @Tags organization
 // @Accept json
 // @Produce json
 // @Router /api/v1/organization [post]
@@ -55,7 +55,7 @@ func (h *OrganizationController) CreateOrganization(c echo.Context) error {
 // AddOrganization godoc
 // @Summary AddOrganization
 // @Description AddOrganization
-// @Tags user
+// @Tags organization
 // @Accept json
 // @Produce json
 // @Param id path string true "usercombination"
