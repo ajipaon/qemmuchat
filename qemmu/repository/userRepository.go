@@ -53,7 +53,7 @@ func (r *UserRepository) GetAll(page, limit int, name, role, email string) ([]mo
 	return users, int(total), nil
 }
 
-func (r *UserRepository) GetAllByOrganization(orgId uuid.UUID, page, limit int) ([]models.User, int, error) {
+func (r *UserRepository) GetAllByOrganization(orgId uuid.UUID, name, email string, page, limit int) ([]models.User, int, error) {
 	var users []models.User
 	var total int64
 
@@ -65,23 +65,17 @@ func (r *UserRepository) GetAllByOrganization(orgId uuid.UUID, page, limit int) 
 	if offset < 0 {
 		offset = 0
 	}
+	query := r.db.GetDb().Select("users.id, users.name, users.email, users.image, users.first_login, users.status, users.created_at, users.updated_at, user_organizations.role_org as role").Joins("JOIN user_organizations ON users.id = user_organizations.user_id").Where("user_organizations.organization_id = ?", orgId).Omit("Activities").Find(&users)
 
-	query := r.db.GetDb().Joins("JOIN user_organizations ON users.id = user_organizations.user_id").
-		Where("user_organizations.organization_id = ?", orgId).Omit("Activities").Find(&users)
+	query = query.Where("user_organizations.role_org NOT LIKE ?", "SUPER_ADMIN")
 
-	// query = query.Where("role NOT LIKE ?", "ROLE_SUPER_ADMIN")
+	if name != "" {
+		query = query.Where("users.name LIKE ?", "%"+name+"%")
+	}
 
-	// if name != "" {
-	// 	query = query.Where("name LIKE ?", "%"+name+"%")
-	// }
-
-	// if email != "" {
-	// 	query = query.Where("email LIKE ?", "%"+email+"%")
-	// }
-
-	// if role != "" {
-	// 	query = query.Where("role LIKE ?", role)
-	// }
+	if email != "" {
+		query = query.Where("users.email LIKE ?", "%"+email+"%")
+	}
 
 	err := query.Count(&total).Error
 	if err != nil {

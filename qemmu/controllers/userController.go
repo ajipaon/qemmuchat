@@ -197,9 +197,8 @@ func (h *UserController) GetUserAdminAllByOrganizationId(c echo.Context) error {
 	}
 	pageParam := c.QueryParam("page")
 	limitParam := c.QueryParam("limit")
-	// name := c.QueryParam("name")
-	// role := c.QueryParam("role")
-	// email := c.QueryParam("email")
+	name := c.QueryParam("name")
+	email := c.QueryParam("email")
 
 	page, err := strconv.Atoi(pageParam)
 	if err != nil || page < 1 {
@@ -211,7 +210,7 @@ func (h *UserController) GetUserAdminAllByOrganizationId(c echo.Context) error {
 		limit = 10
 	}
 	id := c.Param("id")
-	users, total, err := h.userService.GetAllUsersByOrganization(id, page, limit)
+	users, total, err := h.userService.GetAllUsersByOrganization(id, name, email, page, limit)
 
 	totalPages := (total + limit - 1) / limit
 	userResponse := module.ConvertUsersResponse(users)

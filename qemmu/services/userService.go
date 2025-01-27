@@ -19,10 +19,10 @@ func (s *UserService) GetAllUsers(page, limit int, name, role, email string) ([]
 	return s.userRepo.GetAll(page, limit, name, role, email)
 }
 
-func (s *UserService) GetAllUsersByOrganization(orgId string, page, limit int) ([]models.User, int, error) {
+func (s *UserService) GetAllUsersByOrganization(orgId, name, email string, page, limit int) ([]models.User, int, error) {
 
 	organizationId := uuid.MustParse(orgId)
-	return s.userRepo.GetAllByOrganization(organizationId, page, limit)
+	return s.userRepo.GetAllByOrganization(organizationId, name, email, page, limit)
 }
 
 func (s *UserService) GetUserByID(id string) (*models.User, error) {

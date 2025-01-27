@@ -201,6 +201,45 @@ const docTemplate = `{
                 "responses": {}
             }
         },
+        "/api/v1/organization/user/change/role/{id}": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "changeUserRoleOrganizaion",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "organization"
+                ],
+                "summary": "changeUserRoleOrganizaion",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "name role",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "New Config",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.ChangeUserRoleOrganizationDto"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/api/v1/user": {
             "get": {
                 "security": [
@@ -551,6 +590,21 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "models.ChangeUserRoleOrganizationDto": {
+            "type": "object",
+            "required": [
+                "role",
+                "userId"
+            ],
+            "properties": {
+                "role": {
+                    "$ref": "#/definitions/models.RoleOrganization"
+                },
+                "userId": {
+                    "type": "string"
+                }
+            }
+        },
         "models.ConfigName": {
             "type": "string",
             "enum": [
@@ -625,6 +679,23 @@ const docTemplate = `{
                     "minLength": 6
                 }
             }
+        },
+        "models.RoleOrganization": {
+            "type": "string",
+            "enum": [
+                "SUPER_ADMIN",
+                "ADMIN",
+                "MODERATOR",
+                "USER",
+                "SPECTATOR"
+            ],
+            "x-enum-varnames": [
+                "SuperAdminOrgRole",
+                "AdminOrgRole",
+                "ModeratorOrgRole",
+                "RoleOrgRole",
+                "SpectatorOrgRole"
+            ]
         },
         "models.UpdateUserRequest": {
             "type": "object",

@@ -45,7 +45,8 @@ func configRoutes(g *echo.Group, c controllers.ConfigurationController) {
 
 func organizationRoutes(g *echo.Group, c controllers.OrganizationController) {
 	g.POST("", c.CreateOrganization)
-	g.GET("/user/add/:id", c.AddOrganizationUserAdmin)
+	g.GET("/user/add/:id", c.AddUserToOrganizationSuperAdmin)
+	g.PUT("/user/change/role/:id", c.ChageRoleUserOrganizationSuperAdmin)
 }
 
 func userRoutes(g *echo.Group, c controllers.UserController) {

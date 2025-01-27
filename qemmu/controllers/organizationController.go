@@ -45,7 +45,7 @@ func (h *OrganizationController) CreateOrganization(c echo.Context) error {
 	}
 
 	userUuid := uuid.MustParse(user.Id)
-	_, err = h.organizationService.AddUserToOrganization(userUuid, newOrganizaton.ID, models.AdminOrgRole)
+	_, err = h.organizationService.AddUserToOrganization(userUuid, newOrganizaton.ID, models.SuperAdminOrgRole)
 	if err != nil {
 		return err
 	}
@@ -61,7 +61,7 @@ func (h *OrganizationController) CreateOrganization(c echo.Context) error {
 // @Param id path string true "usercombination"
 // @Router /api/v1/organization/user/add/{id} [get]
 // @Security BearerAuth
-func (h *OrganizationController) AddOrganizationUserAdmin(c echo.Context) error {
+func (h *OrganizationController) AddUserToOrganizationSuperAdmin(c echo.Context) error {
 
 	id := c.Param("id")
 	user := module.ReturnClaim(c)
@@ -75,6 +75,44 @@ func (h *OrganizationController) AddOrganizationUserAdmin(c echo.Context) error 
 	_, err := h.organizationService.AddUserToOrganization(userUuid, orgId, models.RoleOrgRole)
 	if err != nil {
 		return err
+	}
+
+	return c.JSON(http.StatusOK, map[string]string{"message": "success"})
+
+}
+
+// changeUserRoleOrganizaion godoc
+// @Summary changeUserRoleOrganizaion
+// @Description changeUserRoleOrganizaion
+// @Tags organization
+// @Accept json
+// @Produce json
+// @Param id path string true "name role"
+// @Router /api/v1/organization/user/change/role/{id} [put]
+// @Param user body models.ChangeUserRoleOrganizationDto true "New Config"
+// @Security BearerAuth
+func (h *OrganizationController) ChageRoleUserOrganizationSuperAdmin(c echo.Context) error {
+
+	id := c.Param("id")
+
+	user := module.ReturnClaim(c)
+	if user.Role != "ROLE_SUPER_ADMIN" {
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": "User not allowed"})
+	}
+
+	var req models.ChangeUserRoleOrganizationDto
+	if err := c.Bind(&req); err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": "Invalid request"})
+	}
+
+	if err := c.Validate(&req); err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": err.Error()})
+	}
+
+	err := h.organizationService.ChangeRoleOrganization(req.UserId, id, req.Role)
+
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": err.Error()})
 	}
 
 	return c.JSON(http.StatusOK, map[string]string{"message": "success"})

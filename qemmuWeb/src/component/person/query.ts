@@ -33,7 +33,7 @@ export const useUpdatePatchUser = () => {
   const queryClient = useQueryClient();
 
   return useMutation<void, Error, PatchUserParams>({
-    mutationKey: ["update_patch_login"],
+    mutationKey: ["update_patch_user"],
     mutationFn: async ({ userId, section, data }) => {
       const url = `/api/v1/user/admin/${userId}?section=${encodeURIComponent(
         section

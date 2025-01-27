@@ -1,11 +1,12 @@
+import React, { useState } from 'react';
 import { DataTable } from 'mantine-datatable';
 import { useGetAllUserSperAdmin, useUpdatePatchUser } from './query';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import { useState } from 'react';
 import { Badge, Box, Button, Flex, Group, TextInput, Select, Text } from '@mantine/core';
 import { modals } from '@mantine/modals';
-import ModalAddOrganization from './ModalAddOrganization';
+const ModalAddOrganization = React.lazy(() => import('./ModalAddOrganization'));
+
 dayjs.extend(relativeTime);
 
 export default function User() {

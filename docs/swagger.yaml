@@ -1,5 +1,15 @@
 basePath: /
 definitions:
+  models.ChangeUserRoleOrganizationDto:
+    properties:
+      role:
+        $ref: '#/definitions/models.RoleOrganization'
+      userId:
+        type: string
+    required:
+    - role
+    - userId
+    type: object
   models.ConfigName:
     enum:
     - APP_NAME
@@ -52,6 +62,20 @@ definitions:
     - name
     - password
     type: object
+  models.RoleOrganization:
+    enum:
+    - SUPER_ADMIN
+    - ADMIN
+    - MODERATOR
+    - USER
+    - SPECTATOR
+    type: string
+    x-enum-varnames:
+    - SuperAdminOrgRole
+    - AdminOrgRole
+    - ModeratorOrgRole
+    - RoleOrgRole
+    - SpectatorOrgRole
   models.UpdateUserRequest:
     properties:
       firstlogin:
@@ -187,6 +211,31 @@ paths:
       security:
       - BearerAuth: []
       summary: AddOrganization
+      tags:
+      - organization
+  /api/v1/organization/user/change/role/{id}:
+    put:
+      consumes:
+      - application/json
+      description: changeUserRoleOrganizaion
+      parameters:
+      - description: name role
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: New Config
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.ChangeUserRoleOrganizationDto'
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - BearerAuth: []
+      summary: changeUserRoleOrganizaion
       tags:
       - organization
   /api/v1/user:

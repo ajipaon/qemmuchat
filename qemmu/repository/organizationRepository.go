@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"fmt"
 	"qemmuChat/qemmu/config"
 	"qemmuChat/qemmu/models"
 
@@ -36,4 +37,22 @@ func (r *OrganizationRepository) Create(org *models.Organization) (*models.Organ
 		return nil, err
 	}
 	return org, nil
+}
+
+func (r *OrganizationRepository) UpdateUserRoleOrg(userId, orgId uuid.UUID, newRole models.RoleOrganization) error {
+
+	fmt.Println(orgId)
+	result := r.db.GetDb().
+		Model(&models.UserOrganization{}).
+		Where("organization_id = ? AND user_id = ?", orgId, userId).
+		Update("role_org", newRole)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	if result.RowsAffected == 0 {
+		return fmt.Errorf("no record found to update")
+	}
+
+	return nil
 }
