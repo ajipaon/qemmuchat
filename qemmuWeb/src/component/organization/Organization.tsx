@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Badge, Button, Flex, Select, TextInput } from '@mantine/core';
 import { DataTable } from 'mantine-datatable';
 import { useOrganizationsStore } from "../../config/globalStore/organizatonsData";
 import { useGetUserByOrganization } from "./query";
-const MOdalChangeRoleOrganization = React.lazy(() => import('./modalChangeRoleOrganizaton'));
+import MOdalChangeRoleOrganization from "./modalChangeRoleOrganizaton";
 
 export default function Organization() {
     const { data: records } = useOrganizationsStore();
