@@ -5,10 +5,9 @@ import {
 } from '@mantine/core';
 import '@mantine/core/styles.layer.css';
 import '@mantine/core/styles.css';
-import '@mantine/carousel/styles.css';
-import '@mantine/dropzone/styles.css';
+// import '@mantine/carousel/styles.css';
+// import '@mantine/dropzone/styles.css';
 import '@mantine/spotlight/styles.css';
-import '@mantine/core/styles.layer.css';
 import '@mantine/notifications/styles.css';
 import 'mantine-datatable/styles.layer.css';
 import './layout.css';
