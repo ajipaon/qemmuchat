@@ -112,7 +112,7 @@ func (h *UserController) ChangeOrganization(c echo.Context) error {
 // @Param search query string false "email"
 // @Router /api/v1/user/admin/all [get]
 // @Security BearerAuth
-func (h *UserController) GetAllUserAdmin(c echo.Context) error {
+func (h *UserController) GetUserAdminAll(c echo.Context) error {
 	userAuth := module.ReturnClaim(c)
 
 	if userAuth.Role != string(models.RoleSuperAdmin) {
@@ -175,5 +175,54 @@ func (h *UserController) UpdateUserAdmin(c echo.Context) error {
 	h.userService.UpdateUser(id, req)
 
 	return c.JSON(http.StatusOK, map[string]string{"message": "success"})
+
+}
+
+// GetAllUserByOrganization godoc
+// @Summary GetAllUserByOrganization
+// @Description GetAllUserByOrganization
+// @Tags user
+// @Accept json
+// @Produce json
+// @Param id path string true "Organzationid"
+// @Param limit query integer true "limit"
+// @Param page query integer true "page"
+// @Router /api/v1/user/admin/organization/all/{id} [get]
+// @Security BearerAuth
+func (h *UserController) GetUserAdminAllByOrganizationId(c echo.Context) error {
+	userAuth := module.ReturnClaim(c)
+
+	if userAuth.Role != string(models.RoleSuperAdmin) {
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": "user not allowed"})
+	}
+	pageParam := c.QueryParam("page")
+	limitParam := c.QueryParam("limit")
+	name := c.QueryParam("name")
+	email := c.QueryParam("email")
+
+	page, err := strconv.Atoi(pageParam)
+	if err != nil || page < 1 {
+		page = 1
+	}
+
+	limit, err := strconv.Atoi(limitParam)
+	if err != nil || limit < 1 {
+		limit = 10
+	}
+	id := c.Param("id")
+	users, total, err := h.userService.GetAllUsersByOrganization(id, name, email, page, limit)
+
+	totalPages := (total + limit - 1) / limit
+	userResponse := module.ConvertUsersResponse(users)
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message": "success",
+		"data":    userResponse,
+		"pages": map[string]interface{}{
+			"total":      total,
+			"page":       page,
+			"limit":      limit,
+			"totalPages": totalPages,
+		},
+	})
 
 }

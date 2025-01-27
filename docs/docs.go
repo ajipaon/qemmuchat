@@ -154,7 +154,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "user"
+                    "organization"
                 ],
                 "summary": "Create organization",
                 "parameters": [
@@ -186,7 +186,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "user"
+                    "organization"
                 ],
                 "summary": "AddOrganization",
                 "parameters": [
@@ -196,6 +196,45 @@ const docTemplate = `{
                         "name": "id",
                         "in": "path",
                         "required": true
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/api/v1/organization/user/change/role/{id}": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "changeUserRoleOrganizaion",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "organization"
+                ],
+                "summary": "changeUserRoleOrganizaion",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "name role",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "New Config",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.ChangeUserRoleOrganizationDto"
+                        }
                     }
                 ],
                 "responses": {}
@@ -274,6 +313,50 @@ const docTemplate = `{
                         "description": "email",
                         "name": "search",
                         "in": "query"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/api/v1/user/admin/organization/all/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "GetAllUserByOrganization",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "GetAllUserByOrganization",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Organzationid",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "limit",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "page",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {}
@@ -507,6 +590,21 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "models.ChangeUserRoleOrganizationDto": {
+            "type": "object",
+            "required": [
+                "role",
+                "userId"
+            ],
+            "properties": {
+                "role": {
+                    "$ref": "#/definitions/models.RoleOrganization"
+                },
+                "userId": {
+                    "type": "string"
+                }
+            }
+        },
         "models.ConfigName": {
             "type": "string",
             "enum": [
@@ -581,6 +679,23 @@ const docTemplate = `{
                     "minLength": 6
                 }
             }
+        },
+        "models.RoleOrganization": {
+            "type": "string",
+            "enum": [
+                "SUPER_ADMIN",
+                "ADMIN",
+                "MODERATOR",
+                "USER",
+                "SPECTATOR"
+            ],
+            "x-enum-varnames": [
+                "SuperAdminOrgRole",
+                "AdminOrgRole",
+                "ModeratorOrgRole",
+                "RoleOrgRole",
+                "SpectatorOrgRole"
+            ]
         },
         "models.UpdateUserRequest": {
             "type": "object",

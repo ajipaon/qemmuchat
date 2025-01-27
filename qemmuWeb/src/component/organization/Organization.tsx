@@ -1,74 +1,134 @@
-import React from "react";
-import classes from "./Organization.module.css";
-import { ActionIcon, Box, Group, Stack } from '@mantine/core';
+import React, { useEffect, useState } from "react";
+import { Badge, Button, Flex, Select, TextInput } from '@mantine/core';
 import { DataTable } from 'mantine-datatable';
-import { FaRegEdit, FaTrashAlt } from 'react-icons/fa';
 import { useOrganizationsStore } from "../../config/globalStore/organizatonsData";
-
+import { useGetUserByOrganization } from "./query";
+const MOdalChangeRoleOrganization = React.lazy(() => import('./modalChangeRoleOrganizaton'));
 
 export default function Organization() {
     const { data: records } = useOrganizationsStore();
+    const [search, setSearch] = useState({ id: "", name: "", email: "" })
+    const [readySearch, setReadySearch] = useState<any>({ id: "", name: "", email: "" })
+    const [selectValue, setSelectValue] = useState<any>([]);
+    const [page, setPage] = useState(1);
+    const [dataUpdateRole, setDataUpdateRole] = useState({ userId: "", orgId: "" })
+    const [openModalChangeRoleOrg, setOpenModalChangeRoleOrg] = useState<boolean>(false)
+    const { data, hasNextPage, fetchNextPage } = useGetUserByOrganization(readySearch) as any
+
+    useEffect(() => {
+        if (selectValue && typeof (selectValue) == "string") {
+            setReadySearch((prevSearch) => ({
+                ...prevSearch,
+                ["id"]: selectValue,
+            }));
+        }
+
+    }, [selectValue])
+
+    const handleChengePage = (p: any) => {
+
+        if (p > page) {
+            if (hasNextPage) {
+                fetchNextPage()
+                setPage(p)
+            } else {
+                if (data.pages[p - 1]) {
+                    setPage(p)
+                }
+
+            }
+        } else {
+            setPage(p)
+        }
+    }
+
+    const handleResetSearch = () => {
+        setSearch({ id: "", name: "", email: "" })
+        setReadySearch((prevSearch) => ({
+            ...prevSearch,
+            ["name"]: "",
+            ["email"]: ""
+        }));
+    }
+
+    const handleUpdateSearch = (key: string, value: any) => {
+        setSearch((prevSearch) => ({
+            ...prevSearch,
+            [key]: value,
+        }));
+    };
+
+    const handleSearch = () => {
+        setReadySearch((prevSearch) => ({
+            ...prevSearch,
+            ["name"]: search.name,
+            ["email"]: search.email
+        }));
+
+    }
+
+    const handleModalChangeRole = (id) => {
+        setDataUpdateRole((prevSearch) => ({
+            ...prevSearch,
+            ["userId"]: id,
+            ["orgId"]: selectValue
+        }));
+        setOpenModalChangeRoleOrg(true)
+
+    }
 
     return (
-        <DataTable
-            striped
-            withTableBorder
-            withColumnBorders
-            records={records}
-            idAccessor="ID"
-            columns={[
-                { accessor: 'ID', title: "ID", render: (_, index) => (<span>{index + 1}</span>) },
-                { accessor: 'name', title: "name" },
-                { accessor: 'CreatedAt', title: 'Created At' },
-                {
-                    accessor: 'actions',
-                    width: '0%',
-                    title: <Box mx={6}>Actions</Box>,
-                    textAlign: 'right',
-                    render: (record) => (
-                        <Group gap={4} justify="right" wrap="nowrap">
-                            <ActionIcon
-                                size="sm"
-                                variant="subtle"
-                                color="blue"
-                                onClick={(e: React.MouseEvent) => {
-                                    e.stopPropagation();
-                                    console.log('Edit action triggered:', record);
-                                }}
-                            >
-                                <FaRegEdit size={16} />
-                            </ActionIcon>
-                            <ActionIcon
-                                size="sm"
-                                variant="subtle"
-                                color="red"
-                                onClick={(e: React.MouseEvent) => {
-                                    e.stopPropagation();
-                                    console.log('Delete action triggered:', record);
-                                }}
-                            >
-                                <FaTrashAlt size={16} />
-                            </ActionIcon>
-                        </Group>
-                    ),
-                },
-            ]}
-            rowExpansion={{
-                content: ({ record }: { record: any }) => (
-                    <Stack className={classes.details} p="xs" gap={6}>
-                        <Group gap={6}>
-                            <div className={classes.label}>Postal address:</div>
-                            <div>
-                                {record.ID}, {record.name}, {record.state}
-                            </div>
-                        </Group>
-                        <Group gap={6}>
-                            <div className={classes.label}>Mission statement:</div>
-                            <Box fs="italic">“{record.ID}”</Box>
-                        </Group>
-                    </Stack>
-                ),
-            }}
-        />
+        <>
+            <Flex justify="end" align="ceter" gap="md" mb="10px">
+                <Select
+                    placeholder="select Team"
+                    defaultChecked={false}
+                    value={selectValue}
+                    onChange={setSelectValue}
+                    data={records.map(item => ({ value: item.ID, label: item.name })) || []}
+                />
+            </Flex>
+            <Flex justify="start" align="ceter" gap="md" mb="10px">
+                <TextInput value={search?.name || ""} placeholder="Search Name" type='text' onChange={(e) => handleUpdateSearch("name", e.target.value)} />
+                <TextInput value={search?.email || ""} placeholder="Search Email" type='email' onChange={(e) => handleUpdateSearch("email", e.target.value)} />
+                <Button variant="filled" onClick={handleSearch}>Search</Button>
+                <Button variant="filled" color='orange' onClick={handleResetSearch}>Reset</Button>
+            </Flex>
+            <DataTable
+                height={500}
+                withTableBorder
+                withColumnBorders
+                striped
+                records={data?.pages[page - 1]?.data || []}
+                totalRecords={data?.pages[0].pages.total || 0}
+                recordsPerPage={data?.pages[0].pages.limit || 5}
+                page={page || 1}
+                onPageChange={(p) => handleChengePage(p)}
+                rowColor={({ status }: { status: string }) => {
+                    if (status != 'ACTIVE') return 'red';
+                }}
+                columns={[
+                    {
+                        accessor: 'index',
+                        title: '#',
+                        textAlign: 'right',
+                        width: 30,
+                        render: (record) => records.indexOf(record) + 1,
+                    },
+                    { accessor: 'name', textAlign: 'center' },
+                    { accessor: 'email', textAlign: 'center' },
+                    {
+                        accessor: 'role team', textAlign: 'center',
+                        render: (data: any) => (
+                            < Badge component="button" color="cyan" variant="filled" onClick={() => handleModalChangeRole(data.id)}>
+                                {data?.role || ""}
+                            </Badge>
+
+                        ),
+                    },
+                ]}
+            />
+            <MOdalChangeRoleOrganization openModalChangeRoleOrg={openModalChangeRoleOrg} setOpenModalChangeRoleOrg={setOpenModalChangeRoleOrg} dataUpdateRole={dataUpdateRole} />
+        </>
     );
 }

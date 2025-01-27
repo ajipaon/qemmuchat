@@ -24,6 +24,21 @@ func ConvertUsersResponse(users []models.User) []models.UserResponse {
 	responses := make([]models.UserResponse, 0, len(users))
 
 	for _, user := range users {
+		var activityResponse *models.ActivityResponse
+		if user.Activity != nil {
+			activityResponse = &models.ActivityResponse{
+				ID:                  int(user.Activity.ID),
+				CreatedAt:           user.Activity.CreatedAt,
+				UpdatedAt:           user.Activity.UpdatedAt,
+				DeletedAt:           user.Activity.DeletedAt,
+				LastCurrentActivity: user.Activity.LatCurrentActivity,
+				LastActivityNetwork: user.Activity.LastActivityNetwork,
+				LastActivityApp:     user.Activity.LastActivityApp,
+				LastActivityWeb:     user.Activity.LastActivityWeb,
+				LastActivityId:      user.Activity.LastActivityId,
+			}
+		}
+
 		responses = append(responses, models.UserResponse{
 			Id:               user.ID.String(),
 			Name:             user.Name,
@@ -36,17 +51,7 @@ func ConvertUsersResponse(users []models.User) []models.UserResponse {
 			Role:             string(user.Role),
 			Organizations:    user.Organizations,
 			LastOrganization: user.LastOrganization,
-			Activity: models.ActivityResponse{
-				ID:                  int(user.Activity.ID),
-				CreatedAt:           user.Activity.CreatedAt,
-				UpdatedAt:           user.Activity.UpdatedAt,
-				DeletedAt:           user.Activity.DeletedAt,
-				LastCurrentActivity: user.Activity.LatCurrentActivity,
-				LastActivityNetwork: user.Activity.LastActivityNetwork,
-				LastActivityApp:     user.Activity.LastActivityApp,
-				LastActivityWeb:     user.Activity.LastActivityWeb,
-				LastActivityId:      user.Activity.LastActivityId,
-			},
+			Activity:         activityResponse,
 		})
 	}
 

@@ -1,11 +1,12 @@
+import React, { useState } from 'react';
 import { DataTable } from 'mantine-datatable';
 import { useGetAllUserSperAdmin, useUpdatePatchUser } from './query';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import { useState } from 'react';
 import { Badge, Box, Button, Flex, Group, TextInput, Select, Text } from '@mantine/core';
 import { modals } from '@mantine/modals';
-import ModalAddOrganization from './ModalAddOrganization';
+const ModalAddOrganization = React.lazy(() => import('./ModalAddOrganization'));
+
 dayjs.extend(relativeTime);
 
 export default function User() {
@@ -168,22 +169,32 @@ export default function User() {
                         textAlign: 'center',
                         style: (theme) => ({ color: theme.colors.blue[6] }),
                         columns: [
-                            { accessor: 'created_at', title: 'register', render: ({ created_at }: any) => dayjs(created_at).fromNow() },
+                            {
+                                accessor: 'created_at',
+                                title: 'Register',
+                                render: ({ created_at }: any) => created_at ? dayjs(created_at).fromNow() : '-'
+                            },
                             // for now last_activity_app disable
                             // {
-                            //     accessor: 'activity.last_activity_app', title: 'APP', render: ({ activity }: any) =>
-                            //         dayjs(activity.last_activity_app).fromNow()
+                            //     accessor: 'activity.last_activity_app',
+                            //     title: 'APP',
+                            //     render: ({ activity }: any) =>
+                            //         activity?.last_activity_app ? dayjs(activity.last_activity_app).fromNow() : '-'
                             // },
                             {
-                                accessor: 'activity.last_activity_web', title: 'WEB', render: ({ activity }: any) =>
-                                    dayjs(activity.last_activity_web).fromNow()
+                                accessor: 'activity.last_activity_web',
+                                title: 'WEB',
+                                render: ({ activity }: any) =>
+                                    activity?.last_activity_web ? dayjs(activity.last_activity_web).fromNow() : '-'
                             },
                             {
-                                accessor: 'activity.last_activity_network', title: 'Last Online', render: ({ activity }: any) =>
-                                    dayjs(activity.last_activity_network).fromNow()
+                                accessor: 'activity.last_activity_network',
+                                title: 'Last Online',
+                                render: ({ activity }: any) =>
+                                    activity?.last_activity_network ? dayjs(activity.last_activity_network).fromNow() : '-'
                             },
                         ]
-                    },
+                    }
 
                 ]}
             />

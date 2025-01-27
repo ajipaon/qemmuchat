@@ -23,6 +23,7 @@ func (s *OrganizationService) CreateOrganization(organization models.CreateNewOr
 	}
 	return resultNewOrg, nil
 }
+
 func (s *OrganizationService) AddUserToOrganization(userId uuid.UUID, organizationID uuid.UUID, orgRole models.RoleOrganization) (*models.Organization, error) {
 
 	err := s.organizationRepo.AddUserToOrganization(userId, organizationID, orgRole)
@@ -34,6 +35,16 @@ func (s *OrganizationService) AddUserToOrganization(userId uuid.UUID, organizati
 	return nil, nil
 }
 
-// func (s *organizationService) GetAllOrganizationUser() ([]models.Organization, error) {
+func (s *OrganizationService) ChangeRoleOrganization(id, orgID string, newRole models.RoleOrganization) error {
 
-// }
+	userId := uuid.MustParse(id)
+	organizationId := uuid.MustParse(orgID)
+	err := s.organizationRepo.UpdateUserRoleOrg(userId, organizationId, newRole)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+
+}
