@@ -1,15 +1,15 @@
 
-FROM oven/bun:canary-alpine AS build-frontend
+FROM node:18-alpine AS build-frontend
 WORKDIR /app
 
-COPY ./qemmuWeb/package.json ./qemmuWeb/bun.lockb ./
-RUN bun install --frozen-lockfile
+COPY ./qemmuWeb/package.json ./qemmuWeb/package-lock.json ./
+RUN npm install --frozen-lockfile
 
 COPY ./qemmuWeb .
 
 RUN ls -la
 
-RUN bun run build
+RUN npm run build
 
 FROM golang:1.23.4 AS build-backend
 WORKDIR /app
