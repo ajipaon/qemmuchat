@@ -1,5 +1,5 @@
 
-FROM node:18-alpine AS build-frontend
+FROM node:20-alpine AS build-frontend
 WORKDIR /app
 
 COPY ./qemmuWeb/package.json ./qemmuWeb/package-lock.json ./
