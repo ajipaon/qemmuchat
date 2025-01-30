@@ -96,7 +96,7 @@ func (h *OrganizationController) ChageRoleUserOrganizationSuperAdmin(c echo.Cont
 	id := c.Param("id")
 
 	user := module.ReturnClaim(c)
-	if user.Role != "ROLE_SUPER_ADMIN" {
+	if user.Role == "ROLE_USER" {
 		return c.JSON(http.StatusBadRequest, map[string]string{"message": "User not allowed"})
 	}
 

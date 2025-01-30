@@ -51,7 +51,7 @@ export default function Index() {
                 breakpoint: 'sm',
                 collapsed: { mobile: !mobileOpened, desktop: !desktopOpened },
             }}
-            aside={{ width: componentActive == "CHAT" ? 400 : 110, breakpoint: 'md', collapsed: { desktop: false, mobile: true } }}
+            aside={{ width: componentActive == "CHAT" ? 200 : 110, breakpoint: 'sm', collapsed: { desktop: false, mobile: true } }}
             padding="md"
         >
             <AppShell.Header>
@@ -83,8 +83,9 @@ export default function Index() {
                 <MainDashboard />
             </AppShell.Main >
             <AppShell.Aside p="md">
-                <UserList />
+                <UserList user={user || null} />
             </AppShell.Aside>
+            <AppShell.Footer p="md">Footer</AppShell.Footer>
         </AppShell>
     );
 }

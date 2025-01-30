@@ -65,3 +65,28 @@ export const useAddUserOrganization = () => {
     },
   });
 };
+
+export const useGetUserByOrganization = (orgId: string) => {
+  return useInfiniteQuery<ResponseType, Error>({
+    queryKey: ["get_user_by_organization", orgId],
+    initialPageParam: 1,
+    enabled: !!orgId,
+    getNextPageParam: (lastPage: any) => {
+      const { page, totalPages }: any = lastPage.pages;
+      if (page < totalPages) {
+        return page + 1;
+      } else {
+        return null;
+      }
+    },
+    queryFn: async ({ pageParam = 1 }) => {
+      if (!orgId) return;
+      const response: any = await apiClient(
+        `/api/v1/user/organization/all/${orgId}?name=&email=&page=${(
+          pageParam as number
+        ).toString()}&limit=10`
+      );
+      return response;
+    },
+  });
+};

@@ -1,3 +1,3 @@
 #!/bin/sh
 
-cd qemmuWeb && bun run dev & air && fg
+cd qemmuWeb && npm run dev & air && fg

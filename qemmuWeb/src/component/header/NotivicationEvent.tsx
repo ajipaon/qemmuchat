@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
-import CustomEventSource from '../../config/customEvent';
 import { useLocalStorage } from '@mantine/hooks';
 import { deCodeJwt } from '../../config/jwtClient';
+import CustomHttpClient from '../../config/customEvent';
 
 export default function NotificationEvent() {
   // const [events, setEvents] = useState<string[]>([]);
@@ -13,14 +13,14 @@ export default function NotificationEvent() {
   useEffect(() => {
     if (value) {
       const user = deCodeJwt(value)
-      const eventSource = new CustomEventSource(`/api/v1/notification/${user?.id}`, {
+      const client = new CustomHttpClient(`/api/v1/notification/${user?.id}`, {
         Authorization: `Bearer ${value}`,
       });
 
-      eventSource.connect(
+      client.connect(
         (data) => {
           // setEvents((prevEvents) => [...prevEvents, data]);
-          console.log(data)
+          console.log('Received data:', data);
         },
         (error) => {
           console.error('Error connecting to the SSE server:', error);
@@ -28,7 +28,7 @@ export default function NotificationEvent() {
       );
 
       return () => {
-        eventSource.close();
+        client.close();
       };
     }
   }, [value]);

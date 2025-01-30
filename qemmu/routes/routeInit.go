@@ -5,6 +5,7 @@ import (
 	"qemmuChat/qemmu/controllers"
 	"qemmuChat/qemmu/lib"
 	"qemmuChat/qemmu/module"
+	"qemmuChat/qemmu/module/socket"
 	v1 "qemmuChat/qemmu/routes/v1"
 	"qemmuChat/qemmuWeb"
 
@@ -45,7 +46,14 @@ func Routing(dblite *gorm.DB) *echo.Echo {
 	}
 	api.Use(echojwt.WithConfig(config))
 
-	e.GET("/ws", module.UseNet)
+	hub := socket.NewHub()
+	wsHandler := socket.NewHandler(hub)
+	go hub.Run()
+
+	e.POST("/chats/createRoom", wsHandler.CreateRoom)
+	e.GET("/chats/joinRoom/:roomId", wsHandler.JoinRoom)
+	// e.GET("/chats/getRooms", wsHandler.GetRooms)
+	e.GET("/chats/getClients/:roomId", wsHandler.GetClients)
 
 	controllers := v1.RoutingControllers{
 		ActivityController:     controllers.ActivityController{},

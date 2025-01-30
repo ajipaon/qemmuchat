@@ -36,7 +36,7 @@ func RegisterHandlers(e *echo.Echo) {
 	e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
 		Skipper: func(c echo.Context) bool {
 			path := c.Path()
-			return len(path) >= 4 && path[:4] == "/api" || len(path) >= 8 && path[:8] == "/swagger" || len(path) >= 5 && path[:5] == "/auth" || len(path) >= 13 && path[:13] == "/notification"
+			return len(path) >= 4 && path[:4] == "/api" || len(path) >= 8 && path[:8] == "/swagger" || len(path) >= 5 && path[:5] == "/auth" || len(path) >= 5 && path[:5] == "/chat" || len(path) >= 13 && path[:13] == "/notification"
 		},
 		Root:       "/",
 		HTML5:      true,
@@ -60,7 +60,7 @@ func setupDevProxy(e *echo.Echo) {
 		Balancer: balancer,
 		Skipper: func(c echo.Context) bool {
 			path := c.Path()
-			return len(path) >= 4 && path[:4] == "/api" || len(path) >= 8 && path[:8] == "/swagger" || len(path) >= 5 && path[:5] == "/auth" || len(path) >= 13 && path[:13] == "/notification"
+			return len(path) >= 4 && path[:4] == "/api" || len(path) >= 8 && path[:8] == "/swagger" || len(path) >= 5 && path[:5] == "/auth" || len(path) >= 6 && path[:6] == "/chats" || len(path) >= 13 && path[:13] == "/notification"
 		},
 	}))
 }

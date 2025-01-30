@@ -6,7 +6,7 @@ import {
 import { apiClient } from "../../config/clientApiConfig";
 import { userParamUpdateRoleOrg } from "./type";
 
-export const useGetUserByOrganization = (search: any) => {
+export const useGetUserByOrganizationSuerAdmin = (search: any) => {
   return useInfiniteQuery<ResponseType, Error>({
     queryKey: ["get_user_by_organization_superAdmin", search],
     initialPageParam: 1,

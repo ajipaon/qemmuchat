@@ -192,9 +192,54 @@ func (h *UserController) UpdateUserAdmin(c echo.Context) error {
 func (h *UserController) GetUserAdminAllByOrganizationId(c echo.Context) error {
 	userAuth := module.ReturnClaim(c)
 
-	if userAuth.Role != string(models.RoleSuperAdmin) {
+	if userAuth.Role == string(models.RoleUser) {
 		return c.JSON(http.StatusBadRequest, map[string]string{"message": "user not allowed"})
 	}
+	pageParam := c.QueryParam("page")
+	limitParam := c.QueryParam("limit")
+	name := c.QueryParam("name")
+	email := c.QueryParam("email")
+
+	page, err := strconv.Atoi(pageParam)
+	if err != nil || page < 1 {
+		page = 1
+	}
+
+	limit, err := strconv.Atoi(limitParam)
+	if err != nil || limit < 1 {
+		limit = 10
+	}
+	id := c.Param("id")
+	users, total, err := h.userService.GetAllUsersByOrganization(id, name, email, page, limit)
+
+	totalPages := (total + limit - 1) / limit
+	userResponse := module.ConvertUsersResponse(users)
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message": "success",
+		"data":    userResponse,
+		"pages": map[string]interface{}{
+			"total":      total,
+			"page":       page,
+			"limit":      limit,
+			"totalPages": totalPages,
+		},
+	})
+
+}
+
+// GetUserAllByOrganizationId godoc
+// @Summary GetUserAllByOrganizationId
+// @Description GetUserAllByOrganizationId
+// @Tags user
+// @Accept json
+// @Produce json
+// @Param id path string true "Organzationid"
+// @Param limit query integer true "limit"
+// @Param page query integer true "page"
+// @Router /api/v1/user/organization/all/{id} [get]
+// @Security BearerAuth
+func (h *UserController) GetUserAllByOrganizationId(c echo.Context) error {
+
 	pageParam := c.QueryParam("page")
 	limitParam := c.QueryParam("limit")
 	name := c.QueryParam("name")

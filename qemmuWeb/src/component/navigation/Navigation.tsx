@@ -20,6 +20,8 @@ export function Navigation({ data }: Props) {
                 <div className={classes.linksInner}>{links}</div>
             </ScrollArea>
 
+
+            {/*         unused for now, no idea
             <div className={classes.footer}>
                 <Menu withArrow position="top" >
                     <Menu.Target>
@@ -41,7 +43,7 @@ export function Navigation({ data }: Props) {
                         <Menu.Item>Logout</Menu.Item>
                     </Menu.Dropdown>
                 </Menu>
-            </div>
+            </div> */}
         </>
     );
 }

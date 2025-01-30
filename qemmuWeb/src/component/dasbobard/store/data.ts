@@ -7,7 +7,7 @@ type ActiveComponentState = {
 };
 
 export const activeComponent = create<ActiveComponentState>((set) => ({
-  componentActive: "DASHBOARD",
+  componentActive: "CHAT",
   setComponentActive: (activeComponent: ActiveComponentType) =>
     set({ componentActive: activeComponent }),
 }));
