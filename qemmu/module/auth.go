@@ -2,8 +2,8 @@ package module
 
 import (
 	"fmt"
+	"github.com/ajipaon/qemmuChat/qemmu/models"
 	"os"
-	"qemmuChat/qemmu/models"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"

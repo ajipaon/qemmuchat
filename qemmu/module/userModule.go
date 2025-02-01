@@ -1,7 +1,7 @@
 package module
 
 import (
-	"qemmuChat/qemmu/models"
+	"github.com/ajipaon/qemmuChat/qemmu/models"
 )
 
 func ConvertUserResponse(user *models.User) models.UserResponse {

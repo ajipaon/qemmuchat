@@ -2,11 +2,11 @@ package controllers
 
 import (
 	"fmt"
+	"github.com/ajipaon/qemmuChat/qemmu/models"
+	"github.com/ajipaon/qemmuChat/qemmu/module"
+	"github.com/ajipaon/qemmuChat/qemmu/module/webpush"
+	"github.com/ajipaon/qemmuChat/qemmu/services"
 	"net/http"
-	"qemmuChat/qemmu/models"
-	"qemmuChat/qemmu/module"
-	"qemmuChat/qemmu/module/webpush"
-	"qemmuChat/qemmu/services"
 	"strings"
 
 	"github.com/labstack/echo/v4"

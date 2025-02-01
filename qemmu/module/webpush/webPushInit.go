@@ -2,7 +2,7 @@ package webpush
 
 import (
 	"fmt"
-	"qemmuChat/qemmu/models"
+	"github.com/ajipaon/qemmuChat/qemmu/models"
 
 	"github.com/SherClockHolmes/webpush-go"
 	"gorm.io/gorm"

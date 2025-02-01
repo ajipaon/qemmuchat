@@ -2,9 +2,9 @@ package config
 
 import (
 	"fmt"
+	"github.com/ajipaon/qemmuChat/qemmu/models"
 	"log"
 	"os"
-	"qemmuChat/qemmu/models"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"

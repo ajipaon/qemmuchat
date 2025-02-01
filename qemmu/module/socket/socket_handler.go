@@ -2,7 +2,7 @@ package socket
 
 import (
 	"fmt"
-	"log"
+	"github.com/ajipaon/qemmuChat/qemmu/module/logs"
 	"net/http"
 
 	"github.com/gorilla/websocket"
@@ -27,9 +27,9 @@ type CreateRoomReq struct {
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
-	CheckOrigin: func(r *http.Request) bool {
-		return true
-	},
+	// CheckOrigin: func(r *http.Request) bool {
+	// 	return true
+	// },
 }
 
 func (h *Handler) CreateRoom(c echo.Context) error {
@@ -54,9 +54,10 @@ func (h *Handler) JoinRoom(c echo.Context) error {
 	roomId := c.Param("roomId")
 	clientID := c.QueryParam("userId")
 	conn, err := upgrader.Upgrade(c.Response(), c.Request(), nil)
-	if err != nil {
-		log.Println(err)
-		return err
+	if _, ok := err.(websocket.HandshakeError); ok {
+		logs.Err.Println("ws: Not a websocket handshake")
+	} else if err != nil {
+		logs.Err.Println("ws: failed to Upgrade ", err)
 	}
 
 	client := &Client{

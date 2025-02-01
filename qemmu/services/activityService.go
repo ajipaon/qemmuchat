@@ -2,8 +2,8 @@ package services
 
 import (
 	"fmt"
-	"qemmuChat/qemmu/models"
-	"qemmuChat/qemmu/repository"
+	"github.com/ajipaon/qemmuChat/qemmu/models"
+	"github.com/ajipaon/qemmuChat/qemmu/repository"
 	"time"
 )
 

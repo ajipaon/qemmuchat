@@ -1,6 +1,5 @@
-export const decodeMessage = (data: string): any => {
+export const decodeMessage = ({ content }): any => {
   try {
-    const { content }: { content: string } = JSON.parse(data);
     let returnData: string | object = atob(content);
 
     let i = 0;
@@ -16,7 +15,6 @@ export const decodeMessage = (data: string): any => {
 
     return returnData;
   } catch (error) {
-    console.error("Error decoding message:", error);
     throw new Error("Failed to decode message");
   }
 };

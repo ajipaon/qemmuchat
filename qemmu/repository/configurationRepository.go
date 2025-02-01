@@ -2,8 +2,8 @@ package repository
 
 import (
 	"errors"
-	"qemmuChat/qemmu/config"
-	"qemmuChat/qemmu/models"
+	"github.com/ajipaon/qemmuChat/qemmu/config"
+	"github.com/ajipaon/qemmuChat/qemmu/models"
 
 	"gorm.io/gorm"
 )

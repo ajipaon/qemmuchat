@@ -1,10 +1,11 @@
-module qemmuChat
+module github.com/ajipaon/qemmuChat
 
 go 1.23
 
 require (
-	github.com/aklinkert/go-logging v1.2.0
+	github.com/asaskevich/EventBus v0.0.0-20200907212545-49d423059eef
 	github.com/go-playground/validator/v10 v10.23.0
+	github.com/golang-jwt/jwt/v5 v5.2.1
 	github.com/joho/godotenv v1.5.1
 	github.com/labstack/echo/v4 v4.13.3
 	github.com/swaggo/echo-swagger v1.4.1
@@ -15,15 +16,12 @@ require (
 	gorm.io/gorm v1.25.12
 )
 
-require (
-	github.com/asaskevich/EventBus v0.0.0-20200907212545-49d423059eef // indirect
-	github.com/golang-jwt/jwt/v5 v5.2.1 // indirect
-	github.com/mattn/go-sqlite3 v1.14.22 // indirect
-)
+require github.com/mattn/go-sqlite3 v1.14.22 // indirect
 
 require (
 	github.com/KyleBanks/depth v1.2.1 // indirect
 	github.com/SherClockHolmes/webpush-go v1.4.0
+	github.com/fatih/color v1.18.0
 	github.com/gabriel-vasile/mimetype v1.4.3 // indirect
 	github.com/ghodss/yaml v1.0.0 // indirect
 	github.com/go-openapi/jsonpointer v0.21.0 // indirect
@@ -32,7 +30,7 @@ require (
 	github.com/go-openapi/swag v0.23.0 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
-	github.com/google/uuid v1.6.0 // indirect
+	github.com/google/uuid v1.6.0
 	github.com/gorilla/websocket v1.5.3
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20221227161230-091c0ba34f0a // indirect

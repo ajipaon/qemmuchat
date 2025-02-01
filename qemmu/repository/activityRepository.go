@@ -1,8 +1,8 @@
 package repository
 
 import (
-	"qemmuChat/qemmu/config"
-	"qemmuChat/qemmu/models"
+	"github.com/ajipaon/qemmuChat/qemmu/config"
+	"github.com/ajipaon/qemmuChat/qemmu/models"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm/clause"

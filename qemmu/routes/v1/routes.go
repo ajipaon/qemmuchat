@@ -1,7 +1,7 @@
 package v1
 
 import (
-	"qemmuChat/qemmu/controllers"
+	"github.com/ajipaon/qemmuChat/qemmu/controllers"
 
 	"github.com/labstack/echo/v4"
 )

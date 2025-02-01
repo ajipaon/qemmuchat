@@ -30,7 +30,7 @@ export default function Chat() {
     };
     const [webSocketClient, setWebSocketClient] = useState<CustomWebSocket | null>(null);
     const [messages, setMessages] = useState<any>([]);
-    const [inputMessage, setInputMessage] = useState("")
+    const [user, setUser] = useState<any>(undefined)
     const [joinRoom, setJoinRoom] = useState<boolean>(false)
 
     useEffect(() => {
@@ -39,8 +39,9 @@ export default function Chat() {
 
     useEffect(() => {
         if (value) {
-            const user = deCodeJwt(value)
-            if (user.id && joinRoom == false) {
+            const userDecode = deCodeJwt(value)
+            if (userDecode.id && joinRoom == false) {
+                setUser(userDecode)
                 handleChat()
                 setTimeout(() => {
                     console.log("memuat koneksi baru");
@@ -48,27 +49,39 @@ export default function Chat() {
                 }, 2000);
 
             }
-
-
         }
 
     }, [value, joinRoom]);
 
     const requestWebsocket = () => {
         const user = deCodeJwt(value)
-        const client = new CustomWebSocket(`/chats/joinRoom/1?userId=${user?.id}`, {
-            Authorization: `Bearer ${value}`,
-        });
+        const client = new CustomWebSocket(`/chats/joinRoom/1?userId=${user?.id}`);
         client.connect(
             (data: any) => {
-                const returnData = decodeMessage(data)
-                console.log(returnData)
-                setMessages((prevMessages: any) => [...prevMessages, returnData]);
+                try {
+                    const returnData = decodeMessage(data);
+                    console.log(returnData)
+                    setMessages((prevMessages: any) => [
+                        ...prevMessages,
+                        returnData[returnData.length - 1],
+                    ]);
+                } catch (e: any) {
+                    console.log(e.message)
+                }
+                // const returnData = decodeMessage(data);
+
+                // setMessages((prevMessages: any) => [
+                //     ...prevMessages,
+                //     returnData[returnData.length - 1],
+                // ]);
             },
             (error: any) => {
                 console.error("WebSocket error:", error);
-            },
+            }
         );
+        // client.close((data) =>{
+        //     console.log(data)
+        // })
 
         setWebSocketClient(client);
         setJoinRoom(true)
@@ -79,17 +92,12 @@ export default function Chat() {
 
     const handleChat = async () => {
         const data = await mutate.mutateAsync().then((data) => data)
-        console.log(data)
     }
     const sendMessage = (message: any) => {
         if (webSocketClient) {
-            const s = { "role": "agent", "content": "ssdfsdfsdf" }
-            webSocketClient.send(JSON.stringify(s));
-            setInputMessage("");
+            webSocketClient.send(JSON.stringify(message));
         }
     };
-
-
 
     return (
         <Card style={{ height: "100%", display: "flex", flexDirection: "column", flexGrow: 1 }}>
@@ -111,15 +119,15 @@ export default function Chat() {
 
             <div style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column", maxHeight: "60vh" }}>
                 <Stack gap="md">
-                    {messages.map((message: { role: string; content: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | null | undefined; }, index: Key | null | undefined) => (
+                    {messages.map((message: any, index: number) => (
                         <Card
                             p="xs"
                             key={index}
                             style={{
-                                alignSelf: message?.role === "user" ? "flex-end" : "flex-start",
+                                alignSelf: message?.role == user?.id ? "flex-end" : "flex-start",
                                 maxWidth: "70%",
                             }}
-                            c={message?.role === "user" ? "var(--mantine-primary-color-contrast)" : "var(--mantine-color-text)"}
+                            c={message?.role == user?.id ? "var(--mantine-primary-color-contrast)" : "var(--mantine-color-text)"}
                             withBorder={false}
                             shadow="none"
                         >
@@ -136,17 +144,10 @@ export default function Chat() {
                 onSubmit={(event) => {
                     event.preventDefault();
                     if (inputLength === 0) return;
-                    // setMessages([
-                    //     ...messages,
-                    //     {
-                    //         role: "user",
-                    //         content: input,
-                    //     },
-                    // ]);
                     sendMessage([
                         ...messages,
                         {
-                            role: "user",
+                            role: user?.id,
                             content: input,
                         },
                     ])

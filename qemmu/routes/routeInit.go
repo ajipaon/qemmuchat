@@ -1,13 +1,13 @@
 package routes
 
 import (
+	"github.com/ajipaon/qemmuChat/qemmu/controllers"
+	"github.com/ajipaon/qemmuChat/qemmu/lib"
+	"github.com/ajipaon/qemmuChat/qemmu/module"
+	"github.com/ajipaon/qemmuChat/qemmu/module/socket"
+	v1 "github.com/ajipaon/qemmuChat/qemmu/routes/v1"
+	"github.com/ajipaon/qemmuChat/qemmuWeb"
 	"os"
-	"qemmuChat/qemmu/controllers"
-	"qemmuChat/qemmu/lib"
-	"qemmuChat/qemmu/module"
-	"qemmuChat/qemmu/module/socket"
-	v1 "qemmuChat/qemmu/routes/v1"
-	"qemmuChat/qemmuWeb"
 
 	"github.com/golang-jwt/jwt/v5"
 	echojwt "github.com/labstack/echo-jwt/v4"

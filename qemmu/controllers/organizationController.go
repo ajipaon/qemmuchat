@@ -1,10 +1,10 @@
 package controllers
 
 import (
+	"github.com/ajipaon/qemmuChat/qemmu/models"
+	"github.com/ajipaon/qemmuChat/qemmu/module"
+	"github.com/ajipaon/qemmuChat/qemmu/services"
 	"net/http"
-	"qemmuChat/qemmu/models"
-	"qemmuChat/qemmu/module"
-	"qemmuChat/qemmu/services"
 	"strings"
 
 	"github.com/google/uuid"

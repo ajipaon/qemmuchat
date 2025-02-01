@@ -2,9 +2,9 @@ package routes
 
 import (
 	"errors"
+	"github.com/ajipaon/qemmuChat/qemmu/models"
 	"net/http"
 	"os"
-	"qemmuChat/qemmu/models"
 
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"

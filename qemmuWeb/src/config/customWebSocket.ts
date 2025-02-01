@@ -4,8 +4,10 @@ export default class CustomWebSocket {
   private maxReconnectAttempts: number = 3;
   private reconnectInterval: number = 3000; // 3 seconds
   private url: string;
+  private pingInterval: number = 250000;
+  private pingTimeout: number | null = null;
 
-  constructor(private path: string, private headers: Record<string, string>) {
+  constructor(path: string) {
     this.url = this.getWebSocketUrl(path);
   }
 
@@ -22,10 +24,16 @@ export default class CustomWebSocket {
       this.socket.onopen = () => {
         console.log("WebSocket connection established.");
         this.reconnectAttempts = 0;
+        this.startPing();
       };
 
       this.socket.onmessage = (event) => {
-        onMessage(event.data);
+        try {
+          const data = JSON.parse(event.data);
+          onMessage(data);
+        } catch (error) {
+          console.error("Error parsing WebSocket message:", error);
+        }
       };
 
       this.socket.onerror = (error) => {
@@ -36,6 +44,7 @@ export default class CustomWebSocket {
 
       this.socket.onclose = () => {
         console.log("WebSocket connection closed.");
+        this.stopPing();
         this.handleReconnect(onMessage, onError);
       };
     } catch (error) {
@@ -60,12 +69,28 @@ export default class CustomWebSocket {
     }
   }
 
+  private startPing() {
+    this.pingTimeout = setInterval(() => {
+      if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+        this.socket.send(JSON.stringify({ type: "ping" }));
+      }
+    }, this.pingInterval);
+  }
+
+  private stopPing() {
+    if (this.pingTimeout) {
+      clearInterval(this.pingTimeout);
+      this.pingTimeout = null;
+    }
+  }
+
   close() {
     if (this.socket) {
       this.socket.close();
       this.socket = null;
     }
     this.reconnectAttempts = 0;
+    this.stopPing();
   }
 
   send(message: string) {

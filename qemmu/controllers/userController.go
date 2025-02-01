@@ -2,10 +2,10 @@ package controllers
 
 import (
 	"fmt"
+	"github.com/ajipaon/qemmuChat/qemmu/models"
+	"github.com/ajipaon/qemmuChat/qemmu/module"
+	"github.com/ajipaon/qemmuChat/qemmu/services"
 	"net/http"
-	"qemmuChat/qemmu/models"
-	"qemmuChat/qemmu/module"
-	"qemmuChat/qemmu/services"
 	"strconv"
 
 	"github.com/labstack/echo/v4"
