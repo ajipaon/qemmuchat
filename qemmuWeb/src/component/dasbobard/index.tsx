@@ -1,4 +1,4 @@
-import { AppShell, Burger, } from '@mantine/core';
+import { AppShell, Burger, rem, } from '@mantine/core';
 import { useDisclosure, useLocalStorage } from '@mantine/hooks';
 import Header from '../header/Header';
 import { activeComponent } from './store/data';
@@ -44,8 +44,9 @@ export default function Index() {
 
     return (
         <AppShell
-            header={{ height: 60 }}
+            header={{ height: 50 }}
             footer={{ height: 60 }}
+            offsetScrollbars={false}
             navbar={{
                 width: 300,
                 breakpoint: 'sm',

@@ -100,34 +100,30 @@ export default function Chat() {
     };
 
     return (
-        <Card style={{ height: "100%", display: "flex", flexDirection: "column", flexGrow: 1 }}>
+        <Card style={{ height: "80vh", display: "flex", flexDirection: "column" }}>
             <Group align="center" justify="space-between">
                 <Group>
                     <Avatar src="https://ui.shadcn.com/avatars/02.png" alt="Sofia Davis" radius="xl" />
                     <div>
-                        <Text fw={500} size="sm">
-                            Sofia Davis
-                        </Text>
-                        <Text size="xs" color="dimmed">
-                            m@example.com
-                        </Text>
+                        <Text fw={500} size="sm">Sofia Davis</Text>
+                        <Text size="xs" color="dimmed">m@example.com</Text>
                     </div>
                 </Group>
             </Group>
 
             <Space my="sm" />
 
-            <div style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column", maxHeight: "60vh" }}>
+            <div style={{ flex: 1, overflowX: "auto", display: "flex", flexDirection: "column-reverse" }}>
                 <Stack gap="md">
                     {messages.map((message: any, index: number) => (
                         <Card
                             p="xs"
                             key={index}
                             style={{
-                                alignSelf: message?.role == user?.id ? "flex-end" : "flex-start",
+                                alignSelf: message?.role === user?.id ? "flex-end" : "flex-start",
                                 maxWidth: "70%",
                             }}
-                            c={message?.role == user?.id ? "var(--mantine-primary-color-contrast)" : "var(--mantine-color-text)"}
+                            c={message?.role === user?.id ? "var(--mantine-primary-color-contrast)" : "var(--mantine-color-text)"}
                             withBorder={false}
                             shadow="none"
                         >
@@ -138,8 +134,7 @@ export default function Chat() {
                 <div ref={messagesEndRef} />
             </div>
 
-            <Space my="sm" />
-
+            {/* Input Form */}
             <form
                 onSubmit={(event) => {
                     event.preventDefault();
@@ -150,9 +145,10 @@ export default function Chat() {
                             role: user?.id,
                             content: input,
                         },
-                    ])
+                    ]);
                     setInput("");
                 }}
+            // style={{ padding: "16px", backgroundColor: "white", borderTop: "1px solid #e0e0e0" }}
             >
                 <Group>
                     <TextInput

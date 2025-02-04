@@ -1,6 +1,7 @@
 package socket
 
 import (
+	"errors"
 	"fmt"
 	"github.com/ajipaon/qemmuChat/qemmu/module/logs"
 	"net/http"
@@ -54,10 +55,9 @@ func (h *Handler) JoinRoom(c echo.Context) error {
 	roomId := c.Param("roomId")
 	clientID := c.QueryParam("userId")
 	conn, err := upgrader.Upgrade(c.Response(), c.Request(), nil)
-	if _, ok := err.(websocket.HandshakeError); ok {
+	var handshakeError websocket.HandshakeError
+	if errors.As(err, &handshakeError) {
 		logs.Err.Println("ws: Not a websocket handshake")
-	} else if err != nil {
-		logs.Err.Println("ws: failed to Upgrade ", err)
 	}
 
 	client := &Client{

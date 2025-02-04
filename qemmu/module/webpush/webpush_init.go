@@ -9,13 +9,21 @@ import (
 )
 
 type VapidKeys struct {
-	ID         uint   `gorm:"primaryKey"`
-	PublicKey  string `gorm:"not null"`
-	PrivateKey string `gorm:"not null"`
+	ID         uint   `gorm:"primaryKey" json:"id"`
+	PublicKey  string `gorm:"not null" json:"public_key"`
+	PrivateKey string `gorm:"not null" json:"private_key"`
+}
+
+type SessionData struct {
+	ID        uint   `gorm:"primaryKey" json:"id"`
+	SessionId string `gorm:"unique; not null" json:"session_id"`
+	UserId    string `gorm:"not null" json:"user_id"`
+	Data      string `gorm:"not null" json:"data"`
 }
 
 func AutoMigrate(db *gorm.DB) error {
-	return db.AutoMigrate(&VapidKeys{}, &models.SubscriptionNotification{})
+
+	return db.AutoMigrate(&VapidKeys{}, &models.SubscriptionNotification{}, &SessionData{})
 }
 
 func getVapidKeys(db *gorm.DB) (*VapidKeys, error) {

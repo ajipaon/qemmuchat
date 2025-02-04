@@ -7,9 +7,11 @@ import (
 	"github.com/ajipaon/qemmuChat/qemmu/module/socket"
 	v1 "github.com/ajipaon/qemmuChat/qemmu/routes/v1"
 	"github.com/ajipaon/qemmuChat/qemmuWeb"
+	"github.com/gorilla/sessions"
 	"os"
 
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/labstack/echo-contrib/session"
 	echojwt "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -22,6 +24,7 @@ func Routing(dblite *gorm.DB) *echo.Echo {
 	e := echo.New()
 
 	qemmuWeb.RegisterHandlers(e)
+	e.Use(session.Middleware(sessions.NewCookieStore([]byte(os.Getenv("SECRET")))))
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
 	api := e.Group("/api")
 

@@ -6,11 +6,13 @@ import (
 	"github.com/ajipaon/qemmuChat/qemmu/module"
 	"github.com/ajipaon/qemmuChat/qemmu/module/webpush"
 	"github.com/ajipaon/qemmuChat/qemmu/services"
-	"net/http"
-	"strings"
-
+	"github.com/google/uuid"
+	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 	"golang.org/x/crypto/bcrypt"
+	"net/http"
+	"os"
+	"strings"
 )
 
 type AuthController struct {
@@ -82,6 +84,17 @@ func (h *AuthController) Login(c echo.Context) error {
 	userResponse := module.ConvertUserResponse(user)
 
 	token, err := module.GenerateJwt(user)
+
+	sessioName := os.Getenv("session_name")
+	fmt.Println(sessioName)
+	sess, _ := session.Get(sessioName, c)
+	sessionId, _ := uuid.NewUUID()
+	sess.Values["sessionId"] = sessionId.String()
+	sess.Values["userId"] = userResponse.Id
+	err = sess.Save(c.Request(), c.Response())
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": err.Error()})
+	}
 
 	c.Response().Header().Set("Authorization", fmt.Sprintf("Bearer %s", token))
 

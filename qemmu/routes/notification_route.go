@@ -3,15 +3,12 @@ package routes
 import (
 	"errors"
 	"github.com/ajipaon/qemmuChat/qemmu/models"
+	"github.com/labstack/echo-contrib/session"
 	"net/http"
 	"os"
 
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
-)
-
-var (
-	subscriptions = []models.SubscriptionNotification{}
 )
 
 func NotificationRoute(g *echo.Group, dbLite *gorm.DB) {
@@ -26,17 +23,21 @@ func NotificationRoute(g *echo.Group, dbLite *gorm.DB) {
 		if err := c.Bind(&sub); err != nil {
 			return c.JSON(http.StatusBadRequest, map[string]string{"message": err.Error()})
 		}
-
+		sess, err := session.Get(os.Getenv("session_name"), c)
+		if err != nil {
+			return c.NoContent(http.StatusOK)
+		}
 		subscription := models.SubscriptionNotification{
-			UserID:   userId,
-			Endpoint: sub.Endpoint,
-			P256dh:   sub.Keys.P256dh,
-			Auth:     sub.Keys.Auth,
+			UserID:    userId,
+			SessionId: sess.Values["sessionId"].(string),
+			Endpoint:  sub.Endpoint,
+			P256dh:    sub.Keys.P256dh,
+			Auth:      sub.Keys.Auth,
 		}
 
 		var existingSubscription models.SubscriptionNotification
 
-		err := dbLite.Where("user_id = ?", userId).First(&existingSubscription).Error
+		err = dbLite.Where("user_id = ?", userId).First(&existingSubscription).Error
 		if err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
 				if err := dbLite.Create(&subscription).Error; err != nil {
