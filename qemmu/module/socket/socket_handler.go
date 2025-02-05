@@ -3,15 +3,22 @@ package socket
 import (
 	"errors"
 	"fmt"
-	"github.com/ajipaon/qemmuChat/qemmu/module/logs"
+	"log"
 	"net/http"
+
+	"github.com/ajipaon/qemmuChat/qemmu/models"
+	"github.com/ajipaon/qemmuChat/qemmu/module"
+	"github.com/ajipaon/qemmuChat/qemmu/module/logs"
+	"github.com/ajipaon/qemmuChat/qemmu/repository"
+	"github.com/google/uuid"
 
 	"github.com/gorilla/websocket"
 	"github.com/labstack/echo/v4"
 )
 
 type Handler struct {
-	hub *Hub
+	hub      *Hub
+	roomRepo repository.RoomRepository
 }
 
 func NewHandler(h *Hub) *Handler {
@@ -21,56 +28,101 @@ func NewHandler(h *Hub) *Handler {
 }
 
 type CreateRoomReq struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
+	TargetId string          `json:"target_id"`
+	Type     models.RoomType `json:"type"`
 }
 
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
-	// CheckOrigin: func(r *http.Request) bool {
-	// 	return true
-	// },
+	CheckOrigin: func(r *http.Request) bool {
+		return true
+	},
 }
 
 func (h *Handler) CreateRoom(c echo.Context) error {
+	user := module.ReturnClaim(c)
 	var req CreateRoomReq
 	if err := c.Bind(&req); err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]string{"message": err.Error()})
 
 	}
 
-	if _, ok := h.hub.Rooms[req.ID]; !ok {
-		h.hub.Rooms[req.ID] = &Room{
-			ID:      req.ID,
-			Name:    req.Name,
-			Clients: make(map[string]*Client),
+	room, err := h.roomRepo.GetRoomPrivateByParticipants(user.Id, req.TargetId, req.Type)
+
+	if err != nil && req.Type == models.PrivateRoom {
+		newRoomId, err := uuid.NewUUID()
+		if err != nil {
+			return c.JSON(http.StatusBadRequest, map[string]string{"message": err.Error()})
 		}
+		room.ID = newRoomId
+		log.Printf("iiiiiiiiiiiiiiiiiiiiiii %s", newRoomId)
+		room.Type = req.Type
+		room.CreatedBy = user.Id
+		err = h.roomRepo.Create(room)
+
+		if err != nil {
+			return c.JSON(http.StatusBadRequest, map[string]string{"message": err.Error()})
+		}
+
+		newRoomString := newRoomId.String()
+		if _, ok := h.hub.Rooms[newRoomString]; !ok {
+			h.hub.Rooms[newRoomString] = &Room{
+				ID:      newRoomString,
+				Clients: make(map[string]*Client),
+			}
+		}
+
+		// if _, ok := h.hub.Rooms[room.ID.String()]; !ok {
+		// 	h.hub.Rooms[room.ID.String()] = &Room{
+		// 		ID:      room.ID.String(),
+		// 		Clients: make(map[string]*Client),
+		// 	}
+		// }
+
+		h.roomRepo.AddParticipantByRoom(newRoomString, user.Id, req.Type)
+		h.roomRepo.AddParticipantByRoom(newRoomString, req.TargetId, req.Type)
 	}
 
 	return c.JSON(http.StatusOK, req)
 }
 
 func (h *Handler) JoinRoom(c echo.Context) error {
-	roomId := c.Param("roomId")
-	clientID := c.QueryParam("userId")
-	conn, err := upgrader.Upgrade(c.Response(), c.Request(), nil)
-	var handshakeError websocket.HandshakeError
-	if errors.As(err, &handshakeError) {
-		logs.Err.Println("ws: Not a websocket handshake")
+	targetId := c.QueryParam("targetId")
+	userId := c.Param("userId")
+	typeRoom := c.QueryParam("type")
+
+	if typeRoom == "" {
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": "Invalid request"})
 	}
 
-	client := &Client{
-		ID:      clientID,
-		RoomID:  roomId,
-		Conn:    conn,
-		Message: make(chan *Message),
+	if targetId == "" {
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": "Invalid request"})
 	}
 
-	h.hub.Register <- client
+	if typeRoom == "PRIVATE" {
 
-	go client.readPump(h.hub)
-	go client.writePump()
+		conn, err := upgrader.Upgrade(c.Response(), c.Request(), nil)
+		var handshakeError websocket.HandshakeError
+
+		if errors.As(err, &handshakeError) {
+			logs.Err.Println("ws: Not a websocket handshake")
+			client := &Client{
+				ID:       userId,
+				RoomID:   targetId,
+				TypeRoom: typeRoom,
+				Conn:     conn,
+				Message:  make(chan *Message),
+			}
+
+			h.hub.Register <- client
+
+			go client.readPump(h.hub)
+			go client.writePump()
+
+		}
+
+	}
 
 	return nil
 }

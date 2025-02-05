@@ -3,7 +3,9 @@ package socket
 import (
 	"context"
 	"fmt"
+
 	"github.com/ajipaon/qemmuChat/qemmu/module/pb"
+
 	//"github.com/gorilla/websocket"
 	"sync"
 )
@@ -25,8 +27,8 @@ func (s *PbServerChat) CreateRoom(ctx context.Context, req *pb.CreateRoomReq) (*
 	defer s.mu.Unlock()
 
 	room := &Room{
-		ID:      req.Id,
-		Name:    req.Name,
+		ID: req.Id,
+		// Name:    req.Name,
 		Clients: make(map[string]*Client),
 	}
 	s.rooms[room.ID] = room

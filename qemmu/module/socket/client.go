@@ -20,10 +20,11 @@ type Message struct {
 }
 
 type Client struct {
-	ID      string
-	RoomID  string
-	Conn    *websocket.Conn
-	Message chan *Message
+	ID       string
+	RoomID   string
+	TypeRoom string
+	Conn     *websocket.Conn
+	Message  chan *Message
 }
 
 func (c *Client) readPump(hub *Hub) {

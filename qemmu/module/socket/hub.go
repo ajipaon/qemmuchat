@@ -6,9 +6,9 @@ import (
 )
 
 type Room struct {
-	ID      string             `json:"id"`
-	Name    string             `json:"name"`
-	Clients map[string]*Client `json:"clients"`
+	ID       string             `json:"id"`
+	Clients  map[string]*Client `json:"clients"`
+	TypeRoom string             `json:"type_room"`
 }
 
 type Hub struct {

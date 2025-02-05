@@ -1,11 +1,12 @@
 import { Card, Text, TextInput, Button, Group, Avatar, rem, Space, Stack } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
-import { JSXElementConstructor, Key, ReactElement, ReactNode, ReactPortal, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { IoMdPaperPlane } from "react-icons/io";
 import { useGetRoom } from './query';
 import CustomWebSocket from '../../config/customWebSocket';
 import { deCodeJwt } from '../../config/jwtClient';
 import { decodeMessage } from '../../module/decodeMessage';
+import { useSelectUserChatStore } from '../../config/globalStore/selectuser';
 
 
 export default function Chat() {
@@ -15,12 +16,20 @@ export default function Chat() {
         key: "token",
 
     });
+    const { data } = useSelectUserChatStore()
     // const [messages, setMessages] = useState([
     //     {
     //         role: "agent",
     //         content: "Hi, how can I help you today?",
     //     },
     // ]);
+
+    useEffect(() => {
+        if (data) {
+            console.log(data)
+        }
+
+    }, [data])
 
     const [input, setInput] = useState("");
     const inputLength = input.trim().length;
@@ -37,21 +46,21 @@ export default function Chat() {
         scrollToBottom();
     }, [messages]);
 
-    useEffect(() => {
-        if (value) {
-            const userDecode = deCodeJwt(value)
-            if (userDecode.id && joinRoom == false) {
-                setUser(userDecode)
-                handleChat()
-                setTimeout(() => {
-                    console.log("memuat koneksi baru");
-                    requestWebsocket()
-                }, 2000);
+    // useEffect(() => {
+    //     if (value) {
+    //         const userDecode = deCodeJwt(value)
+    //         if (userDecode.id && joinRoom == false) {
+    //             setUser(userDecode)
+    //             handleChat()
+    //             setTimeout(() => {
+    //                 console.log("memuat koneksi baru");
+    //                 requestWebsocket()
+    //             }, 2000);
 
-            }
-        }
+    //         }
+    //     }
 
-    }, [value, joinRoom]);
+    // }, [value, joinRoom]);
 
     const requestWebsocket = () => {
         const user = deCodeJwt(value)

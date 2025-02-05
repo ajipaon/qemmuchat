@@ -1,6 +1,8 @@
 package routes
 
 import (
+	"os"
+
 	"github.com/ajipaon/qemmuChat/qemmu/controllers"
 	"github.com/ajipaon/qemmuChat/qemmu/lib"
 	"github.com/ajipaon/qemmuChat/qemmu/module"
@@ -8,7 +10,6 @@ import (
 	v1 "github.com/ajipaon/qemmuChat/qemmu/routes/v1"
 	"github.com/ajipaon/qemmuChat/qemmuWeb"
 	"github.com/gorilla/sessions"
-	"os"
 
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo-contrib/session"
@@ -53,8 +54,8 @@ func Routing(dblite *gorm.DB) *echo.Echo {
 	wsHandler := socket.NewHandler(hub)
 	go hub.Run()
 
-	e.POST("/chats/createRoom", wsHandler.CreateRoom)
-	e.GET("/chats/joinRoom/:roomId", wsHandler.JoinRoom)
+	api.POST("/chats/room", wsHandler.CreateRoom)
+	e.GET("/chats/joinRoom/:userId", wsHandler.JoinRoom)
 	// e.GET("/chats/getRooms", wsHandler.GetRooms)
 	e.GET("/chats/getClients/:roomId", wsHandler.GetClients)
 

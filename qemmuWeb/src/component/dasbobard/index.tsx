@@ -52,7 +52,7 @@ export default function Index() {
                 breakpoint: 'sm',
                 collapsed: { mobile: !mobileOpened, desktop: !desktopOpened },
             }}
-            aside={{ width: componentActive == "CHAT" ? 200 : 110, breakpoint: 'sm', collapsed: { desktop: false, mobile: true } }}
+            aside={{ width: componentActive == "CHAT" ? 110 : 110, breakpoint: 'sm', collapsed: { desktop: false, mobile: true } }}
             padding="md"
         >
             <AppShell.Header>
