@@ -1,6 +1,8 @@
 package socket
 
 import (
+	"encoding/json"
+	"fmt"
 	"log"
 	"time"
 
@@ -15,7 +17,7 @@ const (
 )
 
 type Message struct {
-	Content []byte `json:"content"`
+	Content string `json:"content"`
 	RoomID  string `json:"roomId"`
 }
 
@@ -50,12 +52,32 @@ func (c *Client) readPump(hub *Hub) {
 			}
 			break
 		}
-
-		msg := &Message{
-			Content: m,
-			RoomID:  c.RoomID,
+		var jsonString string
+		err = json.Unmarshal([]byte(m), &jsonString)
+		if err != nil {
+			fmt.Println("Error decoding stringified JSON:", err)
+			return
 		}
-		hub.Broadcast <- msg
+
+		var msg Message
+		err = json.Unmarshal([]byte(jsonString), &msg)
+		if err != nil {
+			fmt.Println("Error decoding JSON object:", err)
+			return
+		}
+
+		if _, ok := hub.Rooms[msg.RoomID]; ok {
+			hub.Broadcast <- &msg
+		}
+
+		if c.RoomID != msg.RoomID {
+			msgs := &Message{
+				Content: msg.Content,
+				RoomID:  c.RoomID,
+			}
+			hub.Broadcast <- msgs
+		}
+
 	}
 }
 
@@ -75,7 +97,6 @@ func (c *Client) writePump() {
 				c.Conn.WriteMessage(websocket.CloseMessage, []byte{})
 				return
 			}
-
 			if err := c.Conn.WriteJSON(message); err != nil {
 				log.Printf("error: %v", err)
 				return

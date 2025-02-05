@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/ajipaon/qemmuChat/qemmu/models"
 	"github.com/ajipaon/qemmuChat/qemmu/module"
@@ -100,27 +101,36 @@ func (h *Handler) JoinRoom(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, map[string]string{"message": "Invalid request"})
 	}
 
-	if typeRoom == "PRIVATE" {
+	if typeRoom == "PRIVATE" && userId == targetId {
 
 		conn, err := upgrader.Upgrade(c.Response(), c.Request(), nil)
 		var handshakeError websocket.HandshakeError
 
 		if errors.As(err, &handshakeError) {
 			logs.Err.Println("ws: Not a websocket handshake")
-			client := &Client{
-				ID:       userId,
-				RoomID:   targetId,
-				TypeRoom: typeRoom,
-				Conn:     conn,
-				Message:  make(chan *Message),
-			}
-
-			h.hub.Register <- client
-
-			go client.readPump(h.hub)
-			go client.writePump()
-
+			return nil
 		}
+
+		if _, ok := h.hub.Rooms[targetId]; !ok {
+			h.hub.Rooms[targetId] = &Room{
+				ID:      targetId,
+				Clients: make(map[string]*Client),
+			}
+			time.Sleep(1 * time.Second)
+		}
+
+		client := &Client{
+			ID:       userId,
+			RoomID:   targetId,
+			TypeRoom: typeRoom,
+			Conn:     conn,
+			Message:  make(chan *Message),
+		}
+
+		h.hub.Register <- client
+
+		go client.readPump(h.hub)
+		go client.writePump()
 
 	}
 
@@ -134,6 +144,7 @@ type ClientRes struct {
 func (h *Handler) GetClients(c echo.Context) error {
 	var clients []ClientRes
 	roomId := c.Param("roomId")
+	fmt.Println(roomId)
 
 	if _, ok := h.hub.Rooms[roomId]; !ok {
 		clients = make([]ClientRes, 0)
@@ -141,7 +152,6 @@ func (h *Handler) GetClients(c echo.Context) error {
 	}
 
 	for _, c := range h.hub.Rooms[roomId].Clients {
-		fmt.Println(c)
 		clients = append(clients, ClientRes{
 			ID: c.ID,
 		})

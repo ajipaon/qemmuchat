@@ -75,7 +75,7 @@ func (s *PbServerChat) JoinRoom(stream pb.ChatService_JoinRoomServer) error {
 		}
 
 		message := &Message{
-			Content: msg.GetContent(),
+			Content: string(msg.GetContent()),
 			RoomID:  roomID,
 		}
 

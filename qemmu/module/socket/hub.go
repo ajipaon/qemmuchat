@@ -1,6 +1,7 @@
 package socket
 
 import (
+	"fmt"
 	"log"
 	"sync"
 )
@@ -58,6 +59,7 @@ func (h *Hub) Run() {
 		case m := <-h.Broadcast:
 			if _, ok := h.Rooms[m.RoomID]; ok {
 				for _, cl := range h.Rooms[m.RoomID].Clients {
+					fmt.Println(m)
 					cl.Message <- m
 				}
 			}

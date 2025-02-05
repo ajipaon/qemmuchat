@@ -2,35 +2,29 @@ import { Card, Text, TextInput, Button, Group, Avatar, rem, Space, Stack } from 
 import { useLocalStorage } from '@mantine/hooks';
 import { useEffect, useRef, useState } from 'react';
 import { IoMdPaperPlane } from "react-icons/io";
-import { useGetRoom } from './query';
+// import { useGetRoom } from './query';
 import CustomWebSocket from '../../config/customWebSocket';
-import { deCodeJwt } from '../../config/jwtClient';
 import { decodeMessage } from '../../module/decodeMessage';
 import { useSelectUserChatStore } from '../../config/globalStore/selectuser';
 
 
 export default function Chat() {
 
-    const mutate = useGetRoom()
-    const [value] = useLocalStorage<string>({
-        key: "token",
+    // const mutate = useGetRoom()
+    // const [value] = useLocalStorage<string>({
+    //     key: "token",
 
-    });
-    const { data } = useSelectUserChatStore()
+    // });
     // const [messages, setMessages] = useState([
     //     {
     //         role: "agent",
     //         content: "Hi, how can I help you today?",
     //     },
     // ]);
+    const [userJson] = useLocalStorage<string>({
+        key: "user",
 
-    useEffect(() => {
-        if (data) {
-            console.log(data)
-        }
-
-    }, [data])
-
+    }) as any
     const [input, setInput] = useState("");
     const inputLength = input.trim().length;
     const messagesEndRef = useRef<HTMLDivElement | null>(null);
@@ -40,71 +34,65 @@ export default function Chat() {
     const [webSocketClient, setWebSocketClient] = useState<CustomWebSocket | null>(null);
     const [messages, setMessages] = useState<any>([]);
     const [user, setUser] = useState<any>(undefined)
-    const [joinRoom, setJoinRoom] = useState<boolean>(false)
+
+    const { data } = useSelectUserChatStore()
+
+
+    useEffect(() => {
+        if (data && userJson != null) {
+            if (userJson?.id) {
+                // setTimeout(() => {
+                requestWebsocket()
+                // }, 2000);
+
+            }
+        }
+
+    }, [data, userJson])
 
     useEffect(() => {
         scrollToBottom();
     }, [messages]);
 
-    // useEffect(() => {
-    //     if (value) {
-    //         const userDecode = deCodeJwt(value)
-    //         if (userDecode.id && joinRoom == false) {
-    //             setUser(userDecode)
-    //             handleChat()
-    //             setTimeout(() => {
-    //                 console.log("memuat koneksi baru");
-    //                 requestWebsocket()
-    //             }, 2000);
-
-    //         }
-    //     }
-
-    // }, [value, joinRoom]);
-
     const requestWebsocket = () => {
-        const user = deCodeJwt(value)
-        const client = new CustomWebSocket(`/chats/joinRoom/1?userId=${user?.id}`);
+        if (!userJson.id) return
+        const client = new CustomWebSocket(`/chats/joinRoom/${userJson?.id}?targetId=${userJson?.id}&type=PRIVATE`);
         client.connect(
             (data: any) => {
+
                 try {
-                    const returnData = decodeMessage(data);
-                    console.log(returnData)
+
                     setMessages((prevMessages: any) => [
                         ...prevMessages,
-                        returnData[returnData.length - 1],
+                        data,
                     ]);
                 } catch (e: any) {
                     console.log(e.message)
                 }
-                // const returnData = decodeMessage(data);
-
-                // setMessages((prevMessages: any) => [
-                //     ...prevMessages,
-                //     returnData[returnData.length - 1],
-                // ]);
             },
             (error: any) => {
                 console.error("WebSocket error:", error);
             }
         );
-        // client.close((data) =>{
-        //     console.log(data)
-        // })
-
         setWebSocketClient(client);
-        setJoinRoom(true)
         return () => {
             client.close();
         };
     }
 
-    const handleChat = async () => {
-        const data = await mutate.mutateAsync().then((data) => data)
-    }
     const sendMessage = (message: any) => {
         if (webSocketClient) {
-            webSocketClient.send(JSON.stringify(message));
+            const sas: any = {
+                roomId: data?.id,
+                content: "Hi, how can I help you today?",
+            }
+            webSocketClient.send(JSON.stringify(sas));
+            sas.role = userJson?.id
+            setMessages((prevMessages: any) => [
+                ...prevMessages,
+                sas,
+            ]);
+
         }
     };
 
@@ -129,10 +117,10 @@ export default function Chat() {
                             p="xs"
                             key={index}
                             style={{
-                                alignSelf: message?.role === user?.id ? "flex-end" : "flex-start",
+                                alignSelf: message?.role === userJson?.id ? "flex-end" : "flex-start",
                                 maxWidth: "70%",
                             }}
-                            c={message?.role === user?.id ? "var(--mantine-primary-color-contrast)" : "var(--mantine-color-text)"}
+                            c={message?.role === userJson?.id ? "var(--mantine-primary-color-contrast)" : "var(--mantine-color-text)"}
                             withBorder={false}
                             shadow="none"
                         >
