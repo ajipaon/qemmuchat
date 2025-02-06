@@ -16,7 +16,7 @@ type Hub struct {
 	Rooms      map[string]*Room
 	Register   chan *Client
 	Unregister chan *Client
-	Broadcast  chan *Message
+	Broadcast  chan *MessageWs
 	mu         sync.Mutex
 }
 
@@ -25,7 +25,7 @@ func NewHub() *Hub {
 		Rooms:      make(map[string]*Room),
 		Register:   make(chan *Client),
 		Unregister: make(chan *Client),
-		Broadcast:  make(chan *Message, 5),
+		Broadcast:  make(chan *MessageWs, 5),
 	}
 }
 

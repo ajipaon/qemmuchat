@@ -55,7 +55,7 @@ func (s *PbServerChat) JoinRoom(stream pb.ChatService_JoinRoomServer) error {
 	client := &Client{
 		ID:      clientID,
 		RoomID:  roomID,
-		Message: make(chan *Message),
+		Message: make(chan *MessageWs),
 	}
 	room.Clients[clientID] = client
 	s.mu.Unlock()
@@ -74,7 +74,7 @@ func (s *PbServerChat) JoinRoom(stream pb.ChatService_JoinRoomServer) error {
 			return err
 		}
 
-		message := &Message{
+		message := &MessageWs{
 			Content: string(msg.GetContent()),
 			RoomID:  roomID,
 		}

@@ -3,7 +3,6 @@ package socket
 import (
 	"errors"
 	"fmt"
-	"log"
 	"net/http"
 	"time"
 
@@ -57,7 +56,6 @@ func (h *Handler) CreateRoom(c echo.Context) error {
 			return c.JSON(http.StatusBadRequest, map[string]string{"message": err.Error()})
 		}
 		room.ID = newRoomId
-		log.Printf("iiiiiiiiiiiiiiiiiiiiiii %s", newRoomId)
 		room.Type = req.Type
 		room.CreatedBy = user.Id
 		err = h.roomRepo.Create(room)
@@ -124,7 +122,7 @@ func (h *Handler) JoinRoom(c echo.Context) error {
 			RoomID:   targetId,
 			TypeRoom: typeRoom,
 			Conn:     conn,
-			Message:  make(chan *Message),
+			Message:  make(chan *MessageWs),
 		}
 
 		h.hub.Register <- client

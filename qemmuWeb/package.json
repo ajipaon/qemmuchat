@@ -42,14 +42,15 @@
     "react-router-dom": "^7.1.1",
     "recharts": "2",
     "stylis-plugin-rtl": "^2.1.1",
+    "ulid": "^2.3.0",
     "zustand": "^5.0.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
-    "@vitejs/plugin-react": "^4.3.4",
     "@types/react-router-dom": "^5.3.3",
+    "@vitejs/plugin-react": "^4.3.4",
     "@vitejs/plugin-react-swc": "^3.7.2",
     "eslint": "^9.17.0",
     "eslint-plugin-react-hooks": "^5.0.0",

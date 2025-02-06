@@ -6,6 +6,7 @@ import (
 	"log"
 	"time"
 
+	"github.com/ajipaon/qemmuChat/qemmu/models"
 	"github.com/gorilla/websocket"
 )
 
@@ -16,9 +17,12 @@ const (
 	maxMessageSize = 1 << 19
 )
 
-type Message struct {
-	Content string `json:"content"`
-	RoomID  string `json:"roomId"`
+type MessageWs struct {
+	Id      string               `json:"id"`
+	Content string               `json:"content"`
+	RoomID  string               `json:"room_id"`
+	Status  models.StatusMessage `json:"status"`
+	Role    string               `json:"role"`
 }
 
 type Client struct {
@@ -26,7 +30,7 @@ type Client struct {
 	RoomID   string
 	TypeRoom string
 	Conn     *websocket.Conn
-	Message  chan *Message
+	Message  chan *MessageWs
 }
 
 func (c *Client) readPump(hub *Hub) {
@@ -59,21 +63,31 @@ func (c *Client) readPump(hub *Hub) {
 			return
 		}
 
-		var msg Message
+		var msg MessageWs
 		err = json.Unmarshal([]byte(jsonString), &msg)
 		if err != nil {
 			fmt.Println("Error decoding JSON object:", err)
 			return
 		}
 
+		var statusMessages models.StatusMessage
+
 		if _, ok := hub.Rooms[msg.RoomID]; ok {
+			fmt.Println("user sedang online")
+			statusMessages = models.ReceivedStatusMessage
+			msg.Status = statusMessages
 			hub.Broadcast <- &msg
+		} else {
+			statusMessages = models.SendingStatusMessage
 		}
 
 		if c.RoomID != msg.RoomID {
-			msgs := &Message{
+			msgs := &MessageWs{
+				Id:      msg.Id,
 				Content: msg.Content,
 				RoomID:  c.RoomID,
+				Status:  statusMessages,
+				Role:    msg.Role,
 			}
 			hub.Broadcast <- msgs
 		}

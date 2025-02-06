@@ -48,14 +48,23 @@ const (
 	MDTypeMessage   ContentType = "markdown"
 )
 
+type StatusMessage string
+
+const (
+	SendingStatusMessage  StatusMessage = "SENDING"
+	ReceivedStatusMessage StatusMessage = "RECEIVED"
+	ReadStatusMessage     StatusMessage = "READ"
+)
+
 type Message struct {
-	ID          uuid.UUID      `gorm:"type:uuid;default:uuid_generate_v4()"`
+	ID          string         `json:"id" gorm:"unique"`
 	SenderId    string         `json:"sender_id"`
-	RoomId      uuid.UUID      `gorm:"not null;type:uuid"`
+	RoomId      uuid.UUID      `gorm:"not null;type:uuid"` // roomId is targetId in query param websocket
 	RecipientId string         `json:"recipient_id"`
 	Type        messageType    `json:"type" gorm:"default: DEFAULT_MESSAGE"`
 	ContentType ContentType    `json:"content_type" gorm:"default: TEXT"`
 	Content     string         `json:"content" gorm:"default: TEXT"`
+	Status      StatusMessage  `json:"status"`
 	CreatedAt   time.Time      `json:"created_at"`
 	UpdatedAt   time.Time      `json:"update_at"`
 	DeletedAt   gorm.DeletedAt `gorm:"index"`

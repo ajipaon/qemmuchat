@@ -1,26 +1,16 @@
-import { Card, Text, TextInput, Button, Group, Avatar, rem, Space, Stack } from '@mantine/core';
+import { Card, Text, TextInput, Button, Group, Avatar, rem, Space, Stack, Box } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
 import { useEffect, useRef, useState } from 'react';
 import { IoMdPaperPlane } from "react-icons/io";
 // import { useGetRoom } from './query';
 import CustomWebSocket from '../../config/customWebSocket';
-import { decodeMessage } from '../../module/decodeMessage';
+import { ulid } from "ulid";
 import { useSelectUserChatStore } from '../../config/globalStore/selectuser';
+import { IoCheckmark, IoCheckmarkDone } from "react-icons/io5";
 
 
 export default function Chat() {
 
-    // const mutate = useGetRoom()
-    // const [value] = useLocalStorage<string>({
-    //     key: "token",
-
-    // });
-    // const [messages, setMessages] = useState([
-    //     {
-    //         role: "agent",
-    //         content: "Hi, how can I help you today?",
-    //     },
-    // ]);
     const [userJson] = useLocalStorage<string>({
         key: "user",
 
@@ -33,18 +23,13 @@ export default function Chat() {
     };
     const [webSocketClient, setWebSocketClient] = useState<CustomWebSocket | null>(null);
     const [messages, setMessages] = useState<any>([]);
-    const [user, setUser] = useState<any>(undefined)
 
     const { data } = useSelectUserChatStore()
-
 
     useEffect(() => {
         if (data && userJson != null) {
             if (userJson?.id) {
-                // setTimeout(() => {
                 requestWebsocket()
-                // }, 2000);
-
             }
         }
 
@@ -61,11 +46,7 @@ export default function Chat() {
             (data: any) => {
 
                 try {
-
-                    setMessages((prevMessages: any) => [
-                        ...prevMessages,
-                        data,
-                    ]);
+                    handleStatusUpdate(data)
                 } catch (e: any) {
                     console.log(e.message)
                 }
@@ -82,18 +63,32 @@ export default function Chat() {
 
     const sendMessage = (message: any) => {
         if (webSocketClient) {
-            const sas: any = {
-                roomId: data?.id,
-                content: "Hi, how can I help you today?",
-            }
-            webSocketClient.send(JSON.stringify(sas));
-            sas.role = userJson?.id
+            message.role = userJson?.id
+            message.room_id = data?.id
+            webSocketClient.send(JSON.stringify(message));
             setMessages((prevMessages: any) => [
                 ...prevMessages,
-                sas,
+                message,
             ]);
 
         }
+    };
+
+    const handleStatusUpdate = (newMessage: any) => {
+        setMessages((prevMessages: any[]) => {
+            const updatedMessages = prevMessages.map(msg =>
+                msg.id === newMessage.id ? { ...msg, status: newMessage.status } : msg
+            );
+
+            const lastMessage = updatedMessages[updatedMessages.length - 1];
+            if (lastMessage?.status === 'RECEIVED') {
+                return updatedMessages.map((msg, index) =>
+                    index < updatedMessages.length - 1 ? { ...msg, status: 'RECEIVED' } : msg
+                );
+            }
+
+            return updatedMessages;
+        });
     };
 
     return (
@@ -103,7 +98,7 @@ export default function Chat() {
                     <Avatar src="https://ui.shadcn.com/avatars/02.png" alt="Sofia Davis" radius="xl" />
                     <div>
                         <Text fw={500} size="sm">Sofia Davis</Text>
-                        <Text size="xs" color="dimmed">m@example.com</Text>
+                        <Text size="xs" >m@example.com</Text>
                     </div>
                 </Group>
             </Group>
@@ -119,16 +114,30 @@ export default function Chat() {
                             style={{
                                 alignSelf: message?.role === userJson?.id ? "flex-end" : "flex-start",
                                 maxWidth: "70%",
+                                backgroundColor: message?.status === "READ" ? "var(--mantine-color-blue-1)" : "transparent",
                             }}
                             c={message?.role === userJson?.id ? "var(--mantine-primary-color-contrast)" : "var(--mantine-color-text)"}
                             withBorder={false}
                             shadow="none"
                         >
-                            <Text size="sm">{message?.content}</Text>
+                            <div style={{ display: "flex", alignItems: "center", gap: 1 }}>
+                                <Box style={{ display: "flex", alignItems: "center" }}>
+                                    {message?.status === "SENDING" && (
+                                        <IoCheckmark size={16} color="gray" />
+                                    )}
+                                    {message?.status === "RECEIVED" && (
+                                        <IoCheckmarkDone size={16} color="gray" />
+                                    )}
+                                    {message?.status === "READ" && (
+                                        <IoCheckmarkDone size={16} color="var(--mantine-color-blue-6)" />
+                                    )}
+                                </Box>
+                                <Text size="sm">{message?.content}</Text>
+                            </div>
                         </Card>
                     ))}
+                    <div ref={messagesEndRef} />
                 </Stack>
-                <div ref={messagesEndRef} />
             </div>
 
             {/* Input Form */}
@@ -136,16 +145,16 @@ export default function Chat() {
                 onSubmit={(event) => {
                     event.preventDefault();
                     if (inputLength === 0) return;
-                    sendMessage([
-                        ...messages,
+                    sendMessage(
                         {
-                            role: user?.id,
+                            id: ulid(),
+                            role: data?.id,
                             content: input,
+                            status: "SENDING"
                         },
-                    ]);
+                    );
                     setInput("");
                 }}
-            // style={{ padding: "16px", backgroundColor: "white", borderTop: "1px solid #e0e0e0" }}
             >
                 <Group>
                     <TextInput
