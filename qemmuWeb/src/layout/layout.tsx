@@ -11,20 +11,12 @@ import './layout.css';
 // import '@mantine/dropzone/styles.css';
 import '@mantine/spotlight/styles.css';
 import '@mantine/notifications/styles.css';
-
-import { useLocalStorage } from '@mantine/hooks';
 import { Notifications } from '@mantine/notifications';
 import { theme } from '../theme';
 import RouterComponent from '../routes';
-import Dashboard from '../component/dasbobard';
 import { ModalsProvider } from '@mantine/modals';
 
 export default function Layout() {
-
-    const [value] = useLocalStorage<string>({
-        key: "token",
-
-    });
 
     return (
         <>
@@ -39,7 +31,7 @@ export default function Layout() {
                         defaultColorScheme="auto"
                         localStorageKey="mantine-ui-color-scheme"
                     />
-                    {!value ? <RouterComponent /> : <Dashboard />}
+                    <RouterComponent />
                 </ModalsProvider>
             </MantineProvider>
         </>

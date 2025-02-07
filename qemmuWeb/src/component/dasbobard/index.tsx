@@ -1,30 +1,38 @@
-import { AppShell, Burger, rem, } from '@mantine/core';
-import { useDisclosure, useLocalStorage } from '@mantine/hooks';
+import { AppShell, Burger, } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 import Header from '../header/Header';
 import { activeComponent } from './store/data';
 import { navLinks } from '../navigation/config';
 import { Navigation } from '../navigation/Navigation';
 import UserList from '../person/UserList';
-import MainDashboard from './Main';
 import { deCodeJwt } from '../../config/jwtClient';
-import { useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
+import { Navigate, useLocation } from 'react-router-dom';
 
-export default function Index() {
+
+interface DashboardProps {
+    children: ReactNode;
+}
+
+export default function Index({ children }: DashboardProps) {
+
     const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
     const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
     const { componentActive } = activeComponent()
     const [user, setUser] = useState<any>(null)
-    const [value] = useLocalStorage<string>({
-        key: "token",
-
-    });
+    const location = useLocation();
+    const sessionToken = localStorage.getItem("token");
 
 
     useEffect(() => {
-        if (value) {
-            setUser(deCodeJwt(value))
+        if (sessionToken !== undefined) {
+            if (sessionToken) {
+                setUser(deCodeJwt(sessionToken))
+            }
+
         }
-    }, [value])
+
+    }, [sessionToken])
 
     const filteredNavLinks = navLinks
         .filter((item) => item.role.length === 0 || item.role.includes(user?.role || "ROLE_USER"))
@@ -41,7 +49,13 @@ export default function Index() {
             return item;
         });
 
+    // if (isLoading) {
+    //     return <></>
+    // }
 
+    if (!sessionToken) {
+        return <Navigate to="/init" state={{ from: location }} replace />;
+    }
     return (
         <AppShell
             header={{ height: 50 }}
@@ -81,7 +95,7 @@ export default function Index() {
                 <Navigation data={filteredNavLinks} hidden={!mobileOpened || !desktopOpened} />
             </AppShell.Navbar>
             <AppShell.Main >
-                <MainDashboard />
+                <>{children}</>
             </AppShell.Main >
             <AppShell.Aside p="md">
                 <UserList user={user || null} />

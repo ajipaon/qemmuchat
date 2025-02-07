@@ -1,6 +1,7 @@
 import { Avatar, Group, ScrollArea, Text } from "@mantine/core";
 import { useGetUserByOrganization } from "./query";
 import { useSelectUserChatStore } from "../../config/globalStore/selectuser";
+import { useLocalStorage } from "@mantine/hooks";
 
 // const users = Array.from({ length: 50 }, (_, index) => ({
 //     id: index + 1,
@@ -14,6 +15,10 @@ interface userListPorps {
 
 export default function UserList({ user }: userListPorps) {
 
+    const [userJson] = useLocalStorage<string>({
+        key: "user",
+
+    }) as any
     const { data, isLoading } = useGetUserByOrganization(user?.last_organization || null) as any
     const { setData } = useSelectUserChatStore()
 

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Card, Avatar, Text, Group } from '@mantine/core';
 
 const users = [

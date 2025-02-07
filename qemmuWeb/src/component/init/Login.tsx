@@ -25,7 +25,7 @@ export default function Login({ setCurrentSection }: { setCurrentSection: any })
                     autoClose: 2000,
                 });
                 if (data?.message == "Login successful") {
-                    window.location.reload();
+                    window.location.href = "/"
                 }
             })
         }
