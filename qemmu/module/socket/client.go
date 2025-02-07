@@ -7,6 +7,8 @@ import (
 	"time"
 
 	"github.com/ajipaon/qemmuChat/qemmu/models"
+	"github.com/ajipaon/qemmuChat/qemmu/repository"
+	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
 )
 
@@ -26,11 +28,12 @@ type MessageWs struct {
 }
 
 type Client struct {
-	ID       string
-	RoomID   string
-	TypeRoom string
-	Conn     *websocket.Conn
-	Message  chan *MessageWs
+	ID          string
+	RoomID      string
+	TypeRoom    string
+	Conn        *websocket.Conn
+	Message     chan *MessageWs
+	messageRepo repository.MessageRepository
 }
 
 func (c *Client) readPump(hub *Hub) {
@@ -70,23 +73,26 @@ func (c *Client) readPump(hub *Hub) {
 			return
 		}
 
-		var statusMessages models.StatusMessage
+		// var statusMessages models.StatusMessage
 
 		if _, ok := hub.Rooms[msg.RoomID]; ok {
-			fmt.Println("user sedang online")
-			statusMessages = models.ReceivedStatusMessage
-			msg.Status = statusMessages
+			msg.Status = models.ReceivedStatusMessage
+			// msg.Status = statusMessages
 			hub.Broadcast <- &msg
-		} else {
-			statusMessages = models.SendingStatusMessage
 		}
+		// else {
+		// 	statusMessages = models.SendingStatusMessage
+		// 	msg.Status = models.SendingStatusMessage
+		// }
+
+		go c.saveMessage(c.RoomID, c.ID, msg)
 
 		if c.RoomID != msg.RoomID {
 			msgs := &MessageWs{
 				Id:      msg.Id,
 				Content: msg.Content,
 				RoomID:  c.RoomID,
-				Status:  statusMessages,
+				Status:  msg.Status,
 				Role:    msg.Role,
 			}
 			hub.Broadcast <- msgs
@@ -95,6 +101,23 @@ func (c *Client) readPump(hub *Hub) {
 	}
 }
 
+func (c *Client) saveMessage(roomId, userId string, m MessageWs) error {
+
+	message := &models.Message{
+		ID:          m.Id,
+		SenderId:    userId,
+		RoomId:      uuid.MustParse(roomId),
+		RecipientId: m.RoomID,
+		Type:        models.DefaultMessage,
+		ContentType: "text",
+		Status:      m.Status,
+		Content:     m.Content,
+	}
+
+	c.messageRepo.Create(message)
+
+	return nil
+}
 func (c *Client) writePump() {
 	ticker := time.NewTicker(pingPeriod)
 	defer func() {

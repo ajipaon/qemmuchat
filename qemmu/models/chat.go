@@ -1,6 +1,7 @@
 package models
 
 import (
+	"errors"
 	"time"
 
 	"github.com/google/uuid"
@@ -51,19 +52,28 @@ const (
 type StatusMessage string
 
 const (
-	SendingStatusMessage  StatusMessage = "SENDING"
+	SendingStatusMessage  StatusMessage = "SENT"
 	ReceivedStatusMessage StatusMessage = "RECEIVED"
 	ReadStatusMessage     StatusMessage = "READ"
 )
 
+func (s StatusMessage) IsValid() error {
+	switch s {
+	case SendingStatusMessage, ReceivedStatusMessage, ReadStatusMessage:
+		return nil
+	default:
+		return errors.New("invalid status message")
+	}
+}
+
 type Message struct {
-	ID          string         `json:"id" gorm:"unique"`
+	ID          string         `json:"id" gorm:"unique primarykey"`
 	SenderId    string         `json:"sender_id"`
 	RoomId      uuid.UUID      `gorm:"not null;type:uuid"` // roomId is targetId in query param websocket
 	RecipientId string         `json:"recipient_id"`
-	Type        messageType    `json:"type" gorm:"default: DEFAULT_MESSAGE"`
-	ContentType ContentType    `json:"content_type" gorm:"default: TEXT"`
-	Content     string         `json:"content" gorm:"default: TEXT"`
+	Type        messageType    `json:"type"`
+	ContentType ContentType    `json:"content_type"`
+	Content     string         `json:"content"`
 	Status      StatusMessage  `json:"status"`
 	CreatedAt   time.Time      `json:"created_at"`
 	UpdatedAt   time.Time      `json:"update_at"`

@@ -122,7 +122,7 @@ export default function Chat() {
                         >
                             <div style={{ display: "flex", alignItems: "center", gap: 1 }}>
                                 <Box style={{ display: "flex", alignItems: "center" }}>
-                                    {message?.status === "SENDING" && (
+                                    {message?.status === "SENT" && (
                                         <IoCheckmark size={16} color="gray" />
                                     )}
                                     {message?.status === "RECEIVED" && (
@@ -150,7 +150,7 @@ export default function Chat() {
                             id: ulid(),
                             role: data?.id,
                             content: input,
-                            status: "SENDING"
+                            status: "SENT"
                         },
                     );
                     setInput("");

@@ -53,9 +53,9 @@ func (c *Config) GetDb() *gorm.DB {
 		// if err := db.AutoMigrate(&models.RoomParticipant{}); err != nil {
 		// 	log.Fatalf("failed to migrate database: %v", err)
 		// }
-		// if err := db.AutoMigrate(&models.Message{}); err != nil {
-		// 	log.Fatalf("failed to migrate database: %v", err)
-		// }
+		if err := db.AutoMigrate(&models.Message{}); err != nil {
+			log.Fatalf("failed to migrate database: %v", err)
+		}
 		c.DB = db
 	}
 	return c.DB
