@@ -26,6 +26,18 @@ export const navLinks: NavItem[] = [
     ],
   },
   {
+    label: "Data",
+    icon: FaUsers,
+    initiallyOpened: false,
+    role: ["ROLE_ADMIN"],
+    links: [
+      {
+        label: "Organization",
+        link: "ORGANIZATION",
+      },
+    ],
+  },
+  {
     label: "Chat",
     icon: FaMoneyBillAlt,
     initiallyOpened: false,

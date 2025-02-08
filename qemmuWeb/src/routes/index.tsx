@@ -1,16 +1,52 @@
 import { FC } from 'react';
-import config from './config';
-import { Route, Routes, Navigate } from 'react-router-dom';
+import { privateRoutes, publicRoutes, dashBoardRoutes, playgroundRoutes } from './config';
+import { Route, Routes } from 'react-router-dom';
+import PrivateRoute from './private';
+import Dashboard from '../component/dasbobard';
+import { NotFound } from '../component/page/notfound';
+import PlaygroundRoute from './playground';
 
 const RouterComponent: FC = () => (
     <Routes>
-        <Route path="/" element={<Navigate to="/init" />} />
-        <Route path="*" element={<Navigate to="/404" />} />
-        {config.map(route => (
+        <Route path="*" element={<NotFound />} />
+        {publicRoutes.map(route => (
             <Route
                 key={route.pathname}
                 path={route.pathname}
-                Component={route.component}
+                element={<route.component />}
+            />
+        ))}
+        {dashBoardRoutes.map((route) => (
+            <Route
+                key={route.pathname}
+                path={route.pathname}
+                element={
+                    <Dashboard>
+                        <route.component />
+                    </Dashboard>
+                }
+            />
+        ))}
+        {privateRoutes.map((route) => (
+            <Route
+                key={route.pathname}
+                path={route.pathname}
+                element={
+                    <PrivateRoute>
+                        <route.component />
+                    </PrivateRoute>
+                }
+            />
+        ))}
+        {playgroundRoutes.map((route) => (
+            <Route
+                key={route.pathname}
+                path={route.pathname}
+                element={
+                    <PlaygroundRoute>
+                        <route.component />
+                    </PlaygroundRoute>
+                }
             />
         ))}
     </Routes>

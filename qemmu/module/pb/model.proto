@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package pb;
+option go_package = "github.com/ajipaon/qemmuChat/qemmu/module/pb";
+
+service ChatService {
+  rpc CreateRoom (CreateRoomReq) returns (CreateRoomRes);
+  rpc JoinRoom (stream JoinRoomReq) returns (stream JoinRoomRes);
+}
+
+message CreateRoomReq {
+  string id = 1;
+  string name = 2;
+}
+
+message CreateRoomRes {
+  bool success = 1;
+}
+
+message JoinRoomReq {
+  string roomId = 1;
+  string clientId = 2;
+  bytes content = 3;
+}
+
+message JoinRoomRes {
+  bytes content = 1;
+}
+
+//SecureRequest and SecureResponse for token
+//message SecureRequest {
+//  string data = 1;
+//}
+//
+//message SecureResponse {
+//  string result = 1;
+//}

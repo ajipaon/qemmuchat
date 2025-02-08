@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Badge, Button, Flex, Select, TextInput } from '@mantine/core';
 import { DataTable } from 'mantine-datatable';
 import { useOrganizationsStore } from "../../config/globalStore/organizatonsData";
-import { useGetUserByOrganization } from "./query";
+import { useGetUserByOrganizationSuerAdmin } from "./query";
 import MOdalChangeRoleOrganization from "./modalChangeRoleOrganizaton";
 
 export default function Organization() {
@@ -13,7 +13,7 @@ export default function Organization() {
     const [page, setPage] = useState(1);
     const [dataUpdateRole, setDataUpdateRole] = useState({ userId: "", orgId: "" })
     const [openModalChangeRoleOrg, setOpenModalChangeRoleOrg] = useState<boolean>(false)
-    const { data, hasNextPage, fetchNextPage } = useGetUserByOrganization(readySearch) as any
+    const { data, hasNextPage, fetchNextPage } = useGetUserByOrganizationSuerAdmin(readySearch) as any
 
     useEffect(() => {
         if (selectValue && typeof (selectValue) == "string") {

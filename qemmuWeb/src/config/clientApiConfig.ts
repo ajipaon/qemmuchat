@@ -20,14 +20,17 @@ export const apiClient = async <T>(
     const contentType = response.headers.get("Content-Type") || "";
     const header = response.headers.get("authorization") || "";
 
-    if (url == "/auth/login" || url == "/auth/update" || url.includes("/api/v1/user/change/organization")) {
+    if (
+      url == "/auth/login" ||
+      url == "/auth/update" ||
+      url.includes("/api/v1/user/change/organization")
+    ) {
       localStorage.setItem("token", header.split(" ")[1]);
     }
 
     if (contentType.includes("application/json")) {
       return (await response.json()) as T;
     }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {
     console.error("Failed to parse response JSON:", e.message);
   }

@@ -1,7 +1,7 @@
 package v1
 
 import (
-	"qemmuChat/qemmu/controllers"
+	"github.com/ajipaon/qemmuChat/qemmu/controllers"
 
 	"github.com/labstack/echo/v4"
 )
@@ -58,4 +58,5 @@ func userRoutes(g *echo.Group, c controllers.UserController) {
 	g.GET("/admin/all", c.GetUserAdminAll)
 	g.PATCH("/admin/:id", c.UpdateUserAdmin)
 	g.GET("/admin/organization/all/:id", c.GetUserAdminAllByOrganizationId)
+	g.GET("/organization/all/:id", c.GetUserAllByOrganizationId)
 }

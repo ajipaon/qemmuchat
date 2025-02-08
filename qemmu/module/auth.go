@@ -1,9 +1,10 @@
 package module
 
 import (
+	"errors"
 	"fmt"
+	"github.com/ajipaon/qemmuChat/qemmu/models"
 	"os"
-	"qemmuChat/qemmu/models"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -82,6 +83,24 @@ func UpdateJwt(oldToken string) (string, error) {
 	}
 
 	return signedToken, nil
+}
+
+func ValidateJWT(tokenString string) (*JwtCustomClaims, error) {
+	claims := &JwtCustomClaims{}
+
+	token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
+		return os.Getenv("SECRET"), nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	if !token.Valid {
+		return nil, errors.New("token tidak valid")
+	}
+
+	return claims, nil
 }
 
 func ReturnClaim(c echo.Context) ClaimData {

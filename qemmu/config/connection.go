@@ -4,7 +4,8 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"qemmuChat/qemmu/models"
+
+	"github.com/ajipaon/qemmuChat/qemmu/models"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -44,6 +45,15 @@ func (c *Config) GetDb() *gorm.DB {
 			log.Fatalf("failed to migrate database: %v", err)
 		}
 		if err := db.AutoMigrate(&models.UserOrganization{}); err != nil {
+			log.Fatalf("failed to migrate database: %v", err)
+		}
+		// if err := db.AutoMigrate(&models.Room{}); err != nil {
+		// 	log.Fatalf("failed to migrate database: %v", err)
+		// }
+		// if err := db.AutoMigrate(&models.RoomParticipant{}); err != nil {
+		// 	log.Fatalf("failed to migrate database: %v", err)
+		// }
+		if err := db.AutoMigrate(&models.Message{}); err != nil {
 			log.Fatalf("failed to migrate database: %v", err)
 		}
 		c.DB = db

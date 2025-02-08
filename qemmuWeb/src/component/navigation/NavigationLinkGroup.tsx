@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import {
     Box,
@@ -11,6 +11,7 @@ import classes from "./NavigationLinksGroup.module.css";
 import { IconType } from "react-icons";
 import { activeComponent } from "../dasbobard/store/data";
 import { ActiveComponentType } from "../../types/mainType";
+import { useSelectUserChatStore } from "../../config/globalStore/selectuser";
 
 interface LinksGroupProps {
     icon: IconType;
@@ -32,11 +33,19 @@ export default function NavigationLinksGroup({
     const dir = "ltr";
     const ChevronIcon = dir === "ltr" ? FaChevronRight : FaChevronLeft;
     const { setComponentActive } = activeComponent()
+    const { data } = useSelectUserChatStore()
+
 
     const handleUpdateComponent = (e: React.MouseEvent<HTMLAnchorElement>, link: string) => {
         e.preventDefault();
         setComponentActive(link as ActiveComponentType);
     };
+
+    useEffect(() => {
+        if (data) {
+            setComponentActive("CHAT")
+        }
+    }, [data])
 
 
     const items = (hasLinks ? links : []).map((link) => (
