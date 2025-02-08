@@ -49,10 +49,6 @@ export default function Index({ children }: DashboardProps) {
             return item;
         });
 
-    // if (isLoading) {
-    //     return <></>
-    // }
-
     if (!sessionToken) {
         return <Navigate to="/init" state={{ from: location }} replace />;
     }

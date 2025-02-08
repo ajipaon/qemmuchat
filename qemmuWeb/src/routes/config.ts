@@ -1,8 +1,9 @@
 import MainDashboard from "../component/dasbobard/Main";
 import InitPage from "../component/init/Index";
+import Enjoy from "../component/space/enjoy";
 import Space from "../component/space/space";
 
-export const publicRoute = [
+export const publicRoutes = [
   {
     pathname: "/init",
     name: "Init",
@@ -14,7 +15,7 @@ export const publicRoute = [
   },
 ];
 
-export const dashBoardRoute = [
+export const dashBoardRoutes = [
   {
     pathname: "/",
     name: "Dashboard",
@@ -28,10 +29,22 @@ export const dashBoardRoute = [
 
 export const privateRoutes = [
   {
-    pathname: "/space/:id",
+    pathname: "/space",
     name: "Space",
     title: "Space",
     component: Space,
+    meta: {
+      navigation: "Space",
+    },
+  },
+];
+
+export const playgroundRoutes = [
+  {
+    pathname: "/space/:id",
+    name: "Space",
+    title: "Space",
+    component: Enjoy,
     meta: {
       navigation: "Space",
     },

@@ -7,5 +7,12 @@ export default defineConfig({
     fs: {
       strict: false,
     },
+    proxy: {
+      "/phaser": {
+        target: "https://cdn.phaserfiles.com/v385",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/phaser/, ""),
+      },
+    },
   },
 });
