@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { Link } from 'react-router-dom';
 import {
     Box,
     Collapse,
@@ -33,31 +34,31 @@ export default function NavigationLinksGroup({
     const dir = "ltr";
     const ChevronIcon = dir === "ltr" ? FaChevronRight : FaChevronLeft;
     const { setComponentActive } = activeComponent()
-    const { data } = useSelectUserChatStore()
+    const { data: userProfileSelected } = useSelectUserChatStore()
 
 
     const handleUpdateComponent = (e: React.MouseEvent<HTMLAnchorElement>, link: string) => {
-        e.preventDefault();
+        // e.preventDefault();
         setComponentActive(link as ActiveComponentType);
     };
 
     useEffect(() => {
-        if (data) {
+        if (userProfileSelected) {
             setComponentActive("CHAT")
         }
-    }, [data])
+    }, [userProfileSelected])
 
 
     const items = (hasLinks ? links : []).map((link) => (
-        <a
-            href={link.link}
+        <Link
+            to={link.link}
             key={link.label}
             className={`${classes.link} ${window.location.pathname === link.link && classes.activeLink}`}
             onClick={(e) => handleUpdateComponent(e, link.link)}
 
         >
             {link.label}
-        </a>
+        </Link>
     ));
 
     return (
@@ -99,11 +100,6 @@ export default function NavigationLinksGroup({
                             <ChevronIcon
                                 className={classes.chevron}
                                 size={16}
-                            // style={{
-                            //     transform: opened
-                            //         ? `rotate(${dir === "rtl" ? -90 : 90}deg)`
-                            //         : "none",
-                            // }}
                             />
                         )}
                     </Group>

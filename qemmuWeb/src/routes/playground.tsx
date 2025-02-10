@@ -8,44 +8,34 @@ interface PlaygroundRouteProps {
 }
 
 const PlaygroundRoute: React.FC<PlaygroundRouteProps> = ({ children }) => {
-    const [token] = useLocalStorage<string | null>({ key: "token" });
     const location = useLocation();
-    const [isLoading, setIsLoading] = useState(true);
+    const sessionToken = localStorage.getItem("token");
 
-    useEffect(() => {
-        if (token !== undefined) {
-            setIsLoading(false);
-        }
-    }, [token]);
-
-    if (isLoading) {
-        return <></>
-    }
-    if (!token) {
+    if (!sessionToken) {
         return <Navigate to="/init" state={{ from: location }} replace />;
     }
 
     return (
         <AppShell
             footer={{ height: 60 }}
-            // offsetScrollbars={false}
-            // padding="md"
-            styles={{
-                main: {
-                    overflow: "hidden",
-                    flexGrow: 1,
-                    display: "flex",
-                    flexDirection: "column"
-                }
-            }}
+        // offsetScrollbars={false}
+        // padding="md"
+        // styles={{
+        //     main: {
+        //         overflow: "hidden",
+        //         flexGrow: 1,
+        //         display: "flex",
+        //         flexDirection: "column"
+        //     }
+        // }}
         >
             <AppShell.Main>
                 {children}
             </AppShell.Main>
             {/* <AppShell.Aside p="md">
                 <h1>sdfsdfds</h1>
-            </AppShell.Aside> */}
-            <AppShell.Footer p="md">Footer</AppShell.Footer>
+            </AppShell.Aside>
+            <AppShell.Footer p="md">Footer</AppShell.Footer> */}
         </AppShell>
     );
 };

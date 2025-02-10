@@ -25,6 +25,7 @@ type MessageWs struct {
 	RoomID  string               `json:"room_id"`
 	Status  models.StatusMessage `json:"status"`
 	Role    string               `json:"role"`
+	Types   string               `json:"types"`
 }
 
 type Client struct {
@@ -72,30 +73,29 @@ func (c *Client) readPump(hub *Hub) {
 			fmt.Println("Error decoding JSON object:", err)
 			return
 		}
-
-		// var statusMessages models.StatusMessage
-
-		if _, ok := hub.Rooms[msg.RoomID]; ok {
-			msg.Status = models.ReceivedStatusMessage
-			// msg.Status = statusMessages
-			hub.Broadcast <- &msg
-		}
-		// else {
-		// 	statusMessages = models.SendingStatusMessage
-		// 	msg.Status = models.SendingStatusMessage
-		// }
-
-		go c.saveMessage(c.RoomID, c.ID, msg)
-
-		if c.RoomID != msg.RoomID {
-			msgs := &MessageWs{
-				Id:      msg.Id,
-				Content: msg.Content,
-				RoomID:  c.RoomID,
-				Status:  msg.Status,
-				Role:    msg.Role,
+		switch msg.Types {
+		case "MESSAGE":
+			if _, ok := hub.Rooms[msg.RoomID]; ok {
+				msg.Status = models.ReceivedStatusMessage
+				hub.Broadcast <- &msg
 			}
-			hub.Broadcast <- msgs
+
+			go c.saveMessage(c.RoomID, c.ID, msg)
+
+			if c.RoomID != msg.RoomID {
+				msgs := &MessageWs{
+					Id:      msg.Id,
+					Content: msg.Content,
+					RoomID:  c.RoomID,
+					Status:  msg.Status,
+					Role:    msg.Role,
+					Types:   msg.Types,
+				}
+				hub.Broadcast <- msgs
+			}
+
+		default:
+			fmt.Println("not found")
 		}
 
 	}

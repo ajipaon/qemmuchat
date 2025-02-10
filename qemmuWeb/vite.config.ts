@@ -8,10 +8,10 @@ export default defineConfig({
       strict: false,
     },
     proxy: {
-      "/phaser": {
+      "/phaser-assets": {
         target: "https://cdn.phaserfiles.com/v385",
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/phaser/, ""),
+        rewrite: (path) => path.replace(/^\/phaser-assets/, ""),
       },
     },
   },

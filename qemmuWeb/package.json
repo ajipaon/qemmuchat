@@ -34,6 +34,7 @@
     "dayjs": "^1.11.13",
     "embla-carousel-react": "^7.1.0",
     "jwt-decode": "^4.0.0",
+    "lucide-react": "^0.475.0",
     "mantine-datatable": "^7.15.1",
     "phaser": "^3.87.0",
     "react": "^18.3.1",

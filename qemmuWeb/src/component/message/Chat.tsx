@@ -1,12 +1,14 @@
-import { Card, Text, TextInput, Button, Group, Avatar, rem, Space, Stack, Box } from '@mantine/core';
+
+import { Card, Text, TextInput, Button, Group, rem, Space, Stack, Box } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { IoMdPaperPlane } from "react-icons/io";
-// import { useGetRoom } from './query';
 import CustomWebSocket from '../../config/customWebSocket';
 import { ulid } from "ulid";
 import { useSelectUserChatStore } from '../../config/globalStore/selectuser';
 import { IoCheckmark, IoCheckmarkDone } from "react-icons/io5";
+import Chathead from './chatHead';
+import CallControls from './callControll';
 
 
 export default function Chat() {
@@ -23,7 +25,9 @@ export default function Chat() {
     };
     const [webSocketClient, setWebSocketClient] = useState<CustomWebSocket | null>(null);
     const [messages, setMessages] = useState<any>([]);
-
+    const userStream = useRef<MediaStream | null>(null);
+    const userVideo = useRef<HTMLVideoElement | null>(null);
+    const [onCall, setOnCall] = useState<boolean>(false)
     const { data } = useSelectUserChatStore()
 
     useEffect(() => {
@@ -90,22 +94,27 @@ export default function Chat() {
             return updatedMessages;
         });
     };
+    console.log(onCall)
 
     return (
         <Card style={{ height: "80vh", display: "flex", flexDirection: "column" }}>
-            <Group align="center" justify="space-between">
-                <Group>
-                    <Avatar src="https://ui.shadcn.com/avatars/02.png" alt="Sofia Davis" radius="xl" />
-                    <div>
-                        <Text fw={500} size="sm">Sofia Davis</Text>
-                        <Text size="xs" >m@example.com</Text>
-                    </div>
-                </Group>
-            </Group>
 
-            <Space my="sm" />
-
-            <div style={{ flex: 1, overflowX: "auto", display: "flex", flexDirection: "column-reverse" }}>
+            <Chathead style={{ display: onCall ? "none" : "" }} setOnCall={setOnCall} data={data} userStream={userStream} userVideo={userVideo} />
+            <Space my="sm" style={{ display: onCall ? "none" : "" }} />
+            <video
+                ref={userVideo}
+                autoPlay
+                playsInline
+                muted
+                style={{
+                    display: onCall ? "" : "none",
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    borderRadius: "8px",
+                }}
+            />
+            <div style={{ flex: 1, overflowX: "auto", display: onCall ? "none" : "flex", flexDirection: "column-reverse" }}>
                 <Stack gap="md">
                     {messages.map((message: any, index: number) => (
                         <Card
@@ -139,9 +148,10 @@ export default function Chat() {
                     <div ref={messagesEndRef} />
                 </Stack>
             </div>
+            {onCall && <CallControls />}
 
-            {/* Input Form */}
             <form
+                style={{ display: onCall ? "none" : "" }}
                 onSubmit={(event) => {
                     event.preventDefault();
                     if (inputLength === 0) return;
@@ -150,7 +160,8 @@ export default function Chat() {
                             id: ulid(),
                             role: data?.id,
                             content: input,
-                            status: "SENT"
+                            status: "SENT",
+                            type: "MESSAGE"
                         },
                     );
                     setInput("");
