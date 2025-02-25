@@ -46,7 +46,7 @@ func (s *UserService) CreateUser(userRegister *models.RegisterUserRequest) error
 		Password: string(hashedPassword),
 	}
 
-	count, err := s.userRepo.Count()
+	count, _ := s.userRepo.Count()
 
 	if count == 0 {
 		user.Role = models.RoleSuperAdmin

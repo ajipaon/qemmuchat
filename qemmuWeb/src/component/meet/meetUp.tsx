@@ -150,7 +150,7 @@ const MeetingRoom = () => {
 
             {screenSharing && (
                 <div style={{ flex: 1, textAlign: 'center', marginBottom: '5px' }}>
-                    <video ref={screenRef} autoPlay muted playsInline style={{ width: '70%', borderRadius: '8px', border: '2px solid white' }} />
+                    <video ref={screenRef} autoPlay muted playsInline style={{ width: 'calc(100vh - 40px)', borderRadius: '8px', border: '2px solid white' }} />
                 </div>
             )}
 
