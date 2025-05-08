@@ -15,7 +15,6 @@ interface DashboardProps {
 }
 
 export default function Index({ children }: DashboardProps) {
-
     const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
     const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
     const { componentActive } = activeComponent()
@@ -88,7 +87,10 @@ export default function Index({ children }: DashboardProps) {
                 />
             </AppShell.Header>
             <AppShell.Navbar>
-                <Navigation data={filteredNavLinks} hidden={!mobileOpened || !desktopOpened} />
+                <Navigation
+                    data={filteredNavLinks}
+                    hidden={window.innerWidth >= 768 ? !desktopOpened : !mobileOpened}
+                />
             </AppShell.Navbar>
             <AppShell.Main >
                 <>{children}</>

@@ -1,12 +1,30 @@
 .links {
 	flex: 1;
+	background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6));
+	position: sticky;
+	top: 0;
+	height: 100vh;
+	border-right: rem(1px) solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));
 }
 
 .linksInner {
+	padding: var(--mantine-spacing-md);
 	padding-top: var(--mantine-spacing-xl);
 	padding-bottom: var(--mantine-spacing-xl);
 }
 
 .footer {
 	border-top: rem(1px) solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));
+	padding: var(--mantine-spacing-md);
+}
+
+/* Add hover effect for better interaction */
+.linksInner :global(.mantine-NavLink-root) {
+	border-radius: var(--mantine-radius-sm);
+	margin-bottom: var(--mantine-spacing-xs);
+	transition: background-color 200ms ease;
+}
+
+.linksInner :global(.mantine-NavLink-root:hover) {
+	background-color: light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-5));
 }
