@@ -11,10 +11,10 @@ interface Props {
 
 export function Navigation({ data, hidden }: Props) {
     const location = useLocation();
-    
+
     const links = data.map((item) => (
-        <NavigationLinksGroup 
-            key={item.label} 
+        <NavigationLinksGroup
+            key={item.label}
             {...item}
             isActive={location.pathname === item.link}
         />
