@@ -1,5 +1,5 @@
 import React from "react";
-import { ActionIcon, Avatar, Button, Menu, Select, Text } from "@mantine/core";
+import { ActionIcon, Avatar, Button, Menu, Select, Text, useComputedColorScheme, useMantineColorScheme } from "@mantine/core";
 import classes from "./Header.module.css";
 import { useChangeOrganization, useGetUserDetail } from "./query";
 import { useEffect, useState } from "react";
@@ -9,12 +9,13 @@ import { newOrganizationModal } from "./type";
 import { deCodeJwt } from "../../config/jwtClient";
 import { notifications } from "@mantine/notifications";
 import ModalNewOrganization from "./ModalNewOrganization";
-// import NotificationEvent from "./NotivicationEvent";
 import { modals } from '@mantine/modals';
 import unsubscribePush from "./unsbNotification";
 import { MantineLogo } from '@mantinex/mantine-logo';
 import { IoMdNotificationsOutline } from "react-icons/io";
+import { IoSunnyOutline, IoMoonOutline } from "react-icons/io5";
 import ModalNotification from "./ModalNotification";
+
 interface Props {
     mobileBurger?: React.ReactNode;
     desktopBurger?: React.ReactNode;
@@ -22,11 +23,12 @@ interface Props {
 
 
 export default function Header({ mobileBurger, desktopBurger }: Props) {
-
-    const [lastOrganization, setLastOrganization] = useState<any>(null)
-    const [dataOrganization, setDataOrganization] = useState([])
+    const [lastOrganization, setLastOrganization] = useState<any>(null);
+    const [dataOrganization, setDataOrganization] = useState([]);
     const [searchValue, setSearchValue] = useState('');
-    const [user, seetUser] = useState<any>(null)
+    const [user, seetUser] = useState<any>(null);
+    const { setColorScheme } = useMantineColorScheme();
+    const computedColorScheme = useComputedColorScheme('light', { getInitialValueInEffect: true });
     const { data }: { data: any } = useGetUserDetail()
     const { setData } = useOrganizationsStore()
     const [value] = useLocalStorage<string>({
@@ -116,14 +118,20 @@ export default function Header({ mobileBurger, desktopBurger }: Props) {
                         onSearchChange={(value) => {
                             setSearchValue(value)
                         }}
-
                         maxDropdownHeight={200}
                     />
                     {user?.role === "ROLE_SUPER_ADMIN" && (
                         <Button variant="filled" onClick={onOpen}>Create Team</Button>
                     )}
-
                 </div>
+                <ActionIcon
+                    variant="default"
+                    size="lg"
+                    onClick={() => setColorScheme(computedColorScheme === 'light' ? 'dark' : 'light')}
+                    aria-label="Toggle color scheme"
+                >
+                    {computedColorScheme === 'light' ? <IoMoonOutline size={20} /> : <IoSunnyOutline size={20} />}
+                </ActionIcon>
                 <ActionIcon variant="transparent" aria-label="notification" onClick={open}>
                     <IoMdNotificationsOutline size={30} color="teal" title="notification" type="button" />
                 </ActionIcon>
