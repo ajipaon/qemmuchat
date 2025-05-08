@@ -3,8 +3,7 @@ package repository
 import (
 	"time"
 
-	"qemmu/qemmu/models"
-
+	"github.com/ajipaon/qemmuChat/qemmu/models"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )

@@ -1,36 +1,38 @@
 package repository
 
 import (
-	"github.com/ajipaon/qemmuChat/qemmu/config"
 	"github.com/ajipaon/qemmuChat/qemmu/models"
-
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
 
-type ActivityRepository struct {
-	db config.Config
+type ActivityRepository interface {
+	Create(activity *models.Activity) error
+	GetById(userId uuid.UUID) (*models.Activity, error)
+	Update(activity *models.Activity) error
 }
 
-func (r *ActivityRepository) Create(activity *models.Activity) error {
-	if err := r.db.GetDb().Create(activity).Error; err != nil {
-		return err
-	}
-	return nil
+type activityRepository struct {
+	db *gorm.DB
 }
 
-func (r *ActivityRepository) GetById(userId uuid.UUID) (*models.Activity, error) {
+func NewActivityRepository(db *gorm.DB) ActivityRepository {
+	return &activityRepository{db: db}
+}
+
+func (r *activityRepository) Create(activity *models.Activity) error {
+	return r.db.Create(activity).Error
+}
+
+func (r *activityRepository) GetById(userId uuid.UUID) (*models.Activity, error) {
 	var userActivity models.Activity
-	err := r.db.GetDb().Where("user_id = ?", userId).First(&userActivity).Error
+	err := r.db.Where("user_id = ?", userId).First(&userActivity).Error
 	return &userActivity, err
 }
 
-func (r *ActivityRepository) Update(activity *models.Activity) error {
-
-	if err := r.db.GetDb().Clauses(clause.OnConflict{
+func (r *activityRepository) Update(activity *models.Activity) error {
+	return r.db.Clauses(clause.OnConflict{
 		UpdateAll: true,
-	}).Create(activity).Error; err != nil {
-		return err
-	}
-	return nil
+	}).Create(activity).Error
 }
