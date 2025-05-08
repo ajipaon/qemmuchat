@@ -83,31 +83,63 @@ const MeetingRoom = () => {
 
 
     return (
-        <div style={{ height: '100%', display: 'flex', flexDirection: 'column', background: '#1A1B1E' }}>
+        <div style={{
+            height: '100vh',
+            display: 'flex',
+            flexDirection: 'column',
+            background: '#1A1B1E',
+            position: 'relative',
+            overflow: 'hidden'
+        }}>
             <div
                 style={{
                     flex: 1,
-                    paddingBlockStart: '10px',
-                    paddingBottom: '5px',
-                    display: 'flex',
-                    gap: '7px',
-                    overflowX: 'auto',
-                    whiteSpace: 'nowrap',
-                    paddingInline: '10px',
+                    padding: '20px',
+                    display: 'grid',
+                    gap: '15px',
+                    gridTemplateColumns: `repeat(auto-fit, minmax(${screenSharing ? '200px' : '300px'}, 1fr))`,
+                    gridAutoRows: 'minmax(200px, auto)',
+                    overflowY: 'auto',
+                    alignItems: 'start'
                 }}
             >
+                {screenSharing && (
+                    <div style={{
+                        gridColumn: '1 / -1',
+                        height: '60vh',
+                        backgroundColor: '#25262B',
+                        borderRadius: '12px',
+                        overflow: 'hidden'
+                    }}>
+                        <video
+                            ref={screenRef}
+                            autoPlay
+                            muted
+                            playsInline
+                            style={{
+                                width: '100%',
+                                height: '100%',
+                                objectFit: 'contain'
+                            }}
+                        />
+                    </div>
+                )}
+
                 {users.map((user) => (
                     <div
                         key={user.id}
                         style={{
                             position: 'relative',
                             background: '#25262B',
-                            borderRadius: '8px',
-                            padding: camOn ? "1px" : "10px",
-                            textAlign: 'center',
-                            minWidth: '150px',
-                            height: '15vh',
-                            overflow: 'hidden'
+                            borderRadius: '12px',
+                            height: screenSharing ? '200px' : '300px',
+                            overflow: 'hidden',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            padding: '10px',
+                            transition: 'all 0.3s ease'
                         }}
                     >
                         {user.id === 1 && camOn ? (
@@ -124,83 +156,148 @@ const MeetingRoom = () => {
                                 }}
                             />
                         ) : (
-                            <Avatar radius="xl" size="sm" color="blue">{user.initials}</Avatar>
-                        )}
-                        {user.id === 1 && camOn && (
                             <Avatar
                                 radius="xl"
-                                size="sm"
+                                size={screenSharing ? "lg" : "xl"}
                                 color="blue"
                                 style={{
-                                    position: "absolute",
-                                    top: "10px",
-                                    left: "10px",
-                                    backgroundColor: "rgba(134, 144, 247, 0.5)"
+                                    marginBottom: '10px'
                                 }}
                             >
                                 {user.initials}
                             </Avatar>
                         )}
 
-                        <Text size="sm" mt={10}>{user.name}</Text>
-                        {!micOn && <MicOff size={16} color="red" style={{ position: 'absolute', bottom: 10, right: 10 }} />}
+                        <div style={{
+                            position: 'absolute',
+                            bottom: 0,
+                            left: 0,
+                            right: 0,
+                            background: 'rgba(0,0,0,0.7)',
+                            padding: '8px',
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center'
+                        }}>
+                            <Text size="sm" color="white">{user.name}</Text>
+                            {!micOn && <MicOff size={16} color="red" />}
+                        </div>
                     </div>
                 ))}
             </div>
 
-            {screenSharing && (
-                <div style={{ flex: 1, textAlign: 'center', marginBottom: '5px' }}>
-                    <video ref={screenRef} autoPlay muted playsInline style={{ width: 'calc(100vh - 40px)', borderRadius: '8px', border: '2px solid white' }} />
-                </div>
-            )}
-
-            {/* KONTROL */}
             <Group
-                px="md"
-                py="sm"
+                px="xl"
+                py="md"
                 justify="space-between"
                 style={{
-                    background: '#2C2E33',
-                    position: 'absolute',
+                    background: 'rgba(44, 46, 51, 0.95)',
+                    backdropFilter: 'blur(10px)',
+                    position: 'sticky',
                     bottom: 0,
                     left: 0,
                     right: 0,
+                    borderTop: '1px solid rgba(255,255,255,0.1)'
                 }}
             >
                 <Group>
-                    <Button variant={micOn ? 'filled' : 'outline'} color={micOn ? 'blue' : 'red'} onClick={() => setMicOn(!micOn)}>
+                    <Button
+                        variant={micOn ? 'filled' : 'outline'}
+                        color={micOn ? 'blue' : 'red'}
+                        onClick={() => setMicOn(!micOn)}
+                        radius="xl"
+                        size="md"
+                    >
                         {micOn ? <Mic size={20} /> : <MicOff size={20} />}
                     </Button>
-                    <Button variant={camOn ? 'filled' : 'outline'} color={camOn ? 'blue' : 'red'} onClick={() => setCamOn(!camOn)}>
+                    <Button
+                        variant={camOn ? 'filled' : 'outline'}
+                        color={camOn ? 'blue' : 'red'}
+                        onClick={() => setCamOn(!camOn)}
+                        radius="xl"
+                        size="md"
+                    >
                         {camOn ? <Video size={20} /> : <VideoOff size={20} />}
                     </Button>
-                    <Button variant="subtle" color="gray"><Hand size={20} /></Button>
-                    {/* <Button variant="subtle" color="gray"><Monitor size={20} /></Button> */}
-                    <Button variant={screenSharing ? 'filled' : 'outline'} color={screenSharing ? 'blue' : 'gray'} onClick={handleScreenShare}>
+                    <Button variant="subtle" color="gray" radius="xl" size="md">
+                        <Hand size={20} />
+                    </Button>
+                    <Button
+                        variant={screenSharing ? 'filled' : 'outline'}
+                        color={screenSharing ? 'blue' : 'gray'}
+                        onClick={handleScreenShare}
+                        radius="xl"
+                        size="md"
+                    >
                         <Monitor size={20} />
                     </Button>
-                    <Button variant="subtle" color="gray"><MoreVertical size={20} /></Button>
-                    <Button variant="filled" color="red" onClick={() => alert('Meeting ended')}><Phone size={20} /></Button>
+                    <Button variant="subtle" color="gray" radius="xl" size="md">
+                        <MoreVertical size={20} />
+                    </Button>
                 </Group>
 
                 <Group>
-                    <Button variant="subtle" color="gray" onClick={() => setParticipantsOpen(true)}><Users size={20} /></Button>
-                    <Button variant="subtle" color="gray" onClick={() => setChatOpen(true)}><MessageSquare size={20} /></Button>
+                    <Button
+                        variant="filled"
+                        color="red"
+                        onClick={() => alert('Meeting ended')}
+                        radius="xl"
+                        size="md"
+                    >
+                        <Phone size={20} />
+                    </Button>
+                </Group>
+
+                <Group>
+                    <Button
+                        variant="subtle"
+                        color="gray"
+                        onClick={() => setParticipantsOpen(true)}
+                        radius="xl"
+                        size="md"
+                    >
+                        <Users size={20} />
+                    </Button>
+                    <Button
+                        variant="subtle"
+                        color="gray"
+                        onClick={() => setChatOpen(true)}
+                        radius="xl"
+                        size="md"
+                    >
+                        <MessageSquare size={20} />
+                    </Button>
                 </Group>
             </Group>
 
-            {/* Chat Modal */}
-            <Modal opened={chatOpen} onClose={() => setChatOpen(false)} title="Meeting Chat" centered>
+            <Modal
+                opened={chatOpen}
+                onClose={() => setChatOpen(false)}
+                title="Meeting Chat"
+                centered
+                size="lg"
+            >
                 <Text size="sm" color="gray">Chat messages will appear here...</Text>
             </Modal>
 
-            {/* Participants Modal */}
-            <Modal opened={participantsOpen} onClose={() => setParticipantsOpen(false)} title={`Participants (${users.length})`} centered>
+            <Modal
+                opened={participantsOpen}
+                onClose={() => setParticipantsOpen(false)}
+                title={`Participants (${users.length})`}
+                centered
+                size="md"
+            >
                 {users.map((user) => (
-                    <Group key={user.id} mt="sm">
+                    <Group key={user.id} mt="sm" p="sm" style={{ borderRadius: '8px', background: '#f1f3f5' }}>
                         <Avatar radius="xl" color="blue">{user.initials}</Avatar>
-                        <Text>{user.name}</Text>
-                        <Badge color="gray">Host</Badge>
+                        <div style={{ flex: 1 }}>
+                            <Text size="sm" >{user.name}</Text>
+                            <Badge color="gray" variant="light">Participant</Badge>
+                        </div>
+                        <Group>
+                            <Button variant="subtle" size="xs"><MicOff size={16} /></Button>
+                            <Button variant="subtle" size="xs"><VideoOff size={16} /></Button>
+                        </Group>
                     </Group>
                 ))}
             </Modal>
