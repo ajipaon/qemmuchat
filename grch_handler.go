@@ -3,8 +3,12 @@ package main
 import (
 	"context"
 	"crypto/tls"
+	"log"
+	"net"
+	"strings"
+	"time"
+
 	"github.com/ajipaon/qemmuChat/qemmu/module"
-	"github.com/ajipaon/qemmuChat/qemmu/module/logs"
 	"github.com/ajipaon/qemmuChat/qemmu/module/pb"
 	"github.com/ajipaon/qemmuChat/qemmu/module/socket"
 	"google.golang.org/grpc"
@@ -13,9 +17,6 @@ import (
 	"google.golang.org/grpc/keepalive"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
-	"net"
-	"strings"
-	"time"
 )
 
 var grpcConfig struct {
@@ -80,11 +81,11 @@ func serveGrpc(addr string, kaEnabled bool, tlsConf *tls.Config) (*grpc.Server, 
 
 	srv := grpc.NewServer(opts...)
 	pb.RegisterChatServiceServer(srv, socket.NewPbServerChat())
-	logs.Info.Printf("gRPC/%s%s server is registered at [%s]", grpc.Version, secure, addr)
+	log.Printf("gRPC/%s%s server is registered at [%s]", grpc.Version, secure, addr)
 
 	go func() {
 		if err := srv.Serve(lis); err != nil {
-			logs.Err.Println("gRPC server failed:", err)
+			log.Printf("gRPC server failed: %v", err)
 		}
 	}()
 
