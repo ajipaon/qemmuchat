@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import {
     Box,
     Collapse,
@@ -28,9 +28,10 @@ export default function NavigationLinksGroup({
     link,
     initiallyOpened,
     links,
-}: LinksGroupProps) {
-    const hasLinks = Array.isArray(links);
+    isActive,
+}: LinksGroupProps & { isActive?: boolean }) {
     const [opened, setOpened] = useState(initiallyOpened || false);
+    const { pathname } = useLocation();
     const dir = "ltr";
     const ChevronIcon = dir === "ltr" ? FaChevronRight : FaChevronLeft;
     const { setComponentActive } = activeComponent()
@@ -49,13 +50,12 @@ export default function NavigationLinksGroup({
     }, [userProfileSelected])
 
 
-    const items = (hasLinks ? links : []).map((link) => (
+    const items = (links || []).map((link) => (
         <Link
             to={link.link}
             key={link.label}
-            className={`${classes.link} ${window.location.pathname === link.link && classes.activeLink}`}
+            className={`${classes.link} ${pathname === link.link ? 'active' : ''}`}
             onClick={(e) => handleUpdateComponent(e, link.link)}
-
         >
             {link.label}
         </Link>
@@ -64,9 +64,9 @@ export default function NavigationLinksGroup({
     return (
         <>
             {link ? (
-                <a
-                    href={link}
-                    className={`${classes.control} ${window.location.pathname === link && classes.activeControl}`}
+                <Link
+                    to={link}
+                    className={`${classes.control} ${isActive ? 'active' : ''}`}
                     onClick={(e) => handleUpdateComponent(e, "DASHBOARD")}
                 >
                     <Group gap={0} justify="space-between">
@@ -77,12 +77,12 @@ export default function NavigationLinksGroup({
                             <Box ml="md">{label}</Box>
                         </Box>
                     </Group>
-                </a>
+                </Link>
             ) : (
                 <UnstyledButton
                     style={{ backgroundColor: "#393939" }}
                     onClick={() => {
-                        if (hasLinks) {
+                        if (Array.isArray(links)) {
                             setOpened((o) => !o);
                             return;
                         }
@@ -96,7 +96,7 @@ export default function NavigationLinksGroup({
                             </ThemeIcon>
                             <Box ml="md">{label}</Box>
                         </Box>
-                        {hasLinks && (
+                        {Array.isArray(links) && (
                             <ChevronIcon
                                 className={classes.chevron}
                                 size={16}
@@ -105,7 +105,7 @@ export default function NavigationLinksGroup({
                     </Group>
                 </UnstyledButton>
             )}
-            {hasLinks ? <Collapse in={opened}>{items}</Collapse> : null}
+            {Array.isArray(links) ? <Collapse in={opened}>{items}</Collapse> : null}
         </>
     );
 }

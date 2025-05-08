@@ -2,6 +2,7 @@ import { ScrollArea } from "@mantine/core";
 import classes from "./Navigaiton.module.css";
 import NavigationLinksGroup from "./NavigationLinkGroup.tsx";
 import { NavItem } from "../../types/navtype.ts";
+import { useLocation } from "react-router-dom";
 
 interface Props {
     data: NavItem[];
@@ -9,8 +10,14 @@ interface Props {
 }
 
 export function Navigation({ data, hidden }: Props) {
+    const location = useLocation();
+    
     const links = data.map((item) => (
-        <NavigationLinksGroup key={item.label} {...item} />
+        <NavigationLinksGroup 
+            key={item.label} 
+            {...item}
+            isActive={location.pathname === item.link}
+        />
     ));
 
     return (
